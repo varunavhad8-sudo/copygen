@@ -87,7 +87,7 @@ app.use('/api/webhooks', require('./routes/webhook.routes'));
 const { initMonthlyResetJob } = require('./jobs/monthlyReset');
 initMonthlyResetJob();
 
-app.get('/health', (req, res) => 
+app.get('/api/health', (req, res) => 
   res.json({ 
     status: 'ok', 
     message: 'Copygen backend running' 
