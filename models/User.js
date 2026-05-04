@@ -33,11 +33,6 @@ const userSchema = new mongoose.Schema({
     type: String,
     default: ''
   },
-  role: {
-    type: String,
-    enum: ['admin', 'editor', 'viewer', 'user'],
-    default: 'user'
-  },
   // ── Flat usage counters (kept for backward compat) ─────────────────────────
   generationsUsed: { 
     type: Number, 
