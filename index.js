@@ -49,15 +49,21 @@ app.use(cors({
   credentials: true
 }));
 
-// Webhook raw body capture (Dodopayments & Razorpay)
+// Webhook raw body capture
 app.use('/api/billing/razorpay/webhook', express.raw({ type: 'application/json' }));
 app.use('/api/billing/dodo/webhook', express.raw({ type: 'application/json' }));
 app.use('/api/webhooks', express.raw({ type: 'application/json' }));
 
 app.use(express.json({ limit: '10kb' })); 
 
-// ── NoSQL Injection Prevention ─────────────────────────────────────────────
-app.use(mongoSanitize());
+// ── NoSQL Injection Prevention (Express 5 Compatible) ──────────────────────
+// Express 5 makes req.query a read-only getter, so we sanitize in-place.
+app.use((req, res, next) => {
+  if (req.body) mongoSanitize.sanitize(req.body);
+  if (req.params) mongoSanitize.sanitize(req.params);
+  if (req.query) mongoSanitize.sanitize(req.query);
+  next();
+});
 
 // ── Structured Request Logging ──────────────────────────────────────────────
 app.use((req, res, next) => {
