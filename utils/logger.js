@@ -15,25 +15,23 @@ const logger = winston.createLogger({
   ),
   defaultMeta: { service: 'copygen-backend' },
   transports: [
-    // 1. Write all logs with level 'error' and below to `error.log`
-    new winston.transports.File({ 
-      filename: path.join(__dirname, '../logs/error.log'), 
-      level: 'error' 
-    }),
-    // 2. Write all logs with level 'info' and below to `combined.log`
-    new winston.transports.File({ 
-      filename: path.join(__dirname, '../logs/combined.log') 
+    new winston.transports.Console({
+      format: winston.format.combine(
+        winston.format.colorize(),
+        winston.format.simple()
+      ),
     }),
   ],
 });
 
-// If we're not in production then log to the `console` with colored output
-if (process.env.NODE_ENV !== 'production') {
-  logger.add(new winston.transports.Console({
-    format: winston.format.combine(
-      winston.format.colorize(),
-      winston.format.simple()
-    ),
+// Only add file logging if explicitly requested (e.g., local debugging)
+if (process.env.WRITE_LOGS_TO_FILE === 'true') {
+  logger.add(new winston.transports.File({ 
+    filename: path.join(__dirname, '../logs/error.log'), 
+    level: 'error' 
+  }));
+  logger.add(new winston.transports.File({ 
+    filename: path.join(__dirname, '../logs/combined.log') 
   }));
 }
 
