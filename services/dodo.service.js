@@ -14,31 +14,24 @@ const assertDodoReady = () => {
 const createDodoSubscription = async (userId, planKey) => {
   try {
     assertDodoReady();
+
+    const productIds = {
+      starter: process.env.DODO_STARTER_PRODUCT_ID,
+      growth:  process.env.DODO_GROWTH_PRODUCT_ID,
+      agency:  process.env.DODO_AGENCY_PRODUCT_ID
+    };
+
+    const productId = productIds[planKey];
+
+    if (!productId) {
+      throw new Error(`Product ID for ${planKey} plan is not configured in environment variables. Check DODO_${planKey.toUpperCase()}_PRODUCT_ID in .env`);
+    }
+
     const user = await User.findById(userId);
     if (!user) throw new Error('User not found');
 
-    // Map planKey to product ID from environment
-    let productId;
-    switch (planKey) {
-      case 'starter':
-        productId = process.env.DODO_STARTER_PRODUCT_ID;
-        break;
-      case 'growth':
-        productId = process.env.DODO_GROWTH_PRODUCT_ID;
-        break;
-      case 'agency':
-        productId = process.env.DODO_AGENCY_PRODUCT_ID;
-        break;
-      default:
-        throw new Error('Invalid plan selected');
-    }
-
-    if (!productId) {
-      throw new Error(`Product ID for ${planKey} is not configured in environment variables`);
-    }
-
     // Check for existing active subscription
-    if (user.dodoSubscriptionId) {
+    if (user.dodoSubscriptionId && user.plan !== 'free') {
       throw new Error('You already have an active subscription. Please cancel it before subscribing to a new plan.');
     }
 
@@ -85,21 +78,17 @@ const cancelDodoSubscription = async (userId) => {
     }
 
     // Cancel subscription via Dodo SDK
-    // CHECK DODO DOCS FOR EXACT METHOD NAME: Likely dodo.subscriptions.update(id, { status: 'cancelled' })
-    await dodo.subscriptions.update(user.dodoSubscriptionId, {
-      status: 'cancelled'
-    });
+    await dodo.subscriptions.cancel(user.dodoSubscriptionId);
 
-    // Update user in MongoDB
-    user.plan = 'free';
-    user.planType = 'free';
-    user.generationsLimit = 10;
-    user.dodoSubscriptionId = null;
-    user.dodoCustomerId = null;
-    
+    // Update user in MongoDB - Scheduled Downgrade
+    user.scheduledDowngrade = true;
+    user.subscriptionCancelledAt = new Date();
     await user.save();
 
-    return { success: true, message: 'Subscription cancelled' };
+    return { 
+      success: true, 
+      message: 'Subscription cancelled. You keep full access until the end of your billing period.' 
+    };
 
   } catch (error) {
     console.error('Error in cancelDodoSubscription:', error.message);
@@ -119,6 +108,10 @@ const getDodoSubscriptionStatus = async (userId) => {
 
     if (!user.dodoSubscriptionId) {
       return { status: 'none', plan: 'free' };
+    }
+
+    if (!user.dodoSubscriptionId || user.dodoSubscriptionId.startsWith('cs_')) {
+      return { status: 'pending', plan: user.plan, message: 'Subscription pending confirmation' };
     }
 
     // Fetch subscription details from Dodo SDK

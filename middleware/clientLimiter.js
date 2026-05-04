@@ -1,32 +1,36 @@
 const Client = require('../models/Client');
 
+// ─────────────────────────────────────────────────────────────────────────────
+// clientLimiter
+// Limits the number of "Clients" a free user can add.
+// Since each Brand Memory profile is linked to a Client, this effectively
+// limits the "slots" available for branding.
+// ─────────────────────────────────────────────────────────────────────────────
 const clientLimiter = async (req, res, next) => {
-  const user = req.user;
+  try {
+    const user = req.user;
 
-  if (user.isTrial) {
-    // Check if trial is expired first
-    if (new Date() > new Date(user.trialExpiresAt)) {
-      return res.status(403).json({
-        message: 'Your trial has expired. Please upgrade to add more clients.',
-        upgradeRequired: true
-      });
+    // Free plan limit: 1 Client maximum
+    if (user.plan === 'free') {
+      const clientCount = await Client.countDocuments({ userId: user._id });
+      
+      // If they already have 1 client, they can't add another.
+      if (clientCount >= 1) {
+        return res.status(403).json({
+          error: 'CLIENT_LIMIT_REACHED',
+          message: 'Free accounts are limited to 1 client. Please upgrade to add more clients and brand voices.',
+          upgradeRequired: true,
+          limit: 1,
+          used: clientCount
+        });
+      }
     }
 
-    // Check client count
-    const clientCount = await Client.countDocuments({ userId: user._id });
-    if (clientCount >= 1) {
-      return res.status(403).json({
-        message: 'Trial limit reached: You can only add 1 client during your trial period. Please upgrade to add more clients.',
-        limitReached: true,
-        upgradeRequired: true
-      });
-    }
+    next();
+  } catch (error) {
+    console.error('[clientLimiter]', error);
+    next(error);
   }
-
-  next();
 };
 
 module.exports = clientLimiter;
-
-
-

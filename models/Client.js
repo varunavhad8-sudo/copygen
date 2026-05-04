@@ -8,6 +8,9 @@ const clientSchema = new mongoose.Schema({
   name: { type: String, required: true },
   industry: { type: String },
   website: { type: String },
+  siteUrl: { type: String, default: '' },
+  ga4PropertyId: { type: String, default: '' },
+  scSiteUrl: { type: String },
   targetAudience: { type: String },
   brandProfileId: { 
     type: mongoose.Schema.Types.ObjectId, 

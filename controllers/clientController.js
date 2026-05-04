@@ -2,10 +2,14 @@ const Client = require('../models/Client');
 const BrandProfile = require('../models/BrandProfile');
 const DOMPurify = require('isomorphic-dompurify');
 
+const ALLOWED_FIELDS = ['name', 'industry', 'website', 'siteUrl', 'ga4PropertyId', 'scSiteUrl', 'targetAudience'];
+
 const sanitizeBody = (body) => {
   const sanitized = {};
-  for (const key in body) {
-    sanitized[key] = typeof body[key] === 'string' ? DOMPurify.sanitize(body[key]) : body[key];
+  for (const key of ALLOWED_FIELDS) {
+    if (body[key] !== undefined) {
+      sanitized[key] = typeof body[key] === 'string' ? DOMPurify.sanitize(body[key]) : body[key];
+    }
   }
   return sanitized;
 };

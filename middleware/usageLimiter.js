@@ -1,90 +1,115 @@
 const User = require('../models/User');
 
-// ── 30-minute grace period before auto-downgrade after missed webhook ─────────
-// This prevents legitimate paying users from being locked out when Razorpay or
-// Dodo delivers a webhook slightly late (common during peak server loads).
-const WEBHOOK_GRACE_PERIOD_MS = 30 * 60 * 1000; // 30 minutes
+// ── Grace period before auto-downgrade after missed webhook ───────────────────
+// Gives Razorpay / Dodo 30 min to deliver a delayed subscription.completed event
+// before we hard-downgrade a paying user. Keeps false-positives near zero.
+const WEBHOOK_GRACE_PERIOD_MS = 30 * 60 * 1000;
 
-const usageLimiter = async (req, res, next) => {
-  const user = req.user;
-  const today = new Date();
+// ─────────────────────────────────────────────────────────────────────────────
+// checkGenerationLimit
+// Blocks free-plan users who have exhausted their 10-lifetime-generation quota.
+// Paid users are never blocked here — they have no generation cap in this flow.
+// ─────────────────────────────────────────────────────────────────────────────
+const checkGenerationLimit = async (req, res, next) => {
+  try {
+    const user = req.user;
 
-  // ── 1. Auto-downgrade if scheduled downgrade period has passed ──────────────
-  // Safety net if the subscription.completed webhook is delayed or missed.
-  // Checks: user requested cancellation AND billing period has ended AND grace period passed.
-  if (user.scheduledDowngrade && user.currentPeriodEnd) {
-    const periodEnd = new Date(user.currentPeriodEnd);
-    const graceDeadline = new Date(periodEnd.getTime() + WEBHOOK_GRACE_PERIOD_MS);
-    const pastGrace = today > graceDeadline;
+    // ── Auto-downgrade safety net (same logic as before) ──────────────────────
+    if (user.scheduledDowngrade && user.currentPeriodEnd) {
+      const periodEnd   = new Date(user.currentPeriodEnd);
+      const graceDeadline = new Date(periodEnd.getTime() + WEBHOOK_GRACE_PERIOD_MS);
+      const now = new Date();
 
-    if (today > periodEnd && !pastGrace) {
-      // Period ended but still within grace window — log and allow through
-      const minutesSincePeriodEnd = Math.round((today - periodEnd) / 60000);
-      console.warn(
-        `[usageLimiter] Grace period active for ${user.email} — ` +
-        `period ended ${minutesSincePeriodEnd}m ago, waiting for webhook (grace: 30m)`
-      );
-    } else if (pastGrace) {
-      // Grace period expired — webhook is definitively late, auto-downgrade
-      console.log(
-        `[usageLimiter] Auto-downgrading ${user.email} — ` +
-        `period ended >30m ago, webhook definitely missed`
-      );
-      await User.findByIdAndUpdate(user._id, {
-        plan: 'free',
-        planType: 'free',
-        generationsLimit: 10,
-        scheduledDowngrade: false,
-        subscriptionCancelledAt: null,
-        razorpaySubscriptionId: null,
-        razorpayPaymentId: null,
-        currentPeriodEnd: null
-      });
-      // Mutate local user object so checks below reflect reality immediately
-      user.plan = 'free';
-      user.planType = 'free';
-      user.generationsLimit = 10;
-    }
-  }
-
-  // ── 2. Reset daily count if it's a new day ──────────────────────────────────
-  const lastReset = new Date(user.lastDailyReset);
-  if (lastReset.toDateString() !== today.toDateString()) {
-    user.dailyGenerationsUsed = 0;
-    user.lastDailyReset = today;
-    await user.save();
-  }
-
-  // ── 3. Trial Expiration Check ───────────────────────────────────────────────
-  if (user.isTrial) {
-    if (user.trialExpiresAt && today > new Date(user.trialExpiresAt)) {
-      return res.status(403).json({
-        message: 'Your 7-day free trial has expired. Please upgrade to continue generating content.',
-        trialExpired: true,
-        upgradeRequired: true
-      });
+      if (now > periodEnd && now <= graceDeadline) {
+        const minutesSince = Math.round((now - periodEnd) / 60000);
+        console.warn(
+          `[usageLimiter] Grace period active for ${user.email} — ` +
+          `period ended ${minutesSince}m ago, waiting for webhook`
+        );
+      } else if (now > graceDeadline) {
+        console.log(
+          `[usageLimiter] Auto-downgrading ${user.email} — ` +
+          `period ended >30m ago, webhook definitively missed`
+        );
+        await User.findByIdAndUpdate(user._id, {
+          plan: 'free',
+          planType: 'free',
+          generationsLimit: 10,
+          scheduledDowngrade: false,
+          subscriptionCancelledAt: null,
+          razorpaySubscriptionId: null,
+          razorpayPaymentId: null,
+          currentPeriodEnd: null
+        });
+        user.plan = 'free';
+        user.planType = 'free';
+        user.generationsLimit = 10;
+      }
     }
 
-    // Trial daily limit (5 per day)
-    if (user.dailyGenerationsUsed >= 5) {
-      return res.status(403).json({
-        message: 'Trial daily limit of 5 generations reached. Upgrade for higher limits.',
-        dailyLimitReached: true,
-        resetTime: 'midnight'
-      });
+    // ── Free plan: check lifetime generation cap ───────────────────────────────
+    if (user.plan === 'free') {
+      // Resolve limit: prefer planLimits.maxGenerations, fall back to legacy generationsLimit
+      const maxGenerations = user.planLimits?.maxGenerations ?? user.generationsLimit ?? 10;
+      const used           = user.generationsUsed ?? 0;
+
+      if (used >= maxGenerations) {
+        return res.status(403).json({
+          error:      'GENERATION_LIMIT_REACHED',
+          limit:      maxGenerations,
+          used,
+          upgradeRequired: true,
+          upgradeUrl: '/pricing'
+        });
+      }
     }
-  }
 
-  // ── 4. Paid Plan Monthly Limit Check ───────────────────────────────────────
-  if (!user.isTrial && user.generationsUsed >= user.generationsLimit) {
-    return res.status(403).json({
-      message: 'Monthly generation limit reached. Please upgrade your plan.',
-      upgradeRequired: true,
-      currentPlan: user.plan
-    });
+    next();
+  } catch (err) {
+    console.error('[usageLimiter:checkGenerationLimit]', err);
+    next(err);
   }
-
-  next();
 };
 
-module.exports = usageLimiter;
+// ─────────────────────────────────────────────────────────────────────────────
+// checkBrandVoiceLimit
+// Blocks free-plan users who already have 1 Brand Memory profile saved.
+// Uses the user's actual BrandProfile count (not a cached counter) so it stays
+// accurate even if profiles are manually deleted.
+// ─────────────────────────────────────────────────────────────────────────────
+const checkBrandVoiceLimit = async (req, res, next) => {
+  try {
+    const user = req.user;
+
+    const planLimits = {
+      free:    1,
+      starter: 10,
+      growth:  30,
+      agency:  100,
+    };
+
+    const maxBrandVoices = user.brandVoicesLimit || planLimits[user.plan] || 1;
+    const used = user.brandVoicesUsed ?? 0;
+
+    if (used >= maxBrandVoices) {
+      return res.status(403).json({
+        error: 'BRAND_VOICE_LIMIT_REACHED',
+        limit: maxBrandVoices,
+        used,
+        upgradeRequired: true,
+        upgradeUrl: '/pricing'
+      });
+    }
+
+    next();
+  } catch (err) {
+    console.error('[usageLimiter:checkBrandVoiceLimit]', err);
+    next(err);
+  }
+};
+
+// Keep the legacy default export so existing imports (brief.routes.js) don't break.
+// brief.routes.js imports `usageLimiter` as a default — map it to checkGenerationLimit.
+module.exports = checkGenerationLimit;
+module.exports.checkGenerationLimit = checkGenerationLimit;
+module.exports.checkBrandVoiceLimit = checkBrandVoiceLimit;

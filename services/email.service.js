@@ -213,9 +213,275 @@ const handleEmailBounce = async ({ type, email: bouncedEmail, reason }) => {
   }
 };
 
+/**
+ * Get started nudge (day 1, no generation yet)
+ */
+const sendGetStartedNudge = async (email, name) => {
+  try {
+    const { data, error } = await resend.emails.send({
+      from: FROM_EMAIL,
+      to: email,
+      subject: 'Have you tried Copygen yet?',
+      html: `
+        <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto;">
+          <h2 style="color: #1A1A1A;">Ready to scale your agency, ${name}?</h2>
+          <p style="font-size: 16px; color: #4A4A4A; line-height: 1.6;">
+            We noticed you haven't created your first client profile yet. Building your Agency OS starts with Brand Memory — once Copygen learns your client's voice, generating high-converting content takes seconds.
+          </p>
+          <div style="padding: 20px; background-color: #F9F9F9; border-radius: 12px; margin: 30px 0;">
+            <p style="margin: 0; color: #4A4A4A; font-weight: bold;">Step 1: Create a Client</p>
+            <p style="margin: 5px 0 0; color: #666; font-size: 14px;">Add a website URL or existing content to build their unique voice profile.</p>
+          </div>
+          <a href="${process.env.CLIENT_URL || 'https://copygen.in'}/app" style="display: inline-block; padding: 14px 28px; background-color: #1A1A1A; color: #FFFFFF; text-decoration: none; border-radius: 8px; font-weight: bold;">
+            Create First Client
+          </a>
+        </div>
+      `,
+    });
+    return error ? { success: false, error } : { success: true, data };
+  } catch (err) {
+    console.error('[EmailService] GetStartedNudge error:', err);
+    return { success: false, error: err };
+  }
+};
+
+/**
+ * Access expiry reminder (3 days before period ends)
+ */
+const sendAccessExpiryReminder = async (email, name, { planName, accessUntil }) => {
+  try {
+    const accessDate = new Date(accessUntil).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+    const { data, error } = await resend.emails.send({
+      from: FROM_EMAIL,
+      to: email,
+      subject: 'Your Copygen access expires in 3 days',
+      html: `
+        <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto;">
+          <h2 style="color: #1A1A1A;">Access expiring soon</h2>
+          <p style="font-size: 16px; color: #4A4A4A; line-height: 1.6;">
+            Hi ${name}, your <strong>${planName}</strong> plan is set to expire on <strong>${accessDate}</strong>.
+          </p>
+          <p style="font-size: 16px; color: #4A4A4A; line-height: 1.6;">
+            To ensure uninterrupted access to your Brand Memory profiles and unlimited generations, you can resubscribe now.
+          </p>
+          <a href="${process.env.CLIENT_URL || 'https://copygen.in'}/app/settings" style="display: inline-block; padding: 14px 28px; background-color: #1A1A1A; color: #FFFFFF; text-decoration: none; border-radius: 8px; font-weight: bold; margin-top: 20px;">
+            Resubscribe Now
+          </a>
+        </div>
+      `,
+    });
+    return error ? { success: false, error } : { success: true, data };
+  } catch (err) {
+    console.error('[EmailService] AccessExpiryReminder error:', err);
+    return { success: false, error: err };
+  }
+};
+
+/**
+ * Plan downgraded to free
+ */
+const sendDowngradeNotification = async (email, name, { previousPlan }) => {
+  try {
+    const { data, error } = await resend.emails.send({
+      from: FROM_EMAIL,
+      to: email,
+      subject: 'Your Copygen account has been downgraded',
+      html: `
+        <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto;">
+          <h2 style="color: #1A1A1A;">Account Downgraded</h2>
+          <p style="font-size: 16px; color: #4A4A4A; line-height: 1.6;">
+            Hi ${name}, your subscription has ended and your account has been moved to the <strong>Free Tier</strong>.
+          </p>
+          <div style="padding: 20px; background-color: #F9F9F9; border-radius: 12px; margin: 30px 0;">
+            <p style="margin: 0; color: #4A4A4A; font-weight: bold;">Free Tier Limits:</p>
+            <ul style="color: #666; font-size: 14px; margin-top: 10px;">
+              <li>10 Generations per month</li>
+              <li>1 Client / Brand Voice profile</li>
+            </ul>
+          </div>
+          <p style="font-size: 16px; color: #4A4A4A; line-height: 1.6;">
+            Your existing Brand Memory data is safe, but you'll need to upgrade to generate more content or add more clients.
+          </p>
+          <a href="${process.env.CLIENT_URL || 'https://copygen.in'}/app/settings" style="display: inline-block; padding: 14px 28px; background-color: #1A1A1A; color: #FFFFFF; text-decoration: none; border-radius: 8px; font-weight: bold; margin-top: 10px;">
+            View Plans
+          </a>
+        </div>
+      `,
+    });
+    return error ? { success: false, error } : { success: true, data };
+  } catch (err) {
+    console.error('[EmailService] DowngradeNotification error:', err);
+    return { success: false, error: err };
+  }
+};
+
+/**
+ * Winback (7 days after downgrade)
+ */
+const sendWinbackEmail = async (email, name, { previousPlan }) => {
+  try {
+    const { data, error } = await resend.emails.send({
+      from: FROM_EMAIL,
+      to: email,
+      subject: 'We miss you at Copygen',
+      html: `
+        <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto;">
+          <h2 style="color: #1A1A1A;">Scaling is easier with Copygen</h2>
+          <p style="font-size: 16px; color: #4A4A4A; line-height: 1.6;">
+            Hi ${name}, we noticed you haven't used Copygen as much lately. Remember how much time you saved on your <strong>${previousPlan}</strong> plan?
+          </p>
+          <p style="font-size: 16px; color: #4A4A4A; line-height: 1.6;">
+            We'd love to help you get back to 10x content production. Come back and see what's new in the dashboard!
+          </p>
+          <a href="${process.env.CLIENT_URL || 'https://copygen.in'}/app/settings" style="display: inline-block; padding: 14px 28px; background-color: #1A1A1A; color: #FFFFFF; text-decoration: none; border-radius: 8px; font-weight: bold; margin-top: 20px;">
+            Return to Copygen
+          </a>
+        </div>
+      `,
+    });
+    return error ? { success: false, error } : { success: true, data };
+  } catch (err) {
+    console.error('[EmailService] WinbackEmail error:', err);
+    return { success: false, error: err };
+  }
+};
+
+/**
+ * 80% generation limit warning
+ */
+const sendGenerationLimitWarning = async (email, name, { used, limit, planName }) => {
+  try {
+    const { data, error } = await resend.emails.send({
+      from: FROM_EMAIL,
+      to: email,
+      subject: "You've used 80% of your Copygen generations",
+      html: `
+        <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto;">
+          <h2 style="color: #1A1A1A;">Running low on generations</h2>
+          <p style="font-size: 16px; color: #4A4A4A; line-height: 1.6;">
+            Hi ${name}, you've used <strong>${used}</strong> out of your <strong>${limit}</strong> monthly generations on the <strong>${planName}</strong> plan.
+          </p>
+          <p style="font-size: 16px; color: #4A4A4A; line-height: 1.6;">
+            To avoid any disruption to your workflow, you can upgrade your plan for more capacity.
+          </p>
+          <a href="${process.env.CLIENT_URL || 'https://copygen.in'}/app/settings" style="display: inline-block; padding: 14px 28px; background-color: #1A1A1A; color: #FFFFFF; text-decoration: none; border-radius: 8px; font-weight: bold; margin-top: 20px;">
+            Upgrade Plan
+          </a>
+        </div>
+      `,
+    });
+    return error ? { success: false, error } : { success: true, data };
+  } catch (err) {
+    console.error('[EmailService] GenerationLimitWarning error:', err);
+    return { success: false, error: err };
+  }
+};
+
+/**
+ * 100% limit hit
+ */
+const sendGenerationLimitExhausted = async (email, name, { planName }) => {
+  try {
+    const { data, error } = await resend.emails.send({
+      from: FROM_EMAIL,
+      to: email,
+      subject: "You've hit your Copygen generation limit",
+      html: `
+        <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto;">
+          <h2 style="color: #1A1A1A;">Generation limit reached</h2>
+          <p style="font-size: 16px; color: #4A4A4A; line-height: 1.6;">
+            Hi ${name}, you've reached your generation limit for this month on your <strong>${planName}</strong> plan.
+          </p>
+          <p style="font-size: 16px; color: #4A4A4A; line-height: 1.6;">
+            Generations will reset at the start of your next billing cycle, or you can upgrade now to continue generating high-quality copy immediately.
+          </p>
+          <a href="${process.env.CLIENT_URL || 'https://copygen.in'}/app/settings" style="display: inline-block; padding: 14px 28px; background-color: #1A1A1A; color: #FFFFFF; text-decoration: none; border-radius: 8px; font-weight: bold; margin-top: 20px;">
+            Upgrade for Unlimited
+          </a>
+        </div>
+      `,
+    });
+    return error ? { success: false, error } : { success: true, data };
+  } catch (err) {
+    console.error('[EmailService] GenerationLimitExhausted error:', err);
+    return { success: false, error: err };
+  }
+};
+
+/**
+ * Password reset
+ */
+const sendPasswordReset = async (email, name, { resetLink }) => {
+  try {
+    const { data, error } = await resend.emails.send({
+      from: FROM_EMAIL,
+      to: email,
+      subject: 'Reset your Copygen password',
+      html: `
+        <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto;">
+          <h2 style="color: #1A1A1A;">Password Reset Request</h2>
+          <p style="font-size: 16px; color: #4A4A4A; line-height: 1.6;">
+            Hi ${name}, we received a request to reset your Copygen password. Click the button below to choose a new password:
+          </p>
+          <a href="${resetLink}" style="display: inline-block; padding: 14px 28px; background-color: #1A1A1A; color: #FFFFFF; text-decoration: none; border-radius: 8px; font-weight: bold; margin: 20px 0;">
+            Reset Password
+          </a>
+          <p style="font-size: 14px; color: #666;">
+            <strong>Note:</strong> This link will expire in 1 hour. If you didn't request a password reset, you can safely ignore this email.
+          </p>
+        </div>
+      `,
+    });
+    return error ? { success: false, error } : { success: true, data };
+  } catch (err) {
+    console.error('[EmailService] PasswordReset error:', err);
+    return { success: false, error: err };
+  }
+};
+
+/**
+ * Email verification
+ */
+const sendEmailVerification = async (email, name, { verificationLink }) => {
+  try {
+    const { data, error } = await resend.emails.send({
+      from: FROM_EMAIL,
+      to: email,
+      subject: 'Verify your Copygen email',
+      html: `
+        <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto;">
+          <h2 style="color: #1A1A1A;">Confirm your email address</h2>
+          <p style="font-size: 16px; color: #4A4A4A; line-height: 1.6;">
+            Hi ${name}, thanks for joining Copygen! Please verify your email address to secure your account and start generating content.
+          </p>
+          <a href="${verificationLink}" style="display: inline-block; padding: 14px 28px; background-color: #1A1A1A; color: #FFFFFF; text-decoration: none; border-radius: 8px; font-weight: bold; margin: 20px 0;">
+            Verify Email
+          </a>
+          <p style="font-size: 14px; color: #666;">
+            If the button above doesn't work, you can copy and paste this link into your browser:<br />
+            <span style="color: #0066CC;">${verificationLink}</span>
+          </p>
+        </div>
+      `,
+    });
+    return error ? { success: false, error } : { success: true, data };
+  } catch (err) {
+    console.error('[EmailService] EmailVerification error:', err);
+    return { success: false, error: err };
+  }
+};
+
 module.exports = {
   sendWelcomeEmail,
   sendPaymentInvoice,
   sendCancellationConfirmation,
+  sendGetStartedNudge,
+  sendAccessExpiryReminder,
+  sendDowngradeNotification,
+  sendWinbackEmail,
+  sendGenerationLimitWarning,
+  sendGenerationLimitExhausted,
+  sendPasswordReset,
+  sendEmailVerification,
   handleEmailBounce
 };

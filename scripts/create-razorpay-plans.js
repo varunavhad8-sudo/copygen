@@ -11,6 +11,18 @@ const razorpay = new Razorpay({
 });
 
 const plans = [
+  // ── TEST ───────────────────────────────────────────────────────
+  {
+    period: 'monthly',
+    interval: 1,
+    item: {
+      name: 'Starter Test Plan',
+      amount: 100, // 100 paise = 1 rupee
+      currency: 'INR',
+      description: 'Starter plan - 1 rupee test'
+    }
+  },
+
   // ── MONTHLY ────────────────────────────────────────────────────
   {
     period: 'monthly',

@@ -29,6 +29,14 @@ const brandProfileSchema = new mongoose.Schema({
   exampleText1: { type: String },
   exampleText2: { type: String },
   systemPromptPreview: { type: String },
+  performancePatterns: {
+    avgWordCount: Number,
+    headingStructure: String,
+    tone: String,
+    faqPresence: Boolean,
+    ctaPatterns: String,
+    lastAnalyzed: Date
+  },
   updatedAt: { type: Date, default: Date.now }
 });
 

@@ -26,17 +26,44 @@ if (!process.env.RAZORPAY_WEBHOOK_SECRET) {
 // ─── AMOUNT → PLAN MAP (in paise) ─────────────────────────────────────────────
 const AMOUNT_PLAN_MAP = {
   // New Full Prices
-  819900:   { plan: 'starter', limit: 100  }, // ₹8,199/mo
-  1639900:  { plan: 'growth',  limit: 400  }, // ₹16,399/mo
-  3279900:  { plan: 'agency',  limit: 1000 }, // ₹32,799/mo
+  819900:   { plan: 'starter', limit: 300  }, // ₹8,199/mo
+  1639900:  { plan: 'growth',  limit: 1000 }, // ₹16,399/mo
+  3279900:  { plan: 'agency',  limit: 3000 }, // ₹32,799/mo
   // New Intro Prices (Month 1 Discount)
-  569900:   { plan: 'starter', limit: 100  }, // ₹5,699
-  1139900:  { plan: 'growth',  limit: 400  }, // ₹11,399
-  2279900:  { plan: 'agency',  limit: 1000 }, // ₹22,799
+  569900:   { plan: 'starter', limit: 300  }, // ₹5,699
+  1139900:  { plan: 'growth',  limit: 1000 }, // ₹11,399
+  2279900:  { plan: 'agency',  limit: 3000 }, // ₹22,799
   // Annual Prices
-  8854900:  { plan: 'starter', limit: 100  }, // ₹88,549/yr
-  17710900: { plan: 'growth',  limit: 400  }, // ₹1,77,109/yr
-  35422900: { plan: 'agency',  limit: 1000 }, // ₹3,54,229/yr
+  8854900:  { plan: 'starter', limit: 300  }, // ₹88,549/yr
+  17710900: { plan: 'growth',  limit: 1000 }, // ₹1,77,109/yr
+  35422900: { plan: 'agency',  limit: 3000 }, // ₹3,54,229/yr
+  // Test Plan (Upgrades to Starter)
+  100:      { plan: 'starter', limit: 30   }, // ₹1
+};
+
+const genLimits = {
+  starter: 300,
+  growth: 1000,
+  agency: 3000,
+  test: 30
+};
+
+const voiceLimits = {
+  starter: 10,
+  growth: 30,
+  agency: 100,
+  test: 10
+};
+
+// Plan ID to Details Map (used for webhooks)
+const PLAN_ID_MAP = {
+  [process.env.RAZORPAY_STARTER_PLAN_ID]:        { plan: 'starter', limit: 300 },
+  [process.env.RAZORPAY_GROWTH_PLAN_ID]:         { plan: 'growth',  limit: 1000 },
+  [process.env.RAZORPAY_AGENCY_PLAN_ID]:         { plan: 'agency',  limit: 3000 },
+  [process.env.RAZORPAY_STARTER_ANNUAL_PLAN_ID]: { plan: 'starter', limit: 300 },
+  [process.env.RAZORPAY_GROWTH_ANNUAL_PLAN_ID]:  { plan: 'growth',  limit: 1000 },
+  [process.env.RAZORPAY_AGENCY_ANNUAL_PLAN_ID]:  { plan: 'agency',  limit: 3000 },
+  [process.env.RAZORPAY_TEST_PLAN_ID]:           { plan: 'starter', limit: 30 },
 };
 
 /**
@@ -47,7 +74,7 @@ router.post('/subscribe', auth, async (req, res) => {
   try {
     const { planKey, billingCycle = 'monthly' } = req.body;
 
-    const validPlans = ['starter', 'growth', 'agency'];
+    const validPlans = ['starter', 'growth', 'agency', 'test'];
     if (!validPlans.includes(planKey)) {
       return res.status(400).json({ error: 'Invalid plan selected' });
     }
@@ -84,20 +111,35 @@ router.post('/verify', auth, async (req, res) => {
       return res.status(400).json({ error: 'Payment verification failed. Contact support.' });
     }
 
-    const genLimits = { starter: 100, growth: 400, agency: 1000 };
-    const generationsLimit = genLimits[planKey] || 10;
+    let finalPlan = planKey;
+    let finalLimit = genLimits[planKey] || 10;
+    const periodEnd = new Date();
+    periodEnd.setDate(periodEnd.getDate() + 30);
 
-    await User.findByIdAndUpdate(req.user._id, {
-      plan: planKey,
-      planType: 'razorpay',
-      generationsLimit,
-      isTrial: false,
-      scheduledDowngrade: false,
-      subscriptionCancelledAt: null,
-      razorpayPaymentId
-    });
+    if (planKey === 'test') {
+      finalPlan = 'starter';
+      finalLimit = 30;
+    }
 
-    res.status(200).json({ success: true, plan: planKey });
+    const user = await User.findById(req.user._id);
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    user.previousPlan = user.plan;
+    user.plan = finalPlan;
+    user.planType = 'razorpay';
+    user.generationsLimit = finalLimit;
+    user.brandVoicesLimit = planKey === 'starter' ? 10 : planKey === 'growth' ? 30 : planKey === 'agency' ? 100 : 1;
+    user.isTrial = false;
+    user.scheduledDowngrade = false;
+    user.subscriptionCancelledAt = null;
+    user.razorpayPaymentId = razorpayPaymentId;
+    user.currentPeriodEnd = periodEnd;
+
+    await user.save();
+
+    res.status(200).json({ success: true, plan: finalPlan });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -111,6 +153,20 @@ router.post('/cancel', auth, async (req, res) => {
   try {
     const result = await cancelRazorpaySubscription(req.user._id);
     res.status(200).json(result);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+/**
+ * ROUTE 4: Fetch Razorpay Plans
+ * GET /api/billing/razorpay/plans
+ */
+router.get('/plans', auth, async (req, res) => {
+  try {
+    const razorpay = require('../config/razorpay');
+    const plans = await razorpay.plans.all();
+    res.status(200).json(plans);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -140,7 +196,7 @@ router.post('/webhook', async (req, res) => {
     // Verify HMAC signature
     const expectedSig = crypto
       .createHmac('sha256', secret)
-      .update(req.rawBody)
+      .update(req.body)
       .digest('hex');
 
     const expectedSigBuf = Buffer.from(expectedSig, 'utf8');
@@ -151,7 +207,7 @@ router.post('/webhook', async (req, res) => {
       return res.status(401).json({ error: 'Signature mismatch' });
     }
 
-    const { event, payload } = JSON.parse(req.rawBody);
+    const { event, payload } = JSON.parse(req.body);
     console.log(`📩 Razorpay Webhook: ${event}`);
 
     const subscription = payload?.subscription?.entity ?? null;
@@ -164,26 +220,34 @@ router.post('/webhook', async (req, res) => {
         if (!subscription) break;
 
         const amount  = subscription.plan_id_entity?.amount || 0;
-        const matched = AMOUNT_PLAN_MAP[amount];
+        const planId  = subscription.plan_id;
+        
+        // Try matching by plan_id first (most reliable)
+        let matched = PLAN_ID_MAP[planId];
+        
+        // Fallback to amount matching
+        if (!matched) {
+          matched = AMOUNT_PLAN_MAP[amount];
+        }
 
         if (!matched) {
-          console.warn(`⚠️  subscription.activated: Unknown amount ${amount} paise — user not updated`);
+          console.warn(`⚠️  subscription.activated: Unknown plan ${planId} / amount ${amount} — user not updated`);
           break;
         }
 
-        await User.findOneAndUpdate(
-          { razorpaySubscriptionId: subscription.id },
-          {
-            plan: matched.plan,
-            planType: 'razorpay',
-            generationsLimit: matched.limit,
-            isTrial: false,
-            scheduledDowngrade: false,
-            subscriptionCancelledAt: null,
-            currentPeriodEnd: new Date(subscription.current_end * 1000)
-          },
-          { new: true }
-        );
+        const user = await User.findOne({ razorpaySubscriptionId: subscription.id });
+        if (user) {
+          user.previousPlan = user.plan;
+          user.plan = matched.plan;
+          user.planType = 'razorpay';
+          user.generationsLimit = matched.limit;
+          user.brandVoicesLimit = matched.plan === 'starter' ? 10 : matched.plan === 'growth' ? 30 : matched.plan === 'agency' ? 100 : 1;
+          user.isTrial = false;
+          user.scheduledDowngrade = false;
+          user.subscriptionCancelledAt = null;
+          user.currentPeriodEnd = new Date(subscription.current_end * 1000);
+          await user.save();
+        }
 
         console.log(`✅ subscription.activated → plan: ${matched.plan}`);
         break;
@@ -206,7 +270,11 @@ router.post('/webhook', async (req, res) => {
         );
 
         if (user) {
-          const { sendCancellationConfirmation } = require('../services/email.service');
+          const { 
+            sendCancellationConfirmation, 
+            sendDowngradeNotification, 
+            sendPaymentInvoice 
+          } = require('../services/email.service');
           sendCancellationConfirmation(user.email, user.name, {
             planName: user.plan,
             accessUntil: user.currentPeriodEnd
@@ -224,19 +292,29 @@ router.post('/webhook', async (req, res) => {
       case 'subscription.expired': {
         if (!subscription) break;
 
-        await User.findOneAndUpdate(
-          { razorpaySubscriptionId: subscription.id },
-          {
-            plan: 'free',
-            planType: 'free',
-            generationsLimit: 10,
-            scheduledDowngrade: false,
-            subscriptionCancelledAt: null,
-            razorpaySubscriptionId: null,
-            razorpayPaymentId: null,
-            currentPeriodEnd: null
+        const user = await User.findOne({ razorpaySubscriptionId: subscription.id });
+        if (user) {
+          user.previousPlan = user.plan;
+          user.plan = 'free';
+          user.planType = 'free';
+          user.generationsLimit = 10;
+          user.brandVoicesLimit = 1;
+          user.scheduledDowngrade = false;
+          user.subscriptionCancelledAt = null;
+          user.razorpaySubscriptionId = null;
+          user.razorpayPaymentId = null;
+          user.currentPeriodEnd = null;
+          await user.save();
+
+          try {
+            const { sendDowngradeNotification } = require('../services/email.service');
+            sendDowngradeNotification(user.email, user.name, { 
+              previousPlan: user.previousPlan || 'paid' 
+            });
+          } catch (emailErr) {
+            console.error('[RazorpayWebhook] Downgrade email failed:', emailErr.message);
           }
-        );
+        }
 
         console.log(`⬇️  subscription.completed/expired → downgraded to free`);
         break;
@@ -247,17 +325,18 @@ router.post('/webhook', async (req, res) => {
       case 'subscription.halted': {
         if (!subscription) break;
 
-        await User.findOneAndUpdate(
-          { razorpaySubscriptionId: subscription.id },
-          {
-            plan: 'free',
-            planType: 'free',
-            generationsLimit: 10,
-            scheduledDowngrade: false,
-            subscriptionCancelledAt: null,
-            razorpaySubscriptionId: null
-          }
-        );
+        const user = await User.findOne({ razorpaySubscriptionId: subscription.id });
+        if (user) {
+          user.previousPlan = user.plan;
+          user.plan = 'free';
+          user.planType = 'free';
+          user.generationsLimit = 10;
+          user.brandVoicesLimit = 1;
+          user.scheduledDowngrade = false;
+          user.subscriptionCancelledAt = null;
+          user.razorpaySubscriptionId = null;
+          await user.save();
+        }
 
         console.log(`🚫 subscription.halted → immediate downgrade (payment failure)`);
         break;
@@ -267,10 +346,25 @@ router.post('/webhook', async (req, res) => {
       case 'payment.captured': {
         if (!payment?.subscription_id) break;
 
-        await User.findOneAndUpdate(
+        const user = await User.findOneAndUpdate(
           { razorpaySubscriptionId: payment.subscription_id },
-          { razorpayPaymentId: payment.id }
+          { razorpayPaymentId: payment.id },
+          { new: true }
         );
+
+        if (user) {
+          try {
+            const { sendPaymentInvoice } = require('../services/email.service');
+            sendPaymentInvoice(
+              user.email, 
+              user.name, 
+              user.plan, 
+              (payment.amount / 100).toFixed(2)
+            );
+          } catch (emailErr) {
+            console.error('[RazorpayWebhook] Invoice email failed:', emailErr.message);
+          }
+        }
 
         console.log(`💳 payment.captured for subscription: ${payment.subscription_id}`);
         break;

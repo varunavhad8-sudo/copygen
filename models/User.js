@@ -26,7 +26,7 @@ const userSchema = new mongoose.Schema({
   },
   plan: { 
     type: String, 
-    enum: ['free', 'starter', 'growth', 'agency'], 
+    enum: ['free', 'starter', 'pro', 'growth', 'agency'], 
     default: 'free' 
   },
   avatarKey: {
@@ -35,9 +35,10 @@ const userSchema = new mongoose.Schema({
   },
   role: {
     type: String,
-    enum: ['admin', 'editor', 'viewer'],
-    default: 'admin'
+    enum: ['admin', 'editor', 'viewer', 'user'],
+    default: 'user'
   },
+  // ── Flat usage counters (kept for backward compat) ─────────────────────────
   generationsUsed: { 
     type: Number, 
     default: 0 
@@ -46,6 +47,10 @@ const userSchema = new mongoose.Schema({
     type: Number, 
     default: 10 
   },
+  brandVoicesLimit: {
+    type: Number,
+    default: 10 // starter=10, growth=30, agency=100
+  },
   dailyGenerationsUsed: { 
     type: Number, 
     default: 0 
@@ -53,6 +58,18 @@ const userSchema = new mongoose.Schema({
   lastDailyReset: { 
     type: Date, 
     default: Date.now 
+  },
+
+  // ── Free Trial Limits ────────────────────────────────────────────────────────
+  // generationsUsed is the source of truth for the 10-generation lifetime limit.
+  // brandVoicesUsed tracks how many Brand Memory profiles this user has saved.
+  brandVoicesUsed: {
+    type: Number,
+    default: 0
+  },
+  planLimits: {
+    maxGenerations: { type: Number, default: 10 },
+    maxBrandVoices:  { type: Number, default: 1 }
   },
 
   // Payment Integration Fields
@@ -103,6 +120,19 @@ const userSchema = new mongoose.Schema({
     type: Date
   },
   onboardingCompleted: {
+    type: Boolean,
+    default: false
+  },
+  previousPlan: {
+    type: String,
+    enum: ['free', 'starter', 'pro', 'growth', 'agency'],
+    default: 'free'
+  },
+  winbackSent: {
+    type: Boolean,
+    default: false
+  },
+  emailBounced: {
     type: Boolean,
     default: false
   },

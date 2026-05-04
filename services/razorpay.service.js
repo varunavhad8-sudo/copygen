@@ -14,12 +14,12 @@ const createRazorpaySubscription = async (userId, planKey, options = {}) => {
     if (!user) throw new Error('User not found');
 
     // Check if user already has an active Razorpay subscription
-    if (user.razorpaySubscriptionId) {
+    if (user.razorpaySubscriptionId && user.plan !== 'free') {
       throw new Error('You already have an active subscription. Cancel it before subscribing to a new plan.');
     }
 
     // Check if user has an active Dodo subscription
-    if (user.dodoSubscriptionId) {
+    if (user.dodoSubscriptionId && user.plan !== 'free') {
       throw new Error('You have an active international subscription. Please cancel it first.');
     }
 
@@ -32,6 +32,8 @@ const createRazorpaySubscription = async (userId, planKey, options = {}) => {
       'starter-yearly':  process.env.RAZORPAY_STARTER_ANNUAL_PLAN_ID,
       'growth-yearly':   process.env.RAZORPAY_GROWTH_ANNUAL_PLAN_ID,
       'agency-yearly':   process.env.RAZORPAY_AGENCY_ANNUAL_PLAN_ID,
+      'test-monthly':    process.env.RAZORPAY_TEST_PLAN_ID,
+      'test-yearly':     process.env.RAZORPAY_TEST_PLAN_ID,
     };
 
     const planId = planMap[`${planKey}-${billingCycle}`];
@@ -48,25 +50,29 @@ const createRazorpaySubscription = async (userId, planKey, options = {}) => {
 
     const introAmount = introMap[planKey];
 
-    // Create Razorpay subscription with 1st month discount
-    // We charge the intro amount as an upfront addon and start the recurring plan in 30 days
-    const subscription = await razorpay.subscriptions.create({
+    // Create subscription options
+    const subscriptionOptions = {
       plan_id: planId,
       total_count: 120, // 10 years
       quantity: 1,
       customer_notify: 1,
-      // Start the recurring billing 1 month from now
-      start_at: Math.floor(Date.now() / 1000) + (30 * 24 * 60 * 60), 
-      addons: [
+    };
+
+    // If it's a real plan, add the 1st month discount addon and start recurring later
+    if (introMap[planKey]) {
+      subscriptionOptions.start_at = Math.floor(Date.now() / 1000) + (30 * 24 * 60 * 60);
+      subscriptionOptions.addons = [
         {
           item: {
             name: `${planKey.toUpperCase()} First Month Discount`,
-            amount: introAmount,
+            amount: introMap[planKey],
             currency: 'INR'
           }
         }
-      ]
-    });
+      ];
+    }
+
+    const subscription = await razorpay.subscriptions.create(subscriptionOptions);
 
     // Save razorpaySubscriptionId to user in MongoDB
     user.razorpaySubscriptionId = subscription.id;
@@ -124,9 +130,7 @@ const cancelRazorpaySubscription = async (userId) => {
     }
 
     // Request cancellation at end of current billing cycle
-    await razorpay.subscriptions.cancel(user.razorpaySubscriptionId, {
-      cancel_at_cycle_end: true
-    });
+    await razorpay.subscriptions.cancel(user.razorpaySubscriptionId, 1);
 
     // Mark as scheduled for downgrade — but KEEP full access until period ends.
     // The actual plan downgrade happens in the webhook handler for

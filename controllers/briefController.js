@@ -10,11 +10,17 @@ const generate = async (req, res, next) => {
     const { clientId, contentType,
             brief: briefRaw,  // frontend sends 'brief'
             briefText,        // keep backwards compatible
+            platform,         // new field
+            length,           // new field
+            goal,             // new field
             toneOverride, additionalContext } = req.body;
 
     const briefContent = DOMPurify.sanitize(briefText || briefRaw || '');
     const safeToneOverride = DOMPurify.sanitize(toneOverride || '');
     const safeAdditionalContext = DOMPurify.sanitize(additionalContext || '');
+    const safePlatform = DOMPurify.sanitize(platform || '');
+    const safeLength = DOMPurify.sanitize(length || '');
+    const safeGoal = DOMPurify.sanitize(goal || '');
 
     if (!briefContent) {
       return res.status(400).json({ 
@@ -23,7 +29,13 @@ const generate = async (req, res, next) => {
     }
 
     // Generate content via LLM router with a 90-second timeout
-    const virtualBrief = { briefText: briefContent, contentType };
+    const virtualBrief = { 
+      briefText: briefContent, 
+      contentType,
+      platform: safePlatform,
+      length: safeLength,
+      goal: safeGoal
+    };
     
     const timeoutPromise = new Promise((_, reject) => {
       setTimeout(() => {

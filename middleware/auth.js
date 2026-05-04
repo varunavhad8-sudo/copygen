@@ -3,7 +3,6 @@ const User = require('../models/User');
 const disposableDomains = require('disposable-email-domains');
 const redis = require('../config/redis');
 
-const TRIAL_DAYS = 7;
 
 const auth = async (req, res, next) => {
   try {
@@ -41,18 +40,14 @@ const auth = async (req, res, next) => {
         email: decoded.email,
         name: decoded.name || '',
         plan: 'free',
-        isTrial: true,
-        trialExpiresAt: new Date(Date.now() + TRIAL_DAYS * 24 * 60 * 60 * 1000),
+        isTrial: false,
+        generationsUsed: 0,
         generationsLimit: 10,
-        generationsUsed: 0
+        brandVoicesUsed: 0,
+        planLimits: { maxGenerations: 10, maxBrandVoices: 1 }
       });
-    } else if (user.plan === 'free' && !user.trialExpiresAt) {
-      // Migrate existing free users to have a trial period
-      user.isTrial = true;
-      user.trialExpiresAt = new Date(user.createdAt.getTime() + TRIAL_DAYS * 24 * 60 * 60 * 1000);
-      user.generationsLimit = 10;
-      await user.save();
     }
+
     req.user = user;
     next();
   } catch (error) {

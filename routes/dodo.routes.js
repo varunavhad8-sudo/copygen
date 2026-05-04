@@ -125,28 +125,39 @@ router.post('/webhook', async (req, res) => {
         // Map product ID back to plan name
         let plan = 'free';
         let generationsLimit = 10;
+        let brandVoicesLimit = 10;
         
         if (productId === process.env.DODO_STARTER_PRODUCT_ID) {
           plan = 'starter';
-          generationsLimit = 100;
+          generationsLimit = 300;
+          brandVoicesLimit = 10;
         } else if (productId === process.env.DODO_GROWTH_PRODUCT_ID) {
           plan = 'growth';
-          generationsLimit = 300;
+          generationsLimit = 1000;
+          brandVoicesLimit = 30;
         } else if (productId === process.env.DODO_AGENCY_PRODUCT_ID) {
           plan = 'agency';
-          generationsLimit = 1000;
+          generationsLimit = 3000;
+          brandVoicesLimit = 100;
         }
 
-        const user = await User.findOneAndUpdate(
-          { dodoSubscriptionId },
-          { 
-            plan, 
-            generationsLimit, 
-            planType: 'dodo',
-            currentPeriodEnd: new Date(data.current_period_end)
-          },
-          { new: true }
-        );
+        const user = await User.findOne({ 
+          $or: [
+            { dodoSubscriptionId: dodoSubscriptionId },
+            { email: data.customer?.email }
+          ]
+        });
+
+        if (user) {
+          user.dodoSubscriptionId = dodoSubscriptionId; // Update session ID with real subscription ID
+          user.previousPlan = user.plan;
+          user.plan = plan;
+          user.generationsLimit = generationsLimit;
+          user.brandVoicesLimit = plan === 'starter' ? 10 : plan === 'growth' ? 30 : plan === 'agency' ? 100 : 1;
+          user.planType = 'dodo';
+          user.currentPeriodEnd = new Date(data.current_period_end);
+          await user.save();
+        }
 
         // Send Invoice Email (Non-blocking)
         if (user) {
@@ -156,17 +167,17 @@ router.post('/webhook', async (req, res) => {
         break;
       }
 
-      case 'subscription.cancelled':
-      case 'subscription.failed': {
+      case 'subscription.cancelled': {
         const user = await User.findOneAndUpdate(
           { dodoSubscriptionId: data.subscription_id },
           { 
             scheduledDowngrade: true,
             currentPeriodEnd: data.current_period_end ? new Date(data.current_period_end) : undefined
-          }
+          },
+          { new: true }
         );
         
-        if (user && type === 'subscription.cancelled') {
+        if (user) {
           const { sendCancellationConfirmation } = require('../services/email.service');
           sendCancellationConfirmation(user.email, user.name, {
             planName: user.plan,
@@ -176,8 +187,64 @@ router.post('/webhook', async (req, res) => {
         break;
       }
 
+      case 'subscription.failed': {
+        const failedUser = await User.findOne({ dodoSubscriptionId: data.subscription_id });
+        await User.findOneAndUpdate(
+          { dodoSubscriptionId: data.subscription_id },
+          { 
+            plan: 'free',
+            planType: 'free',
+            generationsLimit: 10,
+            brandVoicesLimit: 1,
+            scheduledDowngrade: false,
+            previousPlan: failedUser?.plan || 'starter',
+            dodoSubscriptionId: null
+          }
+        );
+        break;
+      }
+
+      case 'subscription.expired':
+      case 'subscription.completed': {
+        const user = await User.findOne({ dodoSubscriptionId: data.subscription_id });
+        if (user) {
+          try {
+            const { sendDowngradeNotification } = require('../services/email.service');
+            sendDowngradeNotification(user.email, user.name, { previousPlan: user.plan });
+          } catch (emailErr) {
+            console.error('[DodoWebhook] Downgrade email failed:', emailErr.message);
+          }
+
+          await User.findOneAndUpdate(
+            { dodoSubscriptionId: data.subscription_id },
+            {
+              plan: 'free',
+              planType: 'free',
+              generationsLimit: 10,
+              brandVoicesLimit: 1,
+              scheduledDowngrade: false,
+              subscriptionCancelledAt: null,
+              dodoSubscriptionId: null,
+              currentPeriodEnd: null
+            }
+          );
+        }
+        break;
+      }
+
       case 'payment.succeeded': {
-        console.log('Dodo payment succeeded:', event);
+        const paymentUser = await User.findOne({ dodoSubscriptionId: data.subscription_id });
+        if (paymentUser) {
+          paymentUser.currentPeriodEnd = data.current_period_end ? new Date(data.current_period_end) : paymentUser.currentPeriodEnd;
+          await paymentUser.save();
+          const { sendPaymentInvoice } = require('../services/email.service');
+          sendPaymentInvoice(
+            paymentUser.email,
+            paymentUser.name || 'valued customer',
+            paymentUser.plan,
+            data.amount ? (data.amount / 100).toFixed(2) : 0
+          );
+        }
         break;
       }
 

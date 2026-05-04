@@ -1,6 +1,6 @@
 const { generateWithOpenAI } = require('./openai.service');
 const { generateWithClaude } = require('./claude.service');
-const { classifyWithGemini, generateWithGemini } = require('./gemini.service');
+const { classifyWithGemini, generateWithGemini, generateLongForm } = require('./gemini.service');
 const { getBrandContext } = require('./brandMemory.service');
 
 const TASK_TYPES = {
@@ -11,25 +11,25 @@ const TASK_TYPES = {
 
 const TOKEN_LIMITS = {
   standard: {
-    longForm: 4000,   // Claude Sonnet 4.6
+    longForm: 4000,   // Gemini 2.5 Flash Preview
     shortForm: 512,   // GPT-4o
     routing: 256,     // GPT-4o Mini
-    background: 256   // Gemini 2.5 Flash
+    background: 256   // Gemini 2.5 Flash Preview
   },
   premium: {
-    longForm: 5000,   // Claude Sonnet 4.6
-    shortForm: 800,   // GPT-4o — enough for multi-variation requests without padding
+    longForm: 5000,   // Gemini 2.5 Flash Preview
+    shortForm: 800,   // GPT-4o
     routing: 256,     // GPT-4o Mini
-    background: 256   // Gemini 2.5 Flash
+    background: 256   // Gemini 2.5 Flash Preview
   }
 };
 
 // Real API model identifiers (as of 2025)
 const MODEL_COSTS = {
-  'claude-sonnet-4-6-20251022': 0.003,    // Anthropic — long-form
-  'gemini-2.5-flash': 0.000075, // Google — background tasks
-  'gpt-4o': 0.005,    // OpenAI — short-form
-  'gpt-4o-mini': 0.00015   // OpenAI — classification
+  'claude-sonnet-4-6-20251022': 0.003,    
+  'gemini-2.5-pro-preview-05-06': 0.000075, 
+  'gpt-4o': 0.005,    
+  'gpt-4o-mini': 0.00015   
 };
 
 const estimateTokens = (text) => {
@@ -54,34 +54,14 @@ const classifyTask = async (briefText, contentType) => {
   if (longFormTypes.includes(ct)) return TASK_TYPES.LONG_FORM;
   if (shortFormTypes.includes(ct)) return TASK_TYPES.SHORT_FORM;
 
-  if (hasOpenAIKey) {
-    const prompt = `Classify this content request into exactly one word. Reply with only LONG_FORM or SHORT_FORM.\nRequest: "${briefText}"`;
-    // Internal routing decision uses GPT-4o Mini
-    const text = await generateWithOpenAI({
-      user: prompt,
-      model: 'gpt-4o-mini',
-      maxTokens: 10
-    });
-    const classification = text.trim().toUpperCase();
-    if (classification.includes('LONG_FORM')) return TASK_TYPES.LONG_FORM;
-    return TASK_TYPES.SHORT_FORM;
-  }
-
-  return TASK_TYPES.SHORT_FORM;
+  // Internal routing decision uses Gemini
+  const prompt = `Classify this content request into exactly one word. Reply with only LONG_FORM or SHORT_FORM.\nRequest: "${briefText}"`;
+  return await classifyWithGemini(prompt);
 };
 
 const getModelForTask = (taskType) => {
-  switch (taskType) {
-    case TASK_TYPES.LONG_FORM:
-      return hasAnthropicKey ? 'claude-sonnet-4-6-20251022' : 'gemini-2.5-flash';
-    case TASK_TYPES.SHORT_FORM:
-      return hasOpenAIKey ? 'gpt-4o' : 'gemini-2.5-flash';
-    case TASK_TYPES.BACKGROUND:
-      // Background jobs, queue processing, metadata tagging
-      return hasGeminiKey ? 'gemini-2.5-flash' : 'gpt-4o-mini';
-    default:
-      return 'gemini-2.5-flash';
-  }
+  // Routing everything to Gemini temporarily
+  return 'gemini-2.5-pro-preview-05-06';
 };
 
 const calculateCost = (model, wordCount) => {
@@ -122,12 +102,18 @@ const generateText = async ({ model, system, user, maxTokens }) => {
     // Flow continues down to Gemini fallback
   }
 
-  // Fallback / Default: Gemini 2.5 Flash
-  const fallbackModel = 'gemini-2.5-flash';
+  // Default: Gemini 2.5 Flash Preview
+  const fallbackModel = 'gemini-2.5-pro-preview-05-06';
   const fallbackStartTime = Date.now();
   try {
-    console.log(`[LLMRouter] Using Gemini: ${fallbackModel} (fallback or primary)`);
-    const res = await generateWithGemini({ user: combinedPrompt, maxTokens });
+    console.log(`[LLMRouter] Using Gemini: ${fallbackModel} (primary or fallback)`);
+    // Use generateLongForm for long form, otherwise standard
+    let res;
+    if (model === 'gemini-2.5-pro-preview-05-06') {
+      res = await generateLongForm(user, system);
+    } else {
+      res = await generateWithGemini(user, system);
+    }
     console.log(`[LLM] Provider: Google | Model: ${fallbackModel} | Duration: ${Date.now() - fallbackStartTime}ms | Success: true`);
     return res;
   } catch (err) {
@@ -150,12 +136,26 @@ const processRequest = async ({ brief, additionalContext, toneOverride, userPlan
   }
 
   const taskType = await classifyTask(brief.briefText, brief.contentType);
-  const systemPrompt = await getBrandContext(clientId, userId, userPlan);
+  let systemPrompt = await getBrandContext(clientId, userId, userPlan);
   const model = getModelForTask(taskType);
+
+  // 2. Inject per-request task context into system prompt
+  const taskBlock = `
+═══════════════════════════════════════
+YOUR TASK
+═══════════════════════════════════════
+Content Type: ${brief.contentType || 'Not specified'}
+Platform / Format: ${brief.platform || 'Not specified'}
+Word Count / Length: ${brief.length || 'Not specified'}
+Goal: ${brief.goal || 'Not specified'}
+
+Execute the task in the user message. Follow every rule above without exception.`;
+
+  systemPrompt = systemPrompt + taskBlock;
 
   // 3. Determine maxTokens based on plan and task
   const planKey = ['agency', 'enterprise'].includes(userPlan) ? 'premium' : 'standard';
-  
+
   let maxTokens;
   switch (taskType) {
     case TASK_TYPES.LONG_FORM:
@@ -171,7 +171,7 @@ const processRequest = async ({ brief, additionalContext, toneOverride, userPlan
       maxTokens = TOKEN_LIMITS[planKey].routing;
   }
 
-  // Assemble the final user prompt
+  // 4. Assemble the final user prompt
   let finalUserPrompt = brief.briefText;
   if (toneOverride && toneOverride !== 'Brand default') {
     finalUserPrompt += `\n\nTONE REQUIREMENT: ${toneOverride}`;
@@ -179,6 +179,12 @@ const processRequest = async ({ brief, additionalContext, toneOverride, userPlan
   if (additionalContext) {
     finalUserPrompt += `\n\nADDITIONAL CONTEXT / INSTRUCTIONS:\n${additionalContext}`;
   }
+
+  console.log('\n=============================================');
+  console.log('            COMPILED SYSTEM PROMPT            ');
+  console.log('=============================================');
+  console.log(systemPrompt);
+  console.log('=============================================\n');
 
   const generatedText = await generateText({
     model,

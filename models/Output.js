@@ -16,6 +16,7 @@ const outputSchema = new mongoose.Schema({
   },
   exportUrl: { type: String },
   apiCost: { type: Number },
+  factCheckResult: { type: Object },
   createdAt: { type: Date, default: Date.now }
 });
 

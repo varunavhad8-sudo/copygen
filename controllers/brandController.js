@@ -1,6 +1,7 @@
 const BrandProfile = require('../models/BrandProfile');
 const Client = require('../models/Client');
 const { buildPrompt, clearBrandCache } = require('../services/brandMemory.service');
+const { incrementBrandVoiceUsage, decrementBrandVoiceUsage } = require('../services/usage.service');
 const DOMPurify = require('isomorphic-dompurify');
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -112,12 +113,19 @@ const save = async (req, res, next) => {
     // Build the system prompt using this data
     updateData.systemPromptPreview = buildPrompt(updateData);
 
+    // Check if profile exists before upserting (to track usage)
+    const existingProfile = await BrandProfile.findOne({ clientId, userId: req.user._id });
+
     // Query uses BOTH clientId and userId — prevents cross-user profile modification
     const profile = await BrandProfile.findOneAndUpdate(
       { clientId, userId: req.user._id },
       { $set: updateData },
       { new: true, upsert: true, setDefaultsOnInsert: true }
     );
+
+    if (!existingProfile) {
+      await incrementBrandVoiceUsage(req.user._id);
+    }
 
     // Sync back to Client record
     await Client.findByIdAndUpdate(clientId, {
@@ -164,6 +172,10 @@ const remove = async (req, res, next) => {
     await clearBrandCache(clientId, req.user._id);
 
     console.log(`[BrandController] Brand profile deleted for client ${clientId}, user ${req.user._id}`);
+    
+    // Decrement usage
+    await decrementBrandVoiceUsage(req.user._id);
+
     res.json({ success: true, message: 'Brand profile deleted' });
   } catch (error) {
     console.error('[BrandController] Delete Error:', error);
