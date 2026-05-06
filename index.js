@@ -45,9 +45,15 @@ app.use(helmet({
 
 app.set('trust proxy', 1);
 
-const allowedOrigins = process.env.NODE_ENV === 'production' 
-  ? ['https://copygen.in', 'https://www.copygen.in', 'https://ai-for-marketing-agency.web.app', 'https://ai-for-marketing-agency.firebaseapp.com'] 
-  : ['http://localhost:5173', 'http://localhost:5174', 'http://127.0.0.1:5173', 'http://127.0.0.1:5174'];
+const allowedOrigins = [
+  'https://copygen.in',
+  'https://www.copygen.in',
+  'https://ai-for-marketing-agency.web.app',
+  'https://ai-for-marketing-agency.firebaseapp.com',
+  'http://localhost:5173',
+  'http://localhost:5174',
+  ...(process.env.ALLOWED_ORIGINS ? process.env.ALLOWED_ORIGINS.split(',') : [])
+];
 
 app.use(cors({ 
   origin: (origin, callback) => {
