@@ -1,7 +1,7 @@
 const path = require('path');
 require('dotenv').config({ path: path.join(__dirname, '../.env') });
 
-// ── Sentry Error Monitoring (init FIRST, before any other imports) ──────────
+// ── Sentry Error Monitoring (init FIRST) ────────────────────────────────────
 const Sentry = require('@sentry/node');
 if (process.env.SENTRY_DSN) {
   Sentry.init({
@@ -11,10 +11,23 @@ if (process.env.SENTRY_DSN) {
   });
 }
 
+// ── Global Error Logging (Debug 502s) ────────────────────────────────────────
+process.on('uncaughtException', (err) => {
+  console.error('FATAL: Uncaught Exception:', err);
+  if (Sentry) Sentry.captureException(err);
+  // Keep alive for Railway health checks if possible, or exit gracefully
+  setTimeout(() => process.exit(1), 1000);
+});
+
+process.on('unhandledRejection', (reason, promise) => {
+  console.error('FATAL: Unhandled Rejection at:', promise, 'reason:', reason);
+  if (Sentry) Sentry.captureException(reason);
+});
+
 const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
-const connectDB = require('./config/db');
+const { connectDB, getDbStatus } = require('./config/db');
 const { generalLimiter, strictLimiter, apiLimiter } = require('./middleware/rateLimiter');
 
 const mongoSanitize = require('express-mongo-sanitize');
@@ -27,6 +40,7 @@ connectDB();
 
 const app = express();
 
+// ── CORS Configuration ──────────────────────────────────────────────────────
 const allowedOrigins = [
   'https://copygen.in',
   'https://www.copygen.in',
@@ -35,24 +49,22 @@ const allowedOrigins = [
   'http://localhost:5173',
   'http://localhost:5174',
   ...(process.env.ALLOWED_ORIGINS ? process.env.ALLOWED_ORIGINS.split(',') : [])
-];
+].map(o => o.toLowerCase().replace(/\/$/, "")); // Normalize: lowercase + no trailing slash
 
 app.use(cors({
   origin: (origin, callback) => {
-    // Allow requests with no origin (like mobile apps or curl)
     if (!origin) return callback(null, true);
-    
-    if (allowedOrigins.includes(origin)) {
+    const normalizedOrigin = origin.toLowerCase().replace(/\/$/, "");
+    if (allowedOrigins.includes(normalizedOrigin)) {
       callback(null, true);
     } else {
-      console.warn(`[CORS] Blocked request from unauthorized origin: ${origin}`);
+      console.warn(`[CORS] Blocked origin: ${origin}`);
       callback(new Error('Not allowed by CORS'));
     }
   },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
   allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept'],
-  exposedHeaders: ['Set-Cookie']
 }));
 
 // 1. Log Environment Variables Presence
@@ -107,7 +119,17 @@ app.use((req, res, next) => {
   next();
 });
 
-// ── Route Handlers ─────────────────────────────────────────────────────────
+// ── Prioritized Health Check (Prioritize for Railway) ───────────────────────
+app.get('/api/health', (req, res) => {
+  res.status(200).json({ 
+    status: 'ok', 
+    timestamp: new Date().toISOString(),
+    env: process.env.NODE_ENV,
+    database: getDbStatus() ? 'connected' : 'disconnected'
+  });
+});
+
+// ── Rate Limiters ────────────────────────────────────────────────────────────
 app.use(generalLimiter);
 
 app.use('/api/auth', strictLimiter, require('./routes/auth.routes'));

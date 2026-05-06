@@ -1,12 +1,14 @@
 const User = require('../models/User');
 const admin = require('../config/firebase');
 const { isWorkEmail } = require('../utils/authValidation');
+const { getDbStatus } = require('../config/db');
 
 const TRIAL_DAYS = 7;
 
 const register = async (req, res, next) => {
   try {
     const { token } = req.body;
+    if (!getDbStatus()) return res.status(503).json({ success: false, error: 'Database not ready' });
     const decoded = await admin.auth().verifyIdToken(token);
     
     const isGoogle = decoded.firebase?.sign_in_provider === 'google.com';
@@ -147,6 +149,7 @@ const completeOnboarding = async (req, res, next) => {
 
 const getOnboardingStatus = async (req, res, next) => {
   try {
+    if (!getDbStatus()) return res.status(503).json({ success: false, error: 'Database not ready' });
     const userId = req.user._id;
     const Client = require('../models/Client');
     const BrandProfile = require('../models/BrandProfile');
