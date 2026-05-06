@@ -57,15 +57,22 @@ const allowedOrigins = [
 
 app.use(cors({ 
   origin: (origin, callback) => {
-    // Allow if: No origin (mobile apps/curls), exactly in list, or a vercel.app subdomain
-    if (
-      !origin || 
+    // 1. Allow if no origin (mobile/SSR)
+    if (!origin) return callback(null, true);
+
+    // 2. Log for debugging (Check your Railway logs!)
+    console.log(`[CORS Request] From: ${origin}`);
+
+    // 3. Robust check for your domains
+    const isAllowed = 
       allowedOrigins.includes(origin) || 
-      origin.endsWith('.vercel.app')
-    ) {
+      origin.includes('copygen.in') || 
+      origin.endsWith('.vercel.app');
+
+    if (isAllowed) {
       callback(null, true);
     } else {
-      console.warn(`[CORS] Blocked request from unauthorized origin: ${origin}`);
+      console.warn(`[CORS Blocked] Origin: ${origin}`);
       callback(new Error('Not allowed by CORS'));
     }
   },
