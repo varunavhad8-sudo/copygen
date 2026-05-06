@@ -27,9 +27,12 @@ connectDB();
 
 const app = express();
 
+// ── EMERGENCY CORS FIX (Must be FIRST) ──────────────────────────────────────
 app.use(cors({ 
-  origin: true,
-  credentials: true
+  origin: ['https://copygen.in', 'https://www.copygen.in'],
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
 }));
 
 // 1. Log Environment Variables Presence

@@ -38,6 +38,7 @@ const strictLimiter = rateLimit({
   handler: jsonResponseHandler,
   standardHeaders: true,
   legacyHeaders: false,
+  skip: (req) => req.method === 'OPTIONS',
   validate: false
 });
 
@@ -53,6 +54,7 @@ const apiLimiter = rateLimit({
   standardHeaders: true,
   legacyHeaders: false,
   keyGenerator: smartKeyGenerator,
+  skip: (req) => req.method === 'OPTIONS',
   validate: false
 });
 
@@ -68,6 +70,7 @@ const generalLimiter = rateLimit({
   standardHeaders: true,
   legacyHeaders: false,
   keyGenerator: smartKeyGenerator,
+  skip: (req) => req.method === 'OPTIONS',
   validate: false
 });
 
