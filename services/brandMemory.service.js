@@ -27,9 +27,9 @@ const getBrandContext = async (clientId, userId, userPlan) => {
     ? (profile.systemPromptPreview || buildPrompt(profile, userPlan))
     : getDefaultPrompt(userPlan);
 
-  // 3. Store in Cache (TTL 10 secs for dev testing)
+  // 3. Store in Cache (TTL 300 secs)
   try {
-    await redis.set(cacheKey, JSON.stringify(prompt), 'EX', 10);
+    await redis.set(cacheKey, JSON.stringify(prompt), 'EX', 300);
   } catch (err) {
     console.error('[Redis Error] Failed to SET:', err.message);
   }

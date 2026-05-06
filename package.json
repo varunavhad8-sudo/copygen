@@ -19,6 +19,7 @@
     "@aws-sdk/client-s3": "^3.1032.0",
     "@aws-sdk/s3-request-presigner": "^3.1032.0",
     "@google/generative-ai": "^0.24.1",
+    "@sentry/node": "^10.51.0",
     "cors": "^2.8.6",
     "disposable-email-domains": "^1.0.62",
     "dodopayments": "^2.28.2",

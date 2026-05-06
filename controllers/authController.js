@@ -47,7 +47,10 @@ const register = async (req, res, next) => {
           isTrial: true,
           trialExpiresAt: new Date(Date.now() + TRIAL_DAYS * 24 * 60 * 60 * 1000),
           generationsLimit: 10,
-          generationsUsed: 0
+          generationsUsed: 0,
+          brandVoicesUsed: 0,
+          brandVoicesLimit: 1,
+          planLimits: { maxGenerations: 10, maxBrandVoices: 1 }
         });
         
         // Send Welcome Email (Non-blocking)

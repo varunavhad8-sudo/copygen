@@ -1,17 +1,29 @@
 const path = require('path');
 require('dotenv').config({ path: path.join(__dirname, '../.env') });
+
+// ── Sentry Error Monitoring (init FIRST, before any other imports) ──────────
+const Sentry = require('@sentry/node');
+if (process.env.SENTRY_DSN) {
+  Sentry.init({
+    dsn: process.env.SENTRY_DSN,
+    environment: process.env.NODE_ENV || 'development',
+    tracesSampleRate: 0.1,
+  });
+}
+
 const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
 const connectDB = require('./config/db');
 const { generalLimiter, strictLimiter, apiLimiter } = require('./middleware/rateLimiter');
-const logger = require('./utils/logger');
+
 const mongoSanitize = require('express-mongo-sanitize');
 
 require('./config/redis');
 require('./config/firebase');
 
 connectDB();
+
 
 const app = express();
 
@@ -42,7 +54,7 @@ app.use(cors({
     if (!origin || allowedOrigins.includes(origin)) {
       callback(null, true);
     } else {
-      logger.warn(`[CORS] Blocked request from unauthorized origin: ${origin}`);
+      console.warn(`[CORS] Blocked request from unauthorized origin: ${origin}`);
       callback(new Error('Not allowed by CORS'));
     }
   },
@@ -54,7 +66,8 @@ app.use('/api/billing/razorpay/webhook', express.raw({ type: 'application/json' 
 app.use('/api/billing/dodo/webhook', express.raw({ type: 'application/json' }));
 app.use('/api/webhooks', express.raw({ type: 'application/json' }));
 
-app.use(express.json({ limit: '10kb' })); 
+app.use(express.json({ limit: '10mb' })); 
+app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
 // ── NoSQL Injection Prevention (Express 5 Compatible) ──────────────────────
 // Express 5 makes req.query a read-only getter, so we sanitize in-place.
@@ -67,7 +80,7 @@ app.use((req, res, next) => {
 
 // ── Structured Request Logging ──────────────────────────────────────────────
 app.use((req, res, next) => {
-  logger.info(`${req.method} ${req.originalUrl}`, {
+  console.log(`${req.method} ${req.originalUrl}`, {
     ip: req.ip,
     userAgent: req.headers['user-agent']
   });
@@ -79,20 +92,25 @@ app.use(generalLimiter);
 
 app.use('/api/auth', strictLimiter, require('./routes/auth.routes'));
 app.use('/api/brief', apiLimiter, require('./routes/brief.routes'));
+app.use('/api/seo', apiLimiter, require('./routes/seo.routes'));
 app.use('/api/clients', require('./routes/client.routes'));
 app.use('/api/brand', require('./routes/brand.routes'));
 app.use('/api/outputs', require('./routes/output.routes'));
 app.use('/api/templates', require('./routes/template.routes'));
 app.use('/api/analytics', require('./routes/analytics.routes'));
+app.use('/api/google', require('./routes/googleAuth.routes'));
 app.use('/api/billing/dodo', require('./routes/dodo.routes'));
 app.use('/api/billing/razorpay', require('./routes/razorpay.routes'));
 app.use('/api/upload', require('./routes/upload.routes'));
 app.use('/api/admin', require('./routes/admin.routes'));
+app.use('/api/factcheck', require('./routes/factChecker.routes'));
 app.use('/api/webhooks', require('./routes/webhook.routes'));
 
 // Initialize Scheduled Jobs
 const { initMonthlyResetJob } = require('./jobs/monthlyReset');
+const { initEmailJobs } = require('./jobs/emailJobs');
 initMonthlyResetJob();
+initEmailJobs();
 
 app.get('/api/health', (req, res) => 
   res.json({ 
@@ -107,7 +125,7 @@ app.use((err, req, res, next) => {
     ? 'Internal Server Error' 
     : err.message;
 
-  logger.error(`${req.method} ${req.originalUrl} - ${status}: ${err.message}`, {
+  console.error(`${req.method} ${req.originalUrl} - ${status}: ${err.message}`, {
     stack: err.stack,
     body: req.body,
     params: req.params,
@@ -123,4 +141,4 @@ app.use((err, req, res, next) => {
 
 const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => 
-  logger.info(`Server running on port ${PORT} in ${process.env.NODE_ENV} mode`));
+  console.log(`Server running on port ${PORT} in ${process.env.NODE_ENV} mode`));

@@ -11,7 +11,7 @@ const { processRequest } = require('./llmRouter');
  * @param {number} params.wordCount
  * @returns {Promise<Object>} The structured JSON output
  */
-const generateSEOBlog = async ({ topic, clientId, brandMemory, targetKeyword, wordCount }) => {
+const generateSEOBlog = async ({ topic, clientId, brandMemory, targetKeyword, wordCount, userPlan }) => {
   try {
     const tone = brandMemory?.tone || 'Professional';
     const voice = brandMemory?.voice || 'Authoritative';
@@ -113,8 +113,7 @@ ${jsonSchema}
       },
       additionalContext,
       clientId,
-      // Pass 'enterprise' to ensure it routes to the highest context model
-      userPlan: 'enterprise' 
+      userPlan: userPlan || 'free'
     });
 
     console.log('Raw Gemini response (first 500 chars):', response.generatedText.substring(0, 500));

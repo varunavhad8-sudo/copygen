@@ -108,8 +108,4 @@ const checkBrandVoiceLimit = async (req, res, next) => {
   }
 };
 
-// Keep the legacy default export so existing imports (brief.routes.js) don't break.
-// brief.routes.js imports `usageLimiter` as a default — map it to checkGenerationLimit.
-module.exports = checkGenerationLimit;
-module.exports.checkGenerationLimit = checkGenerationLimit;
-module.exports.checkBrandVoiceLimit = checkBrandVoiceLimit;
+module.exports = { checkGenerationLimit, checkBrandVoiceLimit };

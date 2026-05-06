@@ -135,7 +135,7 @@ const getGA4Data = async (req, res, next) => {
 const getPatterns = async (req, res, next) => {
   try {
     const { clientId } = req.query;
-    const profile = await BrandProfile.findOne({ clientId });
+    const profile = await BrandProfile.findOne({ clientId, userId: req.user._id });
     res.json({ 
       success: true, 
       patterns: profile?.performancePatterns || {} 

@@ -44,7 +44,7 @@ const userSchema = new mongoose.Schema({
   },
   brandVoicesLimit: {
     type: Number,
-    default: 10 // starter=10, growth=30, agency=100
+    default: 1 // free=1; upgraded by payment webhook on plan change
   },
   dailyGenerationsUsed: { 
     type: Number, 
@@ -130,6 +130,14 @@ const userSchema = new mongoose.Schema({
   emailBounced: {
     type: Boolean,
     default: false
+  },
+  isBanned: {
+    type: Boolean,
+    default: false
+  },
+  banReason: {
+    type: String,
+    default: ''
   },
   createdAt: { 
     type: Date, 

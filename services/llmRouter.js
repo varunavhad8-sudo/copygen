@@ -1,3 +1,4 @@
+
 const { generateWithOpenAI } = require('./openai.service');
 const { generateWithClaude } = require('./claude.service');
 const { classifyWithGemini, generateWithGemini, generateLongForm } = require('./gemini.service');
@@ -11,23 +12,24 @@ const TASK_TYPES = {
 
 const TOKEN_LIMITS = {
   standard: {
-    longForm: 4000,   // Gemini 2.5 Flash Preview
+    longForm: 4000,   // Gemini 2.5 Flash
     shortForm: 512,   // GPT-4o
     routing: 256,     // GPT-4o Mini
-    background: 256   // Gemini 2.5 Flash Preview
+    background: 256   // Gemini 2.5 Flash
   },
   premium: {
-    longForm: 5000,   // Gemini 2.5 Flash Preview
+    longForm: 5000,   // Gemini 2.5 Flash
     shortForm: 800,   // GPT-4o
     routing: 256,     // GPT-4o Mini
-    background: 256   // Gemini 2.5 Flash Preview
+    background: 256   // Gemini 2.5 Flash
   }
 };
 
 // Real API model identifiers (as of 2025)
 const MODEL_COSTS = {
-  'claude-sonnet-4-6-20251022': 0.003,    
-  'gemini-2.5-pro-preview-05-06': 0.000075, 
+  'claude-sonnet-3-5-sonnet-20240620': 0.003,    
+  'gemini-2.5-pro': 0.000075, 
+  'gemini-2.5-flash': 0.00001875,
   'gpt-4o': 0.005,    
   'gpt-4o-mini': 0.00015   
 };
@@ -47,21 +49,32 @@ const hasGeminiKey = !!process.env.GEMINI_API_KEY;
 
 const classifyTask = async (briefText, contentType) => {
   const ct = (contentType || '').toLowerCase().replace(/[^a-z]/g, '');
+  console.log('[classifyTask] normalized contentType:', { contentType: ct });
 
-  const longFormTypes = ['blogpost', 'blog', 'report', 'seobrief', 'seoblog'];
-  const shortFormTypes = ['adcopy', 'ad', 'email', 'caption', 'social'];
+  const longFormTypes = ['blogpost', 'blog', 'report', 'seobrief', 'seoblog', 'longform'];
+  const shortFormTypes = ['adcopy', 'ad', 'email', 'emailsequence', 'caption', 'social', 'socialcaption', 'socialpost', 'instagram', 'twitter', 'linkedin', 'facebook'];
 
-  if (longFormTypes.includes(ct)) return TASK_TYPES.LONG_FORM;
-  if (shortFormTypes.includes(ct)) return TASK_TYPES.SHORT_FORM;
+  let classification;
+  if (longFormTypes.includes(ct)) {
+    classification = TASK_TYPES.LONG_FORM;
+  } else if (shortFormTypes.includes(ct)) {
+    classification = TASK_TYPES.SHORT_FORM;
+  } else {
+    // Internal routing decision uses Gemini
+    const prompt = `Classify this content request into exactly one word. Reply with only LONG_FORM or SHORT_FORM.\nRequest: "${briefText}"`;
+    classification = await classifyWithGemini(prompt);
+  }
 
-  // Internal routing decision uses Gemini
-  const prompt = `Classify this content request into exactly one word. Reply with only LONG_FORM or SHORT_FORM.\nRequest: "${briefText}"`;
-  return await classifyWithGemini(prompt);
+  console.log(`[classifyTask] classification result: ${classification}`, { contentType: ct });
+  return classification;
 };
 
 const getModelForTask = (taskType) => {
-  // Routing everything to Gemini temporarily
-  return 'gemini-2.5-pro-preview-05-06';
+  // Use Pro for long-form content, Flash for everything else
+  if (taskType === TASK_TYPES.LONG_FORM) {
+    return 'gemini-2.5-pro';
+  }
+  return 'gemini-2.5-flash';
 };
 
 const calculateCost = (model, wordCount) => {
@@ -70,7 +83,8 @@ const calculateCost = (model, wordCount) => {
 };
 
 const generateText = async ({ model, system, user, maxTokens }) => {
-  const combinedPrompt = system ? `${system}\n\n${user}` : user;
+  const hasOpenAIKey = !!process.env.OPENAI_API_KEY;
+  const hasAnthropicKey = !!process.env.ANTHROPIC_API_KEY;
 
   const getProviderName = (m) => {
     if (m.includes('claude')) return 'Anthropic';
@@ -86,13 +100,13 @@ const generateText = async ({ model, system, user, maxTokens }) => {
   try {
     if (model === 'claude-sonnet-4-6-20251022' && hasAnthropicKey) {
       console.log(`[LLMRouter] Using Anthropic: ${model}`);
-      const res = await generateWithClaude({ system, user, model, maxTokens });
+      const res = await generateWithClaude({ system, prompt: user, model, maxTokens });
       console.log(`[LLM] Provider: Anthropic | Model: ${model} | Duration: ${Date.now() - primaryStartTime}ms | Success: true`);
       return res;
     }
     if ((model === 'gpt-4o' || model === 'gpt-4o-mini') && hasOpenAIKey) {
       console.log(`[LLMRouter] Using OpenAI: ${model}`);
-      const res = await generateWithOpenAI({ system, user, model: model || 'gpt-4o', maxTokens });
+      const res = await generateWithOpenAI({ system, prompt: user, model: model || 'gpt-4o', maxTokens });
       console.log(`[LLM] Provider: OpenAI | Model: ${model} | Duration: ${Date.now() - primaryStartTime}ms | Success: true`);
       return res;
     }
@@ -102,17 +116,17 @@ const generateText = async ({ model, system, user, maxTokens }) => {
     // Flow continues down to Gemini fallback
   }
 
-  // Default: Gemini 2.5 Flash Preview
-  const fallbackModel = 'gemini-2.5-pro-preview-05-06';
+  // Default: Gemini Fallback
+  const fallbackModel = model?.startsWith('gemini') ? model : 'gemini-2.5-flash';
   const fallbackStartTime = Date.now();
   try {
     console.log(`[LLMRouter] Using Gemini: ${fallbackModel} (primary or fallback)`);
-    // Use generateLongForm for long form, otherwise standard
     let res;
-    if (model === 'gemini-2.5-pro-preview-05-06') {
-      res = await generateLongForm(user, system);
+    // Standardize to flash for speed unless pro is explicitly requested
+    if (fallbackModel.includes('pro')) {
+      res = await generateLongForm(user, system, fallbackModel);
     } else {
-      res = await generateWithGemini(user, system);
+      res = await generateWithGemini(user, system, fallbackModel);
     }
     console.log(`[LLM] Provider: Google | Model: ${fallbackModel} | Duration: ${Date.now() - fallbackStartTime}ms | Success: true`);
     return res;

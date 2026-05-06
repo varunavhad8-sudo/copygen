@@ -43,7 +43,8 @@ const generate = async (req, res, next) => {
       clientId,
       brandMemory,
       targetKeyword: safeTargetKeyword,
-      wordCount: safeWordCount
+      wordCount: safeWordCount,
+      userPlan: req.user.plan
     });
     console.log('SEO result received:', JSON.stringify(result).substring(0, 200));
 

@@ -16,7 +16,7 @@ const router = express.Router();
  */
 router.post('/subscribe', auth, async (req, res) => {
   try {
-    const { planKey } = req.body;
+    const { planKey, isAnnual } = req.body;
     
     // Validate planKey
     const validPlans = ['starter', 'growth', 'agency'];
@@ -24,7 +24,7 @@ router.post('/subscribe', auth, async (req, res) => {
       return res.status(400).json({ error: 'Invalid plan selected' });
     }
 
-    const { paymentLink, subscriptionId } = await createDodoSubscription(req.user._id, planKey);
+    const { paymentLink, subscriptionId } = await createDodoSubscription(req.user._id, planKey, isAnnual);
     
     res.status(200).json({ paymentLink, subscriptionId });
   } catch (error) {
@@ -127,15 +127,15 @@ router.post('/webhook', async (req, res) => {
         let generationsLimit = 10;
         let brandVoicesLimit = 10;
         
-        if (productId === process.env.DODO_STARTER_PRODUCT_ID) {
+        if (productId === process.env.DODO_STARTER_PRODUCT_ID || productId === process.env.DODO_STARTER_ANNUAL_PRODUCT_ID) {
           plan = 'starter';
           generationsLimit = 300;
           brandVoicesLimit = 10;
-        } else if (productId === process.env.DODO_GROWTH_PRODUCT_ID) {
+        } else if (productId === process.env.DODO_GROWTH_PRODUCT_ID || productId === process.env.DODO_GROWTH_ANNUAL_PRODUCT_ID) {
           plan = 'growth';
           generationsLimit = 1000;
           brandVoicesLimit = 30;
-        } else if (productId === process.env.DODO_AGENCY_PRODUCT_ID) {
+        } else if (productId === process.env.DODO_AGENCY_PRODUCT_ID || productId === process.env.DODO_AGENCY_ANNUAL_PRODUCT_ID) {
           plan = 'agency';
           generationsLimit = 3000;
           brandVoicesLimit = 100;

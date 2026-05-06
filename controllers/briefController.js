@@ -15,6 +15,15 @@ const generate = async (req, res, next) => {
             goal,             // new field
             toneOverride, additionalContext } = req.body;
 
+    console.log('[BriefController] Request received:', { 
+      clientId, 
+      contentType, 
+      platform: platform?.trim(), 
+      length: length?.trim(), 
+      goal: goal?.trim(),
+      hasBrief: !!briefRaw || !!briefText
+    });
+
     const briefContent = DOMPurify.sanitize(briefText || briefRaw || '');
     const safeToneOverride = DOMPurify.sanitize(toneOverride || '');
     const safeAdditionalContext = DOMPurify.sanitize(additionalContext || '');

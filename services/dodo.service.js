@@ -11,20 +11,20 @@ const assertDodoReady = () => {
  * @param {string} planKey - 'starter', 'growth', or 'agency'
  * @returns {Promise<{paymentLink: string, subscriptionId: string}>}
  */
-const createDodoSubscription = async (userId, planKey) => {
+const createDodoSubscription = async (userId, planKey, isAnnual = false) => {
   try {
     assertDodoReady();
 
     const productIds = {
-      starter: process.env.DODO_STARTER_PRODUCT_ID,
-      growth:  process.env.DODO_GROWTH_PRODUCT_ID,
-      agency:  process.env.DODO_AGENCY_PRODUCT_ID
+      starter: isAnnual ? process.env.DODO_STARTER_ANNUAL_PRODUCT_ID : process.env.DODO_STARTER_PRODUCT_ID,
+      growth:  isAnnual ? process.env.DODO_GROWTH_ANNUAL_PRODUCT_ID  : process.env.DODO_GROWTH_PRODUCT_ID,
+      agency:  isAnnual ? process.env.DODO_AGENCY_ANNUAL_PRODUCT_ID  : process.env.DODO_AGENCY_PRODUCT_ID
     };
 
     const productId = productIds[planKey];
 
     if (!productId) {
-      throw new Error(`Product ID for ${planKey} plan is not configured in environment variables. Check DODO_${planKey.toUpperCase()}_PRODUCT_ID in .env`);
+      throw new Error(`Product ID for ${planKey} (${isAnnual ? 'annual' : 'monthly'}) plan is not configured in environment variables.`);
     }
 
     const user = await User.findById(userId);
@@ -36,8 +36,7 @@ const createDodoSubscription = async (userId, planKey) => {
     }
 
     // Create Dodo Checkout Session
-    // Official SDK method: dodo.checkoutSessions.create
-    const session = await dodo.checkoutSessions.create({
+    const sessionData = {
       product_cart: [{
         product_id: productId,
         quantity: 1
@@ -46,11 +45,20 @@ const createDodoSubscription = async (userId, planKey) => {
         email: user.email,
         name: user.name || 'Copygen User'
       }
-    });
+    };
 
-    // Save session ID as an initial reference if needed, 
-    // though the real subscription ID comes from webhooks.
-    // For this implementation, we follow the request to save it.
+    // Automatically apply discount for monthly plans if configured
+    if (!isAnnual) {
+      if (process.env.DODO_DISCOUNT_ID) {
+        sessionData.discount_id = process.env.DODO_DISCOUNT_ID;
+      } else if (process.env.DODO_DISCOUNT_CODE) {
+        sessionData.discount_code = process.env.DODO_DISCOUNT_CODE;
+      }
+    }
+
+    const session = await dodo.checkoutSessions.create(sessionData);
+
+    // Save session ID as an initial reference
     user.dodoSubscriptionId = session.session_id; 
     await user.save();
     

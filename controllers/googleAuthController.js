@@ -43,13 +43,15 @@ const callback = async (req, res, next) => {
     // Exchange code for tokens and save to DB
     await handleCallback(code, userId);
 
+    const clientUrl = process.env.CLIENT_URL || 'http://localhost:5173';
     // Redirect user back to the frontend settings page
-    res.redirect('http://localhost:5173/settings?google=connected');
+    res.redirect(`${clientUrl}/app/settings?google=connected`);
 
   } catch (error) {
     console.error('[GoogleAuthController] Callback error:', error.message);
+    const clientUrl = process.env.CLIENT_URL || 'http://localhost:5173';
     // On error, redirect to settings with error flag
-    res.redirect('http://localhost:5173/settings?google=error');
+    res.redirect(`${clientUrl}/app/settings?google=error`);
   }
 };
 

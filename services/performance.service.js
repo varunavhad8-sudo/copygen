@@ -156,9 +156,9 @@ const analyzeContentPatterns = async (userId, clientId, performanceData, userPla
     const jsonStr = response.generatedText.replace(/```json|```/g, '').trim();
     const patterns = JSON.parse(jsonStr);
 
-    // Save to BrandProfile
+    // Save to BrandProfile — scoped to BOTH clientId AND userId
     await BrandProfile.findOneAndUpdate(
-      { clientId },
+      { clientId, userId },
       { 
         performancePatterns: {
           ...patterns,
