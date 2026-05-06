@@ -29,7 +29,12 @@ const app = express();
 
 // ── EMERGENCY CORS FIX (Must be FIRST) ──────────────────────────────────────
 app.use(cors({ 
-  origin: ['https://copygen.in', 'https://www.copygen.in'],
+  origin: [
+    'https://copygen.in', 
+    'https://www.copygen.in', 
+    'https://ai-for-marketing-agency.web.app', 
+    'https://ai-for-marketing-agency.firebaseapp.com'
+  ],
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
   allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
