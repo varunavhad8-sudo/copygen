@@ -27,6 +27,19 @@ connectDB();
 
 const app = express();
 
+app.use(cors({ 
+  origin: true,
+  credentials: true
+}));
+
+// 1. Log Environment Variables Presence
+console.log('--- Environment Check ---');
+const requiredVars = ['MONGODB_URI', 'DODO_API_KEY'];
+requiredVars.forEach(v => {
+  console.log(`${v}: ${process.env[v] ? '✅ CONFIGURED' : '❌ MISSING'}`);
+});
+console.log('-------------------------');
+
 // ── Hardened Security Headers (10/10) ───────────────────────────────────────
 app.use(helmet({
   contentSecurityPolicy: {
@@ -54,21 +67,6 @@ const allowedOrigins = [
   'http://localhost:5174',
   ...(process.env.ALLOWED_ORIGINS ? process.env.ALLOWED_ORIGINS.split(',') : [])
 ];
-
-// 1. Log Environment Variables Presence (Not values for security)
-console.log('--- Environment Check ---');
-const requiredVars = ['MONGODB_URI', 'JWT_SECRET', 'DODO_API_KEY', 'VITE_API_URL'];
-requiredVars.forEach(v => {
-  console.log(`${v}: ${process.env[v] ? '✅ CONFIGURED' : '❌ MISSING'}`);
-});
-console.log('-------------------------');
-
-app.use(cors({ 
-  origin: true, // Allow ALL origins temporarily for debugging
-  credentials: true
-}));
-
-console.log('🚀 CORS set to permissive mode for debugging');
 
 // Webhook raw body capture
 app.use('/api/billing/razorpay/webhook', express.raw({ type: 'application/json' }));
