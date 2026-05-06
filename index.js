@@ -55,29 +55,20 @@ const allowedOrigins = [
   ...(process.env.ALLOWED_ORIGINS ? process.env.ALLOWED_ORIGINS.split(',') : [])
 ];
 
+// 1. Log Environment Variables Presence (Not values for security)
+console.log('--- Environment Check ---');
+const requiredVars = ['MONGODB_URI', 'JWT_SECRET', 'DODO_API_KEY', 'VITE_API_URL'];
+requiredVars.forEach(v => {
+  console.log(`${v}: ${process.env[v] ? '✅ CONFIGURED' : '❌ MISSING'}`);
+});
+console.log('-------------------------');
+
 app.use(cors({ 
-  origin: (origin, callback) => {
-    // 1. Allow if no origin (mobile/SSR)
-    if (!origin) return callback(null, true);
-
-    // 2. Log for debugging (Check your Railway logs!)
-    console.log(`[CORS Request] From: ${origin}`);
-
-    // 3. Robust check for your domains
-    const isAllowed = 
-      allowedOrigins.includes(origin) || 
-      origin.includes('copygen.in') || 
-      origin.endsWith('.vercel.app');
-
-    if (isAllowed) {
-      callback(null, true);
-    } else {
-      console.warn(`[CORS Blocked] Origin: ${origin}`);
-      callback(new Error('Not allowed by CORS'));
-    }
-  },
+  origin: true, // Allow ALL origins temporarily for debugging
   credentials: true
 }));
+
+console.log('🚀 CORS set to permissive mode for debugging');
 
 // Webhook raw body capture
 app.use('/api/billing/razorpay/webhook', express.raw({ type: 'application/json' }));
