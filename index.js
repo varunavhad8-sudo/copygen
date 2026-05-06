@@ -27,17 +27,32 @@ connectDB();
 
 const app = express();
 
-// ── EMERGENCY CORS FIX (Must be FIRST) ──────────────────────────────────────
-app.use(cors({ 
-  origin: [
-    'https://copygen.in', 
-    'https://www.copygen.in', 
-    'https://ai-for-marketing-agency.web.app', 
-    'https://ai-for-marketing-agency.firebaseapp.com'
-  ],
+const allowedOrigins = [
+  'https://copygen.in',
+  'https://www.copygen.in',
+  'https://ai-for-marketing-agency.web.app',
+  'https://ai-for-marketing-agency.firebaseapp.com',
+  'http://localhost:5173',
+  'http://localhost:5174',
+  ...(process.env.ALLOWED_ORIGINS ? process.env.ALLOWED_ORIGINS.split(',') : [])
+];
+
+app.use(cors({
+  origin: (origin, callback) => {
+    // Allow requests with no origin (like mobile apps or curl)
+    if (!origin) return callback(null, true);
+    
+    if (allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      console.warn(`[CORS] Blocked request from unauthorized origin: ${origin}`);
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept'],
+  exposedHeaders: ['Set-Cookie']
 }));
 
 // 1. Log Environment Variables Presence
@@ -65,16 +80,6 @@ app.use(helmet({
 }));
 
 app.set('trust proxy', 1);
-
-const allowedOrigins = [
-  'https://copygen.in',
-  'https://www.copygen.in',
-  'https://ai-for-marketing-agency.web.app',
-  'https://ai-for-marketing-agency.firebaseapp.com',
-  'http://localhost:5173',
-  'http://localhost:5174',
-  ...(process.env.ALLOWED_ORIGINS ? process.env.ALLOWED_ORIGINS.split(',') : [])
-];
 
 // Webhook raw body capture
 app.use('/api/billing/razorpay/webhook', express.raw({ type: 'application/json' }));
