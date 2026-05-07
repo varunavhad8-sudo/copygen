@@ -40,28 +40,25 @@ connectDB();
 
 const app = express();
 
-// Force-handle OPTIONS preflight at the raw Express level
-app.use((req, res, next) => {
-  if (req.method === 'OPTIONS') {
-    res.setHeader('Access-Control-Allow-Origin', req.headers.origin || '*');
-    res.setHeader('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,OPTIONS,PATCH');
-    res.setHeader('Access-Control-Allow-Headers', 'Content-Type,Authorization,X-Requested-With,Accept');
-    res.setHeader('Access-Control-Allow-Credentials', 'true');
-    res.setHeader('Access-Control-Max-Age', '86400');
-    return res.status(204).end();
-  }
-  next();
-});
-
-
 // ── CORS Configuration ──────────────────────────────────────────────────────
-app.use(cors({
-  origin: ['http://localhost:5173', 'https://copygen.in', 'https://www.copygen.in'],
+const corsOptions = {
+  origin: function(origin, callback) {
+    const allowed = ['http://localhost:5173', 'https://copygen.in', 'https://www.copygen.in'];
+    if (!origin || allowed.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
   allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept'],
-}));
-app.options('/{*path}', cors()); // Handle preflight requests before Helmet
+  optionsSuccessStatus: 200
+};
+
+app.use(cors(corsOptions));
+app.options('/{*path}', cors(corsOptions));
+
 
 // 1. Log Environment Variables Presence
 console.log('--- Environment Check ---');
