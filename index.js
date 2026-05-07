@@ -47,6 +47,7 @@ app.use(cors({
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
   allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept'],
 }));
+app.options('*', cors()); // Handle preflight requests before Helmet
 
 // 1. Log Environment Variables Presence
 console.log('--- Environment Check ---');
