@@ -41,27 +41,8 @@ connectDB();
 const app = express();
 
 // ── CORS Configuration ──────────────────────────────────────────────────────
-const allowedOrigins = [
-  'https://copygen.in',
-  'https://www.copygen.in',
-  'https://ai-for-marketing-agency.web.app',
-  'https://ai-for-marketing-agency.firebaseapp.com',
-  'http://localhost:5173',
-  'http://localhost:5174',
-  ...(process.env.ALLOWED_ORIGINS ? process.env.ALLOWED_ORIGINS.split(',') : [])
-].map(o => o.toLowerCase().replace(/\/$/, "")); // Normalize: lowercase + no trailing slash
-
 app.use(cors({
-  origin: (origin, callback) => {
-    if (!origin) return callback(null, true);
-    const normalizedOrigin = origin.toLowerCase().replace(/\/$/, "");
-    if (allowedOrigins.includes(normalizedOrigin)) {
-      callback(null, true);
-    } else {
-      console.warn(`[CORS] Blocked origin: ${origin}`);
-      callback(new Error('Not allowed by CORS'));
-    }
-  },
+  origin: ['http://localhost:5173', 'https://copygen.in', 'https://www.copygen.in'],
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
   allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept'],
