@@ -43,7 +43,7 @@ const app = express();
 // ── CORS Configuration ──────────────────────────────────────────────────────
 const corsOptions = {
   origin: function(origin, callback) {
-    const allowed = ['http://localhost:5173', 'https://copygen.in', 'https://www.copygen.in'];
+    const allowed = ['http://localhost:5173', 'https://copygen.in', 'https://www.copygen.in', 'https://copygen-backend.onrender.com'];
     if (!origin || allowed.includes(origin)) {
       callback(null, true);
     } else {
