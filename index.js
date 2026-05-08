@@ -84,6 +84,12 @@ app.use(helmet({
   crossOriginEmbedderPolicy: false,
 }));
 
+// FIX: Force fresh responses for production cache issues
+app.use((req, res, next) => {
+  res.set('Cache-Control', 'no-store, no-cache, must-revalidate, private');
+  next();
+});
+
 app.set('trust proxy', 1);
 
 // Webhook raw body capture
