@@ -1,8 +1,20 @@
 const { GoogleGenerativeAI } = require("@google/generative-ai");
 
 
-// Initialize the SDK
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+// Safe load & clean key
+let apiKey = (process.env.GEMINI_API_KEY || '').trim();
+// Remove outer quotes if present
+if ((apiKey.startsWith('"') && apiKey.endsWith('"')) || (apiKey.startsWith("'") && apiKey.endsWith("'"))) {
+  apiKey = apiKey.slice(1, -1).trim();
+}
+
+console.log('[GeminiService] Initializing with key status:', {
+  hasKey: !!apiKey,
+  keyLength: apiKey.length,
+  keyPreview: apiKey ? `${apiKey.substring(0, 6)}...${apiKey.substring(apiKey.length - 4)}` : 'none'
+});
+
+const genAI = new GoogleGenerativeAI(apiKey);
 
 
 /**
