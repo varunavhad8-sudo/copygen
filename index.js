@@ -140,6 +140,16 @@ app.get('/api/health', (req, res) => {
   });
 });
 
+// ── Temporary Debug Route for Environment Variables ──────────────────────────
+app.get('/api/debug-env', (req, res) => {
+  const key = process.env.GEMINI_API_KEY;
+  res.status(200).json({
+    exists: !!key,
+    prefix: key ? key.substring(0, 8) : null,
+    length: key ? key.length : 0
+  });
+});
+
 // ── Routes ────────────────────────────────────────────────────────────
 app.use(generalLimiter);
 
