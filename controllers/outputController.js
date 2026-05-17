@@ -2,23 +2,30 @@ const Output = require('../models/Output');
 
 const getAll = async (req, res, next) => {
   try {
-    const { contentType, status, search, 
-            page = 1, limit = 20 } = req.query;
+    const { contentType, status, search, clientId, 
+            page = 1, limit = 10 } = req.query;
     const query = { userId: req.user._id };
     
     if (contentType) query.contentType = contentType;
     if (status) query.status = status;
+    if (clientId) query.clientId = clientId;
     if (search) query.generatedText = { 
       $regex: search, $options: 'i' 
     };
 
+    const total = await Output.countDocuments(query);
     const outputs = await Output.find(query)
       .sort({ createdAt: -1 })
-      .limit(limit)
-      .skip((page - 1) * limit)
+      .limit(parseInt(limit))
+      .skip((parseInt(page) - 1) * parseInt(limit))
       .populate('clientId', 'name');
 
-    res.json({ success: true, outputs });
+    res.json({ 
+      success: true, 
+      outputs,
+      total,
+      pages: Math.ceil(total / parseInt(limit))
+    });
   } catch (error) { next(error); }
 };
 
@@ -54,7 +61,17 @@ const deleteOutput = async (req, res, next) => {
   } catch (error) { next(error); }
 };
 
-module.exports = { getAll, getOne, updateStatus, deleteOutput };
+const getRecent = async (req, res, next) => {
+  try {
+    const outputs = await Output.find({ userId: req.user._id })
+      .sort({ createdAt: -1 })
+      .limit(5)
+      .populate('clientId', 'name');
+    res.json({ success: true, outputs });
+  } catch (error) { next(error); }
+};
+
+module.exports = { getAll, getOne, updateStatus, deleteOutput, getRecent };
 
 
 

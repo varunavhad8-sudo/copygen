@@ -12,26 +12,23 @@ const TASK_TYPES = {
 
 const TOKEN_LIMITS = {
   standard: {
-    longForm: 4000,   // Gemini 2.5 Flash
-    shortForm: 512,   // GPT-4o
-    routing: 256,     // GPT-4o Mini
-    background: 256   // Gemini 2.5 Flash
+    longForm: 8192,
+    shortForm: 2048,  // Increased from 512 to prevent any truncation
+    routing: 512,
+    background: 512
   },
   premium: {
-    longForm: 5000,   // Gemini 2.5 Flash
-    shortForm: 800,   // GPT-4o
-    routing: 256,     // GPT-4o Mini
-    background: 256   // Gemini 2.5 Flash
+    longForm: 12288,
+    shortForm: 4096,  // Increased from 800
+    routing: 512,
+    background: 512
   }
 };
 
 // Real API model identifiers (as of 2025)
 const MODEL_COSTS = {
-  'claude-sonnet-3-5-sonnet-20240620': 0.003,    
-  'gemini-2.5-pro': 0.000075, 
-  'gemini-2.5-flash': 0.00001875,
-  'gpt-4o': 0.005,    
-  'gpt-4o-mini': 0.00015   
+  'gemini-2.5-pro': 0.010,
+  'gemini-2.0-flash': 0.002,
 };
 
 const estimateTokens = (text) => {
@@ -70,11 +67,9 @@ const classifyTask = async (briefText, contentType) => {
 };
 
 const getModelForTask = (taskType) => {
-  // Use Pro for long-form content, Flash for everything else
-  if (taskType === TASK_TYPES.LONG_FORM) {
-    return 'gemini-2.5-pro';
-  }
-  return 'gemini-2.5-flash';
+  if (taskType === TASK_TYPES.LONG_FORM) return 'gemini-2.5-pro';
+  if (taskType === TASK_TYPES.SHORT_FORM) return 'gemini-2.0-flash';
+  return 'gemini-2.0-flash';
 };
 
 const calculateCost = (model, wordCount) => {
@@ -82,7 +77,7 @@ const calculateCost = (model, wordCount) => {
   return (estimatedTokens / 1000) * (MODEL_COSTS[model] || 0.002);
 };
 
-const generateText = async ({ model, system, user, maxTokens }) => {
+const generateText = async ({ model, system, user, maxTokens, responseMimeType }) => {
   const hasOpenAIKey = !!process.env.OPENAI_API_KEY;
   const hasAnthropicKey = !!process.env.ANTHROPIC_API_KEY;
 
@@ -98,45 +93,46 @@ const generateText = async ({ model, system, user, maxTokens }) => {
 
   // Try the primary model
   try {
-    if (model === 'claude-sonnet-4-6-20251022' && hasAnthropicKey) {
+    if (model.includes('claude') && hasAnthropicKey) {
       console.log(`[LLMRouter] Using Anthropic: ${model}`);
-      const res = await generateWithClaude({ system, prompt: user, model, maxTokens });
+      const text = await generateWithClaude({ system, user, model, maxTokens });
       console.log(`[LLM] Provider: Anthropic | Model: ${model} | Duration: ${Date.now() - primaryStartTime}ms | Success: true`);
-      return res;
+      return { generatedText: text, modelUsed: model };
     }
-    if ((model === 'gpt-4o' || model === 'gpt-4o-mini') && hasOpenAIKey) {
+    if ((model.includes('gpt')) && hasOpenAIKey) {
       console.log(`[LLMRouter] Using OpenAI: ${model}`);
-      const res = await generateWithOpenAI({ system, prompt: user, model: model || 'gpt-4o', maxTokens });
+      const text = await generateWithOpenAI({ system, user, model, maxTokens });
       console.log(`[LLM] Provider: OpenAI | Model: ${model} | Duration: ${Date.now() - primaryStartTime}ms | Success: true`);
-      return res;
+      return { generatedText: text, modelUsed: model };
     }
   } catch (error) {
     console.log(`[LLM] Provider: ${primaryProvider} | Model: ${model} | Duration: ${Date.now() - primaryStartTime}ms | Success: false`);
     console.error(`❌ [LLMRouter] Primary model ${model} failed! Falling back to Gemini. Error: ${error.message}`);
-    // Flow continues down to Gemini fallback
   }
 
   // Default: Gemini Fallback
-  const fallbackModel = model?.startsWith('gemini') ? model : 'gemini-2.5-flash';
+  const fallbackModel = model?.startsWith('gemini') ? model : 'gemini-3.1-pro-preview';
   const fallbackStartTime = Date.now();
   try {
     console.log(`[LLMRouter] Using Gemini: ${fallbackModel} (primary or fallback)`);
-    let res;
-    // Standardize to flash for speed unless pro is explicitly requested
-    if (fallbackModel.includes('pro')) {
-      res = await generateLongForm(user, system, fallbackModel);
-    } else {
-      res = await generateWithGemini(user, system, fallbackModel);
-    }
-    console.log(`[LLM] Provider: Google | Model: ${fallbackModel} | Duration: ${Date.now() - fallbackStartTime}ms | Success: true`);
-    return res;
+    let result;
+    result = await generateWithGemini({
+      user,
+      system,
+      model: fallbackModel,
+      maxTokens,
+      responseMimeType
+    });
+    // gemini service already returns { text, modelUsed }
+    console.log(`[LLM] Provider: Google | Model: ${result.modelUsed} | Duration: ${Date.now() - fallbackStartTime}ms | Success: true`);
+    return { generatedText: result.text, modelUsed: result.modelUsed };
   } catch (err) {
     console.log(`[LLM] Provider: Google | Model: ${fallbackModel} | Duration: ${Date.now() - fallbackStartTime}ms | Success: false`);
     throw err;
   }
 };
 
-const processRequest = async ({ brief, additionalContext, toneOverride, userPlan, clientId, userId }) => {
+const processRequest = async ({ brief, additionalContext, toneOverride, userPlan, clientId, userId, responseMimeType, variations = 1 }) => {
   // 1. Safety Check: Estimate input volume
   const inputTokens = estimateTokens(brief.briefText) +
     estimateTokens(additionalContext) +
@@ -150,11 +146,14 @@ const processRequest = async ({ brief, additionalContext, toneOverride, userPlan
   }
 
   const taskType = await classifyTask(brief.briefText, brief.contentType);
+  const finalTaskType = brief.contentType === 'seo' ? TASK_TYPES.LONG_FORM : taskType;
+
   let systemPrompt = await getBrandContext(clientId, userId, userPlan);
-  const model = getModelForTask(taskType);
+  const model = getModelForTask(finalTaskType);
+  const finalModel = brief.contentType === 'seo' ? 'gemini-2.5-flash' : model;
 
   // 2. Inject per-request task context into system prompt
-  const taskBlock = `
+  let taskBlock = `
 ═══════════════════════════════════════
 YOUR TASK
 ═══════════════════════════════════════
@@ -162,8 +161,37 @@ Content Type: ${brief.contentType || 'Not specified'}
 Platform / Format: ${brief.platform || 'Not specified'}
 Word Count / Length: ${brief.length || 'Not specified'}
 Goal: ${brief.goal || 'Not specified'}
+Number of Variations: ${variations}
 
-Execute the task in the user message. Follow every rule above without exception.`;
+CRITICAL INSTRUCTIONS:
+- You MUST provide exactly ${variations} distinct variations of the content.
+- Separate each variation with the marker: === VARIATION ===
+- Do not include any commentary, meta-talk, or explanations. 
+- Do not repeat the instructions or the brand memory descriptions.
+- Start directly with the first variation.
+- Ensure every sentence is complete and the thought is fully finished.
+`;
+
+  if (brief.contentType === 'seo') {
+    taskBlock += `
+SEO FORMAT REQUIREMENTS (MANDATORY):
+- TONE & STYLE: Relatable for Indian college students. Avoid flowery language. Clear and scannable is the goal.
+- Line 1: SEO Title: (under 60 characters, contains primary keyword)
+- Line 2: Meta Description: (under 155 characters, contains keyword + CTA)
+- Line 3: Target Keywords: Primary keyword + 3 secondary keywords
+- Line 4 onwards: Full article body with:
+  * One H1 heading containing the primary keyword
+  * H2 subheadings every 150-200 words
+  * Primary keyword in the first 100 words
+  * Brand name mentioned 2-3 times naturally throughout
+  * Paragraphs max 3-4 lines each
+  * One CTA at the end
+- Last line: Slug: (lowercase-hyphenated, keyword-rich)
+- Do NOT output a plain essay. Structure is mandatory.
+`;
+  }
+
+  taskBlock += `\nExecute the task in the user message. Follow every rule without exception.`;
 
   systemPrompt = systemPrompt + taskBlock;
 
@@ -171,7 +199,7 @@ Execute the task in the user message. Follow every rule above without exception.
   const planKey = ['agency', 'enterprise'].includes(userPlan) ? 'premium' : 'standard';
 
   let maxTokens;
-  switch (taskType) {
+  switch (finalTaskType) {
     case TASK_TYPES.LONG_FORM:
       maxTokens = TOKEN_LIMITS[planKey].longForm;
       break;
@@ -200,17 +228,48 @@ Execute the task in the user message. Follow every rule above without exception.
   console.log(systemPrompt);
   console.log('=============================================\n');
 
-  const generatedText = await generateText({
-    model,
-    system: systemPrompt,
-    user: finalUserPrompt,
-    maxTokens
+  // 5. Race the generation against a timeout (120s for long-form/SEO)
+  const timeoutMs = 120000; 
+  const timeoutPromise = new Promise((_, reject) => {
+    setTimeout(() => {
+      const err = new Error('Generation timed out. The AI provider is taking too long to respond.');
+      err.status = 504;
+      reject(err);
+    }, timeoutMs);
   });
 
-  const wordCount = generatedText.trim().split(/\s+/).length;
-  const apiCost = calculateCost(model, wordCount);
+  const { generatedText, modelUsed: actualModelUsed } = await Promise.race([
+    generateText({
+      model: finalModel,
+      system: systemPrompt,
+      user: finalUserPrompt,
+      maxTokens,
+      responseMimeType
+    }),
+    timeoutPromise
+  ]);
 
-  return { generatedText, modelUsed: model, taskType, wordCount, apiCost };
+  const generatedWordCount = generatedText.trim().split(/\s+/).length;
+  const apiCost = calculateCost(actualModelUsed, generatedWordCount);
+
+  const result = { generatedText, modelUsed: actualModelUsed, taskType: finalTaskType, generatedWordCount, apiCost };
+
+  // 6. Handle multiple variations if requested
+  if (variations > 1 && result.generatedText) {
+    const parts = result.generatedText.split('=== VARIATION ===')
+      .map(p => p.trim())
+      .filter(p => p.length > 10); 
+    
+    if (parts.length > 0) {
+      return parts.map(text => ({
+        ...result,
+        generatedText: text,
+        generatedWordCount: text.split(/\s+/).length
+      }));
+    }
+  }
+
+  return result;
 };
 
 module.exports = { processRequest };

@@ -1,6 +1,7 @@
 const express = require('express');
 const crypto = require('crypto');
 const User = require('../models/User');
+const Transaction = require('../models/Transaction');
 const { 
   createDodoSubscription, 
   cancelDodoSubscription, 
@@ -9,6 +10,8 @@ const {
 const auth = require('../middleware/auth');
 
 const router = express.Router();
+const { PLAN_LIMITS } = require('../config/plans');
+
 
 /**
  * ROUTE 1: Create subscription checkout session
@@ -28,6 +31,13 @@ router.post('/subscribe', auth, async (req, res) => {
     
     res.status(200).json({ paymentLink, subscriptionId });
   } catch (error) {
+    if (error.code === 'ACTIVE_SUBSCRIPTION') {
+      return res.status(409).json({
+        error: 'ACTIVE_SUBSCRIPTION',
+        message: 'You already have an active subscription.',
+        planType: error.planType || 'dodo'
+      });
+    }
     res.status(500).json({ error: error.message });
   }
 });
@@ -76,11 +86,15 @@ router.post('/webhook', async (req, res) => {
       return res.status(401).json({ error: 'Invalid signature headers' });
     }
 
-    // Capture raw body (Assumes express.raw middleware is used for this route in index.js)
-    const rawBody = req.rawBody || (req.body instanceof Buffer ? req.body : Buffer.from(JSON.stringify(req.body)));
+    // CORRECT - rawBody is always guaranteed by middleware
+    const rawBody = req.rawBody;
+    if (!rawBody) {
+      console.error('❌ No raw body available for Dodo webhook signature verification');
+      return res.status(400).json({ error: 'Invalid request' });
+    }
 
     // Compute expected HMAC SHA256 signature
-    const signedPayload = `${webhookId}.${timestamp}.${rawBody.toString()}`;
+    const signedPayload = `${webhookId}.${timestamp}.${rawBody}`;
     const expectedSignature = crypto
       .createHmac('sha256', secret)
       .update(signedPayload)
@@ -112,7 +126,7 @@ router.post('/webhook', async (req, res) => {
     console.log('✅ Dodo Webhook: Signature verified');
 
     // 2. Handle Event
-    const event = JSON.parse(rawBody.toString());
+    const event = JSON.parse(rawBody);
     const { type, data } = event;
 
     console.log(`Dodo Webhook received: ${type}`);
@@ -124,36 +138,41 @@ router.post('/webhook', async (req, res) => {
         
         // Map product ID back to plan name
         let plan = 'free';
-        let generationsLimit = 10;
-        let brandVoicesLimit = 10;
+        let generationsLimit = PLAN_LIMITS.free.generations;
+        let brandVoicesLimit = PLAN_LIMITS.free.brandVoices;
         
         if (productId === process.env.DODO_STARTER_PRODUCT_ID || productId === process.env.DODO_STARTER_ANNUAL_PRODUCT_ID) {
           plan = 'starter';
-          generationsLimit = 300;
-          brandVoicesLimit = 10;
+          generationsLimit = PLAN_LIMITS.starter.generations;
+          brandVoicesLimit = PLAN_LIMITS.starter.brandVoices;
         } else if (productId === process.env.DODO_GROWTH_PRODUCT_ID || productId === process.env.DODO_GROWTH_ANNUAL_PRODUCT_ID) {
           plan = 'growth';
-          generationsLimit = 1000;
-          brandVoicesLimit = 30;
+          generationsLimit = PLAN_LIMITS.growth.generations;
+          brandVoicesLimit = PLAN_LIMITS.growth.brandVoices;
         } else if (productId === process.env.DODO_AGENCY_PRODUCT_ID || productId === process.env.DODO_AGENCY_ANNUAL_PRODUCT_ID) {
           plan = 'agency';
-          generationsLimit = 3000;
-          brandVoicesLimit = 100;
+          generationsLimit = PLAN_LIMITS.agency.generations;
+          brandVoicesLimit = PLAN_LIMITS.agency.brandVoices;
         }
 
-        const user = await User.findOne({ 
+
+        // CORRECT - look up by subscription ID first, then session ID, then email
+        const user = await User.findOne({
           $or: [
             { dodoSubscriptionId: dodoSubscriptionId },
-            { email: data.customer?.email }
+            { dodoCheckoutSessionId: data.payment_session_id || data.session_id },
+            ...(data.customer?.email ? [{ email: data.customer.email }] : [])
           ]
         });
 
         if (user) {
           user.dodoSubscriptionId = dodoSubscriptionId; // Update session ID with real subscription ID
+          user.dodoCheckoutSessionId = null; // Clear the temporary session reference
           user.previousPlan = user.plan;
           user.plan = plan;
           user.generationsLimit = generationsLimit;
-          user.brandVoicesLimit = plan === 'starter' ? 10 : plan === 'growth' ? 30 : plan === 'agency' ? 100 : 1;
+          user.brandVoicesLimit = brandVoicesLimit;
+
           user.planType = 'dodo';
           user.currentPeriodEnd = new Date(data.current_period_end);
           await user.save();
@@ -162,7 +181,11 @@ router.post('/webhook', async (req, res) => {
         // Send Invoice Email (Non-blocking)
         if (user) {
           const { sendPaymentInvoice } = require('../services/email.service');
-          sendPaymentInvoice(user.email, user.name || 'valued customer', plan, data.amount || 0);
+          try {
+            await sendPaymentInvoice(user.email, user.name || 'valued customer', plan, data.amount || 0, data.currency || 'USD');
+          } catch (emailErr) {
+            console.error('[DodoWebhook] Invoice email failed:', emailErr.message);
+          }
         }
         break;
       }
@@ -172,6 +195,7 @@ router.post('/webhook', async (req, res) => {
           { dodoSubscriptionId: data.subscription_id },
           { 
             scheduledDowngrade: true,
+            subscriptionCancelledAt: new Date(),
             currentPeriodEnd: data.current_period_end ? new Date(data.current_period_end) : undefined
           },
           { new: true }
@@ -179,10 +203,14 @@ router.post('/webhook', async (req, res) => {
         
         if (user) {
           const { sendCancellationConfirmation } = require('../services/email.service');
-          sendCancellationConfirmation(user.email, user.name, {
-            planName: user.plan,
-            accessUntil: data.current_period_end ? new Date(data.current_period_end) : user.currentPeriodEnd
-          });
+          try {
+            await sendCancellationConfirmation(user.email, user.name, {
+              planName: user.plan,
+              accessUntil: data.current_period_end ? new Date(data.current_period_end) : user.currentPeriodEnd
+            });
+          } catch (emailErr) {
+            console.error('[DodoWebhook] Cancellation email failed:', emailErr.message);
+          }
         }
         break;
       }
@@ -194,8 +222,8 @@ router.post('/webhook', async (req, res) => {
           { 
             plan: 'free',
             planType: 'free',
-            generationsLimit: 10,
-            brandVoicesLimit: 1,
+            generationsLimit: PLAN_LIMITS.free.generations,
+            brandVoicesLimit: PLAN_LIMITS.free.brandVoices,
             scheduledDowngrade: false,
             previousPlan: failedUser?.plan || 'starter',
             dodoSubscriptionId: null
@@ -210,7 +238,7 @@ router.post('/webhook', async (req, res) => {
         if (user) {
           try {
             const { sendDowngradeNotification } = require('../services/email.service');
-            sendDowngradeNotification(user.email, user.name, { previousPlan: user.plan });
+            await sendDowngradeNotification(user.email, user.name, { previousPlan: user.plan });
           } catch (emailErr) {
             console.error('[DodoWebhook] Downgrade email failed:', emailErr.message);
           }
@@ -220,8 +248,8 @@ router.post('/webhook', async (req, res) => {
             {
               plan: 'free',
               planType: 'free',
-              generationsLimit: 10,
-              brandVoicesLimit: 1,
+              generationsLimit: PLAN_LIMITS.free.generations,
+              brandVoicesLimit: PLAN_LIMITS.free.brandVoices,
               scheduledDowngrade: false,
               subscriptionCancelledAt: null,
               dodoSubscriptionId: null,
@@ -235,15 +263,37 @@ router.post('/webhook', async (req, res) => {
       case 'payment.succeeded': {
         const paymentUser = await User.findOne({ dodoSubscriptionId: data.subscription_id });
         if (paymentUser) {
-          paymentUser.currentPeriodEnd = data.current_period_end ? new Date(data.current_period_end) : paymentUser.currentPeriodEnd;
-          await paymentUser.save();
-          const { sendPaymentInvoice } = require('../services/email.service');
-          sendPaymentInvoice(
-            paymentUser.email,
-            paymentUser.name || 'valued customer',
-            paymentUser.plan,
-            data.amount ? (data.amount / 100).toFixed(2) : 0
-          );
+          try {
+            // Record Transaction
+            await Transaction.findOneAndUpdate(
+              { paymentId: data.payment_id },
+              {
+                userId: paymentUser._id,
+                amount: data.amount / 100,
+                currency: data.currency || 'USD',
+                plan: paymentUser.plan,
+                status: 'Paid',
+                paymentProvider: 'dodo',
+                paymentId: data.payment_id,
+                subscriptionId: data.subscription_id,
+                date: new Date()
+              },
+              { upsert: true, new: true }
+            );
+
+            paymentUser.currentPeriodEnd = data.current_period_end ? new Date(data.current_period_end) : paymentUser.currentPeriodEnd;
+            await paymentUser.save();
+            const { sendPaymentInvoice } = require('../services/email.service');
+            await sendPaymentInvoice(
+              paymentUser.email,
+              paymentUser.name || 'valued customer',
+              paymentUser.plan,
+              data.amount ? (data.amount / 100).toFixed(2) : 0,
+              data.currency || 'USD'
+            );
+          } catch (err) {
+            console.error('[DodoWebhook] Transaction/Invoice failed:', err.message);
+          }
         }
         break;
       }

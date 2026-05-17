@@ -183,4 +183,15 @@ const remove = async (req, res, next) => {
   }
 };
 
-module.exports = { getByClient, save, remove };
+const getAll = async (req, res, next) => {
+  try {
+    const profiles = await BrandProfile.find({ userId: req.user._id }).sort({ updatedAt: -1 });
+    res.json({ success: true, brandProfiles: profiles });
+  } catch (error) {
+    console.error('[BrandController] List Error:', error);
+    next(error);
+  }
+};
+
+module.exports = { getByClient, getAll, save, remove };
+

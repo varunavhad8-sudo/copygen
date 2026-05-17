@@ -53,7 +53,16 @@ const sendWelcomeEmail = async (email, name) => {
 /**
  * Send a payment success/invoice email
  */
-const sendPaymentInvoice = async (email, name, planName, amount) => {
+const sendPaymentInvoice = async (email, name, planName, amount, currency = 'INR') => {
+  // Check bounce flag before sending
+  const userRecord = await User.findOne({ email });
+  if (userRecord?.emailBounced) {
+    console.warn(`[EmailService] Skipping email to bounced address: ${email}`);
+    return { success: false, skipped: true };
+  }
+
+  const symbol = currency === 'INR' ? '₹' : '$';
+
   try {
     const { data, error } = await resend.emails.send({
       from: FROM_EMAIL,
@@ -73,7 +82,7 @@ const sendPaymentInvoice = async (email, name, planName, amount) => {
               </tr>
               <tr>
                 <td><strong>Amount Paid:</strong></td>
-                <td style="text-align: right;">₹${amount}</td>
+                <td style="text-align: right;">${symbol}${amount}</td>
               </tr>
               <tr>
                 <td><strong>Status:</strong></td>
@@ -104,6 +113,13 @@ const sendPaymentInvoice = async (email, name, planName, amount) => {
  * Send cancellation confirmation email
  */
 const sendCancellationConfirmation = async (email, name, { planName, accessUntil }) => {
+  // Check bounce flag before sending
+  const userRecord = await User.findOne({ email });
+  if (userRecord?.emailBounced) {
+    console.warn(`[EmailService] Skipping email to bounced address: ${email}`);
+    return { success: false, skipped: true };
+  }
+
   try {
     const accessDate = accessUntil ? new Date(accessUntil).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) : 'the end of your billing period';
     const { data, error } = await resend.emails.send({
@@ -249,6 +265,13 @@ const sendGetStartedNudge = async (email, name) => {
  * Access expiry reminder (3 days before period ends)
  */
 const sendAccessExpiryReminder = async (email, name, { planName, accessUntil }) => {
+  // Check bounce flag before sending
+  const userRecord = await User.findOne({ email });
+  if (userRecord?.emailBounced) {
+    console.warn(`[EmailService] Skipping email to bounced address: ${email}`);
+    return { success: false, skipped: true };
+  }
+
   try {
     const accessDate = new Date(accessUntil).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
     const { data, error } = await resend.emails.send({
@@ -281,6 +304,13 @@ const sendAccessExpiryReminder = async (email, name, { planName, accessUntil }) 
  * Plan downgraded to free
  */
 const sendDowngradeNotification = async (email, name, { previousPlan }) => {
+  // Check bounce flag before sending
+  const userRecord = await User.findOne({ email });
+  if (userRecord?.emailBounced) {
+    console.warn(`[EmailService] Skipping email to bounced address: ${email}`);
+    return { success: false, skipped: true };
+  }
+
   try {
     const { data, error } = await resend.emails.send({
       from: FROM_EMAIL,
@@ -295,7 +325,7 @@ const sendDowngradeNotification = async (email, name, { previousPlan }) => {
           <div style="padding: 20px; background-color: #F9F9F9; border-radius: 12px; margin: 30px 0;">
             <p style="margin: 0; color: #4A4A4A; font-weight: bold;">Free Tier Limits:</p>
             <ul style="color: #666; font-size: 14px; margin-top: 10px;">
-              <li>10 Generations per month</li>
+              <li>10 Generations total (lifetime free tier)</li>
               <li>1 Client / Brand Voice profile</li>
             </ul>
           </div>
@@ -319,6 +349,13 @@ const sendDowngradeNotification = async (email, name, { previousPlan }) => {
  * Winback (7 days after downgrade)
  */
 const sendWinbackEmail = async (email, name, { previousPlan }) => {
+  // Check bounce flag before sending
+  const userRecord = await User.findOne({ email });
+  if (userRecord?.emailBounced) {
+    console.warn(`[EmailService] Skipping email to bounced address: ${email}`);
+    return { success: false, skipped: true };
+  }
+
   try {
     const { data, error } = await resend.emails.send({
       from: FROM_EMAIL,
@@ -350,6 +387,13 @@ const sendWinbackEmail = async (email, name, { previousPlan }) => {
  * 80% generation limit warning
  */
 const sendGenerationLimitWarning = async (email, name, { used, limit, planName }) => {
+  // Check bounce flag before sending
+  const userRecord = await User.findOne({ email });
+  if (userRecord?.emailBounced) {
+    console.warn(`[EmailService] Skipping email to bounced address: ${email}`);
+    return { success: false, skipped: true };
+  }
+
   try {
     const { data, error } = await resend.emails.send({
       from: FROM_EMAIL,
@@ -381,6 +425,13 @@ const sendGenerationLimitWarning = async (email, name, { used, limit, planName }
  * 100% limit hit
  */
 const sendGenerationLimitExhausted = async (email, name, { planName }) => {
+  // Check bounce flag before sending
+  const userRecord = await User.findOne({ email });
+  if (userRecord?.emailBounced) {
+    console.warn(`[EmailService] Skipping email to bounced address: ${email}`);
+    return { success: false, skipped: true };
+  }
+
   try {
     const { data, error } = await resend.emails.send({
       from: FROM_EMAIL,

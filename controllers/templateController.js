@@ -20,8 +20,12 @@ const getAll = async (req, res, next) => {
 
 const create = async (req, res, next) => {
   try {
+    const data = sanitizeBody(req.body);
+    if (data.promptStructure && !data.briefText) {
+      data.briefText = data.promptStructure;
+    }
     const template = await Template.create({ 
-      ...sanitizeBody(req.body), userId: req.user._id 
+      ...data, userId: req.user._id 
     });
     res.status(201).json({ success: true, template });
   } catch (error) { next(error); }
@@ -29,9 +33,13 @@ const create = async (req, res, next) => {
 
 const update = async (req, res, next) => {
   try {
+    const data = sanitizeBody(req.body);
+    if (data.promptStructure && !data.briefText) {
+      data.briefText = data.promptStructure;
+    }
     const template = await Template.findOneAndUpdate(
       { _id: req.params.id, userId: req.user._id },
-      sanitizeBody(req.body), { new: true }
+      data, { new: true }
     );
     res.json({ success: true, template });
   } catch (error) { next(error); }

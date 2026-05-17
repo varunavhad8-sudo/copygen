@@ -2,7 +2,11 @@ const Client = require('../models/Client');
 const BrandProfile = require('../models/BrandProfile');
 const DOMPurify = require('isomorphic-dompurify');
 
-const ALLOWED_FIELDS = ['name', 'industry', 'website', 'siteUrl', 'ga4PropertyId', 'scSiteUrl', 'targetAudience'];
+const ALLOWED_FIELDS = [
+  'name', 'industry', 'website', 'siteUrl', 'ga4PropertyId', 
+  'scSiteUrl', 'targetAudience', 'budget', 'contactName', 
+  'contactEmail', 'notes'
+];
 
 const sanitizeBody = (body) => {
   const sanitized = {};

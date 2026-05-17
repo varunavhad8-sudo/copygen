@@ -32,7 +32,7 @@ const check = async (req, res, next) => {
 
     res.status(200).json({
       success: true,
-      result
+      data: result
     });
 
   } catch (error) {

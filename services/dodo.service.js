@@ -30,9 +30,20 @@ const createDodoSubscription = async (userId, planKey, isAnnual = false) => {
     const user = await User.findById(userId);
     if (!user) throw new Error('User not found');
 
-    // Check for existing active subscription
+    // Check for existing active Dodo subscription
     if (user.dodoSubscriptionId && user.plan !== 'free') {
-      throw new Error('You already have an active subscription. Please cancel it before subscribing to a new plan.');
+      const error = new Error('ACTIVE_SUBSCRIPTION');
+      error.code = 'ACTIVE_SUBSCRIPTION';
+      error.planType = 'dodo';
+      throw error;
+    }
+
+    // Check for existing active Razorpay subscription
+    if (user.razorpaySubscriptionId && user.plan !== 'free') {
+      const error = new Error('ACTIVE_SUBSCRIPTION');
+      error.code = 'ACTIVE_SUBSCRIPTION';
+      error.planType = 'razorpay';
+      throw error;
     }
 
     // Create Dodo Checkout Session
@@ -58,8 +69,8 @@ const createDodoSubscription = async (userId, planKey, isAnnual = false) => {
 
     const session = await dodo.checkoutSessions.create(sessionData);
 
-    // Save session ID as an initial reference
-    user.dodoSubscriptionId = session.session_id; 
+    // Save session ID temporarily for reference only
+    user.dodoCheckoutSessionId = session.session_id; 
     await user.save();
     
     return {
@@ -69,7 +80,7 @@ const createDodoSubscription = async (userId, planKey, isAnnual = false) => {
 
   } catch (error) {
     console.error('Error in createDodoSubscription:', error.message);
-    throw new Error(error.message);
+    throw error;
   }
 };
 

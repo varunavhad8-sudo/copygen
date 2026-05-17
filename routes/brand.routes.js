@@ -1,8 +1,9 @@
 const router = require('express').Router();
 const auth = require('../middleware/auth');
 const { checkBrandVoiceLimit } = require('../middleware/usageLimiter');
-const { getByClient, save, remove } = require('../controllers/brandController');
+const { getByClient, getAll, save, remove } = require('../controllers/brandController');
 
+router.get('/', auth, getAll);
 router.get('/:clientId', auth, getByClient);
 
 // checkBrandVoiceLimit only runs on the save (POST) route.

@@ -5,6 +5,8 @@ const User = require('../models/User');
 const Output = require('../models/Output');
 
 const router = express.Router();
+const { PLAN_LIMITS } = require('../config/plans');
+
 
 // ─── Price Constants (matches RazorpayCheckout.jsx) ───────────────────────────
 const PLAN_PRICES = {
@@ -162,11 +164,12 @@ router.post('/users', strictLimiter, async (req, res) => {
     if (existing) return res.status(400).json({ error: 'User with this email already exists' });
 
     const planLimitsMap = {
-      free:    { maxGenerations: 10,   maxBrandVoices: 1   },
-      starter: { maxGenerations: 300,  maxBrandVoices: 10  },
-      growth:  { maxGenerations: 1000, maxBrandVoices: 30  },
-      agency:  { maxGenerations: 3000, maxBrandVoices: 100 },
+      free:    { maxGenerations: PLAN_LIMITS.free.generations,   maxBrandVoices: PLAN_LIMITS.free.brandVoices   },
+      starter: { maxGenerations: PLAN_LIMITS.starter.generations,  maxBrandVoices: PLAN_LIMITS.starter.brandVoices  },
+      growth:  { maxGenerations: PLAN_LIMITS.growth.generations, maxBrandVoices: PLAN_LIMITS.growth.brandVoices  },
+      agency:  { maxGenerations: PLAN_LIMITS.agency.generations, maxBrandVoices: PLAN_LIMITS.agency.brandVoices },
     };
+
 
     const periodEnd = durationDays 
       ? new Date(Date.now() + durationDays * 24 * 60 * 60 * 1000) 
@@ -202,11 +205,12 @@ router.patch('/users/:id', strictLimiter, async (req, res) => {
 
     if (plan !== undefined) {
       const planLimitsMap = {
-        free:    { maxGenerations: 10,   maxBrandVoices: 1   },
-        starter: { maxGenerations: 300,  maxBrandVoices: 10  },
-        growth:  { maxGenerations: 1000, maxBrandVoices: 30  },
-        agency:  { maxGenerations: 3000, maxBrandVoices: 100 },
+        free:    { maxGenerations: PLAN_LIMITS.free.generations,   maxBrandVoices: PLAN_LIMITS.free.brandVoices   },
+        starter: { maxGenerations: PLAN_LIMITS.starter.generations,  maxBrandVoices: PLAN_LIMITS.starter.brandVoices  },
+        growth:  { maxGenerations: PLAN_LIMITS.growth.generations, maxBrandVoices: PLAN_LIMITS.growth.brandVoices  },
+        agency:  { maxGenerations: PLAN_LIMITS.agency.generations, maxBrandVoices: PLAN_LIMITS.agency.brandVoices },
       };
+
       updates.plan = plan;
       updates.planLimits = planLimitsMap[plan] || planLimitsMap.free;
       updates.generationsLimit = planLimitsMap[plan]?.maxGenerations || 10;
@@ -268,6 +272,29 @@ router.post('/users/:id/reset', strictLimiter, async (req, res) => {
     res.status(200).json({ success: true, message: `Reset generations for ${user.email}` });
   } catch (error) {
     res.status(500).json({ error: 'Failed to reset user', details: error.message });
+  }
+});
+
+/**
+ * PATCH /api/admin/users/:id/set-admin
+ * Grant or revoke admin status for a user.
+ * Body: { isAdmin: true | false }
+ */
+router.patch('/users/:id/set-admin', strictLimiter, async (req, res) => {
+  try {
+    const { isAdmin } = req.body;
+    if (typeof isAdmin !== 'boolean') {
+      return res.status(400).json({ error: 'isAdmin must be a boolean' });
+    }
+    const user = await User.findByIdAndUpdate(
+      req.params.id,
+      { $set: { isAdmin } },
+      { new: true, lean: true }
+    );
+    if (!user) return res.status(404).json({ error: 'User not found' });
+    res.status(200).json({ success: true, message: `Admin status set to ${isAdmin} for ${user.email}` });
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to set admin status', details: error.message });
   }
 });
 
@@ -436,7 +463,7 @@ router.get('/outputs', strictLimiter, async (req, res) => {
           user:         { name: o.userId?.name, email: o.userId?.email, plan: o.userId?.plan },
           contentType:  o.contentType,
           modelUsed:    o.modelUsed,
-          wordCount:    o.wordCount,
+          generatedWordCount: o.generatedWordCount,
           apiCost:      o.apiCost,
           status:       o.status,
           preview:      o.generatedText?.slice(0, 200),

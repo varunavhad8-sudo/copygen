@@ -13,14 +13,44 @@ const createRazorpaySubscription = async (userId, planKey, options = {}) => {
     const user = await User.findById(userId);
     if (!user) throw new Error('User not found');
 
-    // Check if user already has an active Razorpay subscription
-    if (user.razorpaySubscriptionId && user.plan !== 'free') {
-      throw new Error('You already have an active subscription. Cancel it before subscribing to a new plan.');
+    // Check if user already has a Razorpay subscription
+    if (user.razorpaySubscriptionId) {
+      let isActiveSubscription = false;
+      
+      try {
+        const existingSub = await razorpay.subscriptions.fetch(user.razorpaySubscriptionId);
+        if (existingSub && ['created', 'authenticated', 'active'].includes(existingSub.status)) {
+          isActiveSubscription = true;
+        }
+      } catch (fetchErr) {
+        // Razorpay returned 404 or error — subscription doesn't exist anymore
+        console.log(`[Razorpay] Subscription ${user.razorpaySubscriptionId} not found on Razorpay. Clearing stale data.`);
+        isActiveSubscription = false;
+      }
+
+      if (isActiveSubscription) {
+        // Subscription is genuinely active — block the user
+        const error = new Error('ACTIVE_SUBSCRIPTION');
+        error.code = 'ACTIVE_SUBSCRIPTION';
+        error.planType = 'razorpay';
+        throw error;
+      }
+
+      // Subscription is stale/dead — clear it and allow resubscription
+      console.log(`[Razorpay] Clearing stale subscription for user ${userId}`);
+      user.razorpaySubscriptionId = null;
+      user.razorpayPaymentId = null;
+      user.plan = 'free';
+      user.planType = 'free';
+      await user.save();
     }
 
     // Check if user has an active Dodo subscription
     if (user.dodoSubscriptionId && user.plan !== 'free') {
-      throw new Error('You have an active international subscription. Please cancel it first.');
+      const error = new Error('ACTIVE_SUBSCRIPTION');
+      error.code = 'ACTIVE_SUBSCRIPTION';
+      error.planType = 'dodo';
+      throw error;
     }
 
     // Map planKey + billingCycle to plan_id from environment
@@ -34,6 +64,8 @@ const createRazorpaySubscription = async (userId, planKey, options = {}) => {
       'agency-yearly':   process.env.RAZORPAY_AGENCY_ANNUAL_PLAN_ID,
       'test-monthly':    process.env.RAZORPAY_TEST_PLAN_ID,
       'test-yearly':     process.env.RAZORPAY_TEST_PLAN_ID,
+      'daily_test-monthly': process.env.RAZORPAY_DAILY_TEST_PLAN_ID,
+      'daily_test-yearly':  process.env.RAZORPAY_DAILY_TEST_PLAN_ID,
     };
 
     const planId = planMap[`${planKey}-${billingCycle}`];
@@ -86,7 +118,7 @@ const createRazorpaySubscription = async (userId, planKey, options = {}) => {
 
   } catch (error) {
     console.error('Error in createRazorpaySubscription:', error.message);
-    throw new Error(error.message);
+    throw error;
   }
 };
 

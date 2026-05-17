@@ -20,6 +20,7 @@ const runGetStartedNudgeJob = async () => {
 
     const users = await User.find({
       plan: 'free',
+      isTrial: { $ne: true },
       createdAt: { $gte: rangeStart, $lte: rangeEnd },
       emailBounced: { $ne: true },
       $or: [
@@ -55,6 +56,7 @@ const runAccessExpiryReminderJob = async () => {
     const users = await User.find({
       scheduledDowngrade: true,
       emailBounced: { $ne: true },
+      expiryReminderSent: { $ne: true },
       currentPeriodEnd: { $gte: now, $lte: seventyTwoHoursFromNow }
     });
 
@@ -64,7 +66,10 @@ const runAccessExpiryReminderJob = async () => {
         planName: user.plan,
         accessUntil: user.currentPeriodEnd
       });
-      if (success) sentCount++;
+      if (success) {
+        await User.findByIdAndUpdate(user._id, { expiryReminderSent: true });
+        sentCount++;
+      }
     }
 
     if (sentCount > 0) {
@@ -120,13 +125,13 @@ const runWinbackJob = async () => {
  */
 const initEmailJobs = () => {
   // Job 1: 10:00 AM daily
-  cron.schedule('0 10 * * *', runGetStartedNudgeJob);
+  cron.schedule('0 10 * * *', runGetStartedNudgeJob, { timezone: 'Asia/Kolkata' });
   
   // Job 2: 09:00 AM daily
-  cron.schedule('0 9 * * *', runAccessExpiryReminderJob);
+  cron.schedule('0 9 * * *', runAccessExpiryReminderJob, { timezone: 'Asia/Kolkata' });
   
   // Job 3: 11:00 AM daily
-  cron.schedule('0 11 * * *', runWinbackJob);
+  cron.schedule('0 11 * * *', runWinbackJob, { timezone: 'Asia/Kolkata' });
 
   console.log('✅ Scheduled Jobs initialized: Email Lifecycle (Nudge, Expiry, Winback)');
 };

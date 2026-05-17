@@ -1,9 +1,19 @@
+const User = require('../models/User');
 const Brief = require('../models/Brief');
 const Output = require('../models/Output');
 const Client = require('../models/Client');
 const { processRequest } = require('../services/llmRouter');
 const { incrementUsage } = require('../services/usage.service');
 const DOMPurify = require('isomorphic-dompurify');
+
+const AI_TIMEOUT_MS = 120000; // 120 seconds
+
+const withTimeout = (promise, ms) => {
+  const timeout = new Promise((_, reject) =>
+    setTimeout(() => reject(new Error('AI generation timed out. Please try again.')), ms)
+  );
+  return Promise.race([promise, timeout]);
+};
 
 const generate = async (req, res, next) => {
   try {
@@ -13,6 +23,7 @@ const generate = async (req, res, next) => {
             platform,         // new field
             length,           // new field
             goal,             // new field
+            variations,       // Added
             toneOverride, additionalContext } = req.body;
 
     console.log('[BriefController] Request received:', { 
@@ -37,7 +48,6 @@ const generate = async (req, res, next) => {
       });
     }
 
-    // Generate content via LLM router with a 90-second timeout
     const virtualBrief = { 
       briefText: briefContent, 
       contentType,
@@ -45,26 +55,22 @@ const generate = async (req, res, next) => {
       length: safeLength,
       goal: safeGoal
     };
-    
-    const timeoutPromise = new Promise((_, reject) => {
-      setTimeout(() => {
-        const err = new Error('Generation timed out. The AI provider is taking too long to respond.');
-        err.status = 504; // Gateway Timeout
-        reject(err);
-      }, 90000); // 90 seconds
-    });
 
-    const processPromise = processRequest({ 
-      brief: virtualBrief, 
-      additionalContext: safeAdditionalContext,
-      toneOverride: safeToneOverride,
-      userPlan: req.user.plan,
-      clientId, 
-      userId: req.user._id 
-    });
+    // Generate content via LLM router
+    const result = await withTimeout(
+      processRequest({ 
+        brief: virtualBrief, 
+        additionalContext: safeAdditionalContext,
+        toneOverride: safeToneOverride,
+        userPlan: req.user.plan,
+        clientId, 
+        userId: req.user._id,
+        variations: parseInt(variations) || 1
+      }),
+      AI_TIMEOUT_MS
+    );
 
-    // Race the generation against the timeout
-    const result = await Promise.race([processPromise, timeoutPromise]);
+    const resultsArray = Array.isArray(result) ? result : [result];
 
     // Success! Now create the records
     const brief = await Brief.create({
@@ -77,21 +83,45 @@ const generate = async (req, res, next) => {
       status: 'completed'
     });
 
-    const output = await Output.create({
-      userId: req.user._id,
-      clientId,
-      briefId: brief._id,
-      contentType,
-      generatedText: result.generatedText,
-      modelUsed: result.modelUsed,
-      taskType: result.taskType,
-      wordCount: result.wordCount,
-      apiCost: result.apiCost,
-      status: 'completed'
+    const outputs = await Promise.all(resultsArray.map(r => 
+      Output.create({
+        userId: req.user._id,
+        clientId,
+        briefId: brief._id,
+        contentType,
+        generatedText: r.generatedText,
+        modelUsed: r.modelUsed,
+        taskType: r.taskType,
+        generatedWordCount: r.generatedWordCount,
+        apiCost: r.apiCost,
+        status: 'completed'
+      })
+    ));
+
+    // After successful generation, increment usage
+    await User.findByIdAndUpdate(req.user._id, {
+      $inc: { generationsUsed: 1 }
     });
 
-    // Increment usage
-    await incrementUsage(req.user._id);
+    const updatedUser = await User.findById(req.user._id);
+    const usagePercent = (updatedUser.generationsUsed / updatedUser.generationsLimit) * 100;
+
+    if (usagePercent >= 80 && usagePercent < 81) {
+      // Only fire once at 80% threshold
+      const { sendGenerationLimitWarning } = require('../services/email.service');
+      sendGenerationLimitWarning(updatedUser.email, updatedUser.name, {
+        used: updatedUser.generationsUsed,
+        limit: updatedUser.generationsLimit,
+        planName: updatedUser.plan
+      });
+    }
+
+    if (updatedUser.generationsUsed >= updatedUser.generationsLimit) {
+      const { sendGenerationLimitExhausted } = require('../services/email.service');
+      sendGenerationLimitExhausted(updatedUser.email, updatedUser.name, {
+        planName: updatedUser.plan
+      });
+    }
 
     // Update client stats
     if (clientId) {
@@ -101,7 +131,7 @@ const generate = async (req, res, next) => {
       }).catch(err => console.error('Non-critical client update failed:', err));
     }
 
-    res.status(200).json({ success: true, output });
+    res.status(200).json({ success: true, output: outputs[0] });
   } catch (error) {
     next(error);
   }

@@ -56,7 +56,7 @@ const generate = async (req, res, next) => {
       generatedText: JSON.stringify(result.data),
       modelUsed: result.modelUsed,
       taskType: result.taskType,
-      wordCount: result.wordCount,
+      generatedWordCount: result.generatedWordCount,
       apiCost: result.apiCost,
       status: 'completed'
     });

@@ -19,32 +19,38 @@ const checkFacts = async (content) => {
 
     // ── STEP 1: CLAIM EXTRACTION ───────────────────────────────────────────
     const extractionPrompt = `
-      You are a factual claim extractor. Your task is to identify every factual claim in the provided content.
-      A claim is: any statistic, percentage, named study, quote, date, or attribution to a person or organization.
+      You are a high-precision factual claim extractor for a marketing platform.
+      Your task is to identify every single verifiable assertion in the provided content.
       
-      Return ONLY a raw JSON array of objects. Do not include markdown code blocks or introductory text.
-      Each object must have the following structure:
+      A verifiable claim includes:
+      - Any statistic, percentage, or numerical data.
+      - Any specific feature or benefit of a product or service (e.g., "Waterproof up to 50m").
+      - Any claim about pricing, availability, or historical events.
+      - Any mention of specific names, organizations, locations, or studies.
+      - Any quote or attribution.
+      - Any statement that makes a concrete promise or assertion that can be researched online.
+      
+      CRITICAL: Even if the claim seems minor or is part of a creative sentence, extract it if it contains a verifiable fact.
+      
+      Return ONLY a raw JSON array of objects.
+      Each object must have:
       {
         "id": number,
-        "claim": "The specific claim text",
-        "paragraph": "A snippet of the paragraph where the claim appears"
+        "claim": "The specific claim text (concise and researchable)",
+        "paragraph": "The exact sentence or paragraph where the claim appears"
       }
     `.trim();
 
-    const extractionRes = await generateWithGemini(`${extractionPrompt}\n\nContent: ${content}`);
+    const extractionRes = await generateWithGemini({
+      prompt: `${extractionPrompt}\n\nContent: ${content}`,
+      responseMimeType: 'application/json'
+    });
     
-    // Convert string response to matching structure for extractionRes
-    const extractionGeneratedText = extractionRes;
+    const extractionGeneratedText = extractionRes.text;
 
     let extractedClaims = [];
     try {
-      let cleanJson = extractionGeneratedText.trim();
-      // Remove potential markdown blocks
-      if (cleanJson.startsWith('```json')) cleanJson = cleanJson.substring(7);
-      else if (cleanJson.startsWith('```')) cleanJson = cleanJson.substring(3);
-      if (cleanJson.endsWith('```')) cleanJson = cleanJson.substring(0, cleanJson.length - 3);
-      
-      extractedClaims = JSON.parse(cleanJson.trim());
+      extractedClaims = JSON.parse(extractionGeneratedText.trim());
     } catch (e) {
       console.error('[FactChecker] Failed to parse extracted claims:', extractionGeneratedText);
       // If extraction fails, we return an empty set rather than crashing
@@ -78,7 +84,7 @@ const checkFacts = async (content) => {
               'X-API-KEY': process.env.SERPER_API_KEY,
               'Content-Type': 'application/json'
             },
-            timeout: 5000 // 5s timeout per claim
+            timeout: 8000 // Increased timeout for stability
           }
         );
 
@@ -107,14 +113,13 @@ const checkFacts = async (content) => {
           SEARCH RESULTS: ${JSON.stringify(searchData)}
           
           Assign one of these statuses:
-          - "verified": If search results clearly confirm the claim with reliable sources.
-          - "uncertain": If results are ambiguous, conflicting, or insufficient.
-          - "unverified": If results contradict the claim or if it is factually incorrect.
+          - "verified": If search results clearly confirm the claim.
+          - "uncertain": If results are ambiguous or insufficient.
+          - "unverified": If results contradict the claim.
           
-          If "unverified", generate one "replacement" suggestion that is factually correct based on the search results, and include the "source" URL.
+          If "unverified", generate one "replacement" suggestion that is factually correct.
           
-          Return ONLY a raw JSON object. Do not include markdown code blocks.
-          Structure:
+          Return ONLY a raw JSON object.
           {
             "status": "verified" | "uncertain" | "unverified",
             "source": "URL or null",
@@ -122,18 +127,16 @@ const checkFacts = async (content) => {
           }
         `.trim();
 
-        const scoringResult = await generateWithGemini(scoringPrompt);
+        const scoringRes = await generateWithGemini({
+          prompt: scoringPrompt,
+          responseMimeType: 'application/json'
+        });
         
-        const scoringGeneratedText = scoringResult;
+        const scoringGeneratedText = scoringRes.text;
 
         let scoredData;
         try {
-          let cleanScoreJson = scoringGeneratedText.trim();
-          if (cleanScoreJson.startsWith('```json')) cleanScoreJson = cleanScoreJson.substring(7);
-          else if (cleanScoreJson.startsWith('```')) cleanScoreJson = cleanScoreJson.substring(3);
-          if (cleanScoreJson.endsWith('```')) cleanScoreJson = cleanScoreJson.substring(0, cleanScoreJson.length - 3);
-          
-          scoredData = JSON.parse(cleanScoreJson.trim());
+          scoredData = JSON.parse(scoringGeneratedText.trim());
         } catch (e) {
           console.error('[FactChecker] Failed to parse scoring JSON:', scoringGeneratedText);
           return { ...claimObj, status: 'uncertain', source: null, replacement: null };

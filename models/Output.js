@@ -8,7 +8,7 @@ const outputSchema = new mongoose.Schema({
   generatedText: { type: String },
   modelUsed: { type: String },
   taskType: { type: String },
-  wordCount: { type: Number },
+  generatedWordCount: { type: Number },
   status: { 
     type: String,
     enum: ['pending','completed','approved','needsreview'],

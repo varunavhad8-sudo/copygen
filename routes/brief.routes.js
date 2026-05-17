@@ -19,7 +19,6 @@ const validateBrief = [
 ];
 
 router.post('/', auth, validateBrief, checkGenerationLimit, generate);
-router.post('/generate', auth, validateBrief, checkGenerationLimit, generate);
 
 module.exports = router;
 

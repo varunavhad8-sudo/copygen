@@ -22,17 +22,43 @@ const userSchema = new mongoose.Schema({
   },
   timezone: { 
     type: String, 
-    default: '(UTC+5:30) Mumbai' 
+    default: 'Asia/Kolkata (IST)' 
+  },
+  // ── Region / Currency (used for payment gateway routing) ──────────────────
+  country: {
+    type: String,
+    default: 'IN'   // Default Indian; update for international users at signup
+  },
+  currency: {
+    type: String,
+    default: 'INR'  // Default INR; set to 'USD' etc. for international
   },
   plan: { 
     type: String, 
-    enum: ['free', 'starter', 'pro', 'growth', 'agency'], 
+    enum: ['free', 'starter', 'growth', 'agency'], 
     default: 'free' 
   },
   avatarKey: {
     type: String,
     default: ''
   },
+  // ── Notification Preferences ──────────────────────────────────────────────
+  notificationPreferences: {
+    genComplete: { type: Boolean, default: true },
+    weeklySum: { type: Boolean, default: true },
+    monthlyRep: { type: Boolean, default: false },
+    lowCredits: { type: Boolean, default: true },
+    billing: { type: Boolean, default: true },
+    newFeatures: { type: Boolean, default: true },
+    tips: { type: Boolean, default: false },
+    security: { type: Boolean, default: true } // Required/Always on
+  },
+  // ── API Key ───────────────────────────────────────────────────────────────
+  apiKey: {
+    type: String,
+    default: null
+  },
+
   // ── Flat usage counters (kept for backward compat) ─────────────────────────
   generationsUsed: { 
     type: Number, 
@@ -74,6 +100,10 @@ const userSchema = new mongoose.Schema({
   dodoSubscriptionId: { 
     type: String, 
     index: true 
+  },
+  dodoCheckoutSessionId: {
+    type: String,
+    default: null
   },
   razorpayCustomerId: { 
     type: String 
@@ -120,7 +150,7 @@ const userSchema = new mongoose.Schema({
   },
   previousPlan: {
     type: String,
-    enum: ['free', 'starter', 'pro', 'growth', 'agency'],
+    enum: ['free', 'starter', 'growth', 'agency'],
     default: 'free'
   },
   winbackSent: {
@@ -128,6 +158,26 @@ const userSchema = new mongoose.Schema({
     default: false
   },
   emailBounced: {
+    type: Boolean,
+    default: false
+  },
+  emailBouncedAt: {
+    type: Date,
+    default: null
+  },
+  emailBounceType: {
+    type: String,
+    default: null
+  },
+  emailBounceReason: {
+    type: String,
+    default: null
+  },
+  expiryReminderSent: {
+    type: Boolean,
+    default: false
+  },
+  isAdmin: {
     type: Boolean,
     default: false
   },
@@ -146,7 +196,3 @@ const userSchema = new mongoose.Schema({
 });
 
 module.exports = mongoose.model('User', userSchema);
-
-
-
-

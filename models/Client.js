@@ -12,6 +12,10 @@ const clientSchema = new mongoose.Schema({
   ga4PropertyId: { type: String, default: '' },
   scSiteUrl: { type: String },
   targetAudience: { type: String },
+  budget: { type: String },
+  contactName: { type: String },
+  contactEmail: { type: String },
+  notes: { type: String },
   brandProfileId: { 
     type: mongoose.Schema.Types.ObjectId, 
     ref: 'BrandProfile' 

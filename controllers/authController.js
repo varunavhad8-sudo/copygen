@@ -2,6 +2,9 @@ const User = require('../models/User');
 const admin = require('../config/firebase');
 const { isWorkEmail } = require('../utils/authValidation');
 const { getDbStatus } = require('../config/db');
+const crypto = require('crypto');
+
+const { PLAN_LIMITS } = require('../config/plans');
 
 const TRIAL_DAYS = 7;
 
@@ -14,20 +17,8 @@ const register = async (req, res, next) => {
     const isGoogle = decoded.firebase?.sign_in_provider === 'google.com';
     console.log('[Auth] Register attempt:', { email: decoded.email, provider: decoded.firebase?.sign_in_provider, isGoogle });
 
-    // Temporarily disabled for troubleshooting
-    /*
-    if (!isGoogle && !isWorkEmail(decoded.email)) {
-      console.warn('[Auth] Rejected non-work email:', decoded.email);
-      return res.status(403).json({ 
-        success: false, 
-        message: 'Registration restricted to work emails only.' 
-      });
-    }
-    */
-
     let user = await User.findOne({ firebaseUid: decoded.uid });
     
-    // If UID not found, check by email to handle account linking/re-registration
     if (!user && decoded.email) {
       user = await User.findOne({ email: decoded.email.toLowerCase().trim() });
       if (user) {
@@ -48,11 +39,24 @@ const register = async (req, res, next) => {
           plan: 'free',
           isTrial: true,
           trialExpiresAt: new Date(Date.now() + TRIAL_DAYS * 24 * 60 * 60 * 1000),
-          generationsLimit: 10,
+          generationsLimit: PLAN_LIMITS.free.generations,
           generationsUsed: 0,
           brandVoicesUsed: 0,
-          brandVoicesLimit: 1,
-          planLimits: { maxGenerations: 10, maxBrandVoices: 1 }
+          brandVoicesLimit: PLAN_LIMITS.free.brandVoices,
+          planLimits: { 
+            maxGenerations: PLAN_LIMITS.free.generations, 
+            maxBrandVoices: PLAN_LIMITS.free.brandVoices 
+          },
+          notificationPreferences: {
+            genComplete: true,
+            weeklySum: true,
+            monthlyRep: false,
+            lowCredits: true,
+            billing: true,
+            newFeatures: true,
+            tips: false,
+            security: true
+          }
         });
         
         // Send Welcome Email (Non-blocking)
@@ -88,18 +92,54 @@ const patchProfile = async (req, res, next) => {
   } catch (error) { next(error); }
 };
 
+const getNotifications = async (req, res, next) => {
+  try {
+    res.json({ success: true, data: req.user.notificationPreferences || {} });
+  } catch (error) { next(error); }
+};
+
+const updateNotifications = async (req, res, next) => {
+  try {
+    const user = await User.findByIdAndUpdate(
+      req.user._id,
+      { notificationPreferences: req.body },
+      { new: true }
+    );
+    res.json({ success: true, data: user.notificationPreferences });
+  } catch (error) { next(error); }
+};
+
+const getApiKey = async (req, res, next) => {
+  try {
+    // Masked API key
+    const key = req.user.apiKey || '';
+    const masked = key ? `${key.substring(0, 8)}...${key.substring(key.length - 4)}` : 'No API key generated';
+    res.json({ success: true, data: masked });
+  } catch (error) { next(error); }
+};
+
+const regenerateApiKey = async (req, res, next) => {
+  try {
+    const newKey = `cg_${crypto.randomBytes(24).toString('hex')}`;
+    const user = await User.findByIdAndUpdate(
+      req.user._id,
+      { apiKey: newKey },
+      { new: true }
+    );
+    res.json({ success: true, data: newKey });
+  } catch (error) { next(error); }
+};
+
 const deleteAccount = async (req, res, next) => {
   try {
     const user = req.user;
 
-    // 1. Delete from Firebase Auth
     if (user.firebaseUid) {
       await admin.auth().deleteUser(user.firebaseUid).catch(err => {
         console.error('Failed to delete Firebase user:', err.message);
       });
     }
 
-    // 2. Delete user's content models
     const BrandProfile = require('../models/BrandProfile');
     const Output = require('../models/Output');
     const Brief = require('../models/Brief');
@@ -112,7 +152,6 @@ const deleteAccount = async (req, res, next) => {
     await Client.deleteMany({ userId: user._id });
     await Template.deleteMany({ userId: user._id });
 
-    // 3. Cancel any active subscriptions
     if (user.planType === 'razorpay' && user.razorpaySubscriptionId) {
       const { cancelRazorpaySubscription } = require('../services/razorpay.service');
       await cancelRazorpaySubscription(user._id).catch(err => console.error('Failed to cancel Razorpay:', err.message));
@@ -121,9 +160,7 @@ const deleteAccount = async (req, res, next) => {
       await cancelDodoSubscription(user._id).catch(err => console.error('Failed to cancel Dodo:', err.message));
     }
 
-    // 4. Mark user document for 30-day purge
     user.scheduledDeletionAt = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
-    // Erase identifying information to comply with GDPR immediately
     user.email = `deleted_${Date.now()}@copygen.in`;
     user.name = 'Deleted User';
     user.workspace = 'Deleted Workspace';
@@ -168,7 +205,15 @@ const getOnboardingStatus = async (req, res, next) => {
   } catch(error) { next(error); }
 };
 
-module.exports = { register, getMe, patchProfile, deleteAccount, completeOnboarding, getOnboardingStatus };
-
-
-
+module.exports = { 
+  register, 
+  getMe, 
+  patchProfile, 
+  getNotifications, 
+  updateNotifications, 
+  getApiKey, 
+  regenerateApiKey, 
+  deleteAccount, 
+  completeOnboarding, 
+  getOnboardingStatus 
+};

@@ -35,18 +35,20 @@ ${(tone || voice) ? `CRITICAL: The brand's tone (${tone}) and voice (${voice}) a
 
     const writingStyleInstructions = `
 WRITING STYLE REQUIREMENTS:
-- Write in first person ("I" or "we") where appropriate to build connection.
-- Include specific examples, case studies, or data points to ground your claims.
-- Vary sentence length significantly: mix short, punchy sentences for impact with longer, detailed ones for depth.
-- NEVER use these phrases: "In today's digital age", "In conclusion", "It's important to note", "Leverage", "Delve", "Paramount".
-- Sound conversational, direct, and human—not like a corporate brochure or a generic AI.
-- Add specific, actionable steps the reader can take immediately, not vague advice.
+- TONE: Relatable, conversational, and scannable. Write for Indian college students—avoid complex jargon.
+- STRUCTURE: Use short paragraphs (max 3-4 lines).
+- SEO: Include the primary keyword ("${targetKeyword}") in the first 100 words.
+- HEADINGS: Include one H1 with the primary keyword. Use H2 subheadings every 150-200 words to maintain scannability.
+- BRANDING: Mention the brand name naturally 2-3 times throughout the article.
+- PERSPECTIVE: Write in first person ("I" or "we") where appropriate to build connection.
+- NEVER use AI filler: "In today's digital age", "In conclusion", "It's important to note", "Leverage", "Delve".
+- ACTIONABLE: Add specific steps the reader can take immediately.
     `.trim();
 
     const jsonSchema = `
 You must return your entire response as a single, valid JSON object. Do not include any markdown formatting like \`\`\`json outside the JSON object. The JSON must exactly match the following structure:
 {
-  "article": "Full blog article content with H1, H2, H3 structure",
+  "article": "Full blog article content using HTML tags (<h1>, <h2>, <h3>, <p>, <ul>, <li>, <strong>). DO NOT use markdown symbols like #.",
   "metaTitle": "Meta title (must be under 60 characters)",
   "metaDescription": "Meta description (must be under 160 characters)",
   "urlSlug": "lowercase-hyphenated-slug",
@@ -95,7 +97,16 @@ ${brandMemoryContext}
 
 ${writingStyleInstructions}
 
-Ensure you generate all requested elements (Article, Meta Title, Meta Description, URL Slug, 5 FAQs minimum, JSON-LD, 3 Image Suggestions, 3 Internal Links, 3 External Links, and Social Captions).
+Ensure you generate all requested elements:
+- Article (HTML format)
+- Meta Title & Description
+- URL Slug
+- 5 FAQs minimum
+- JSON-LD
+- 3 Image Suggestions
+- 3 Internal Links
+- 3 External Links
+- Social Captions (LinkedIn, X, Facebook)
     `.trim();
 
     const additionalContext = `
@@ -113,38 +124,54 @@ ${jsonSchema}
       },
       additionalContext,
       clientId,
-      userPlan: userPlan || 'free'
+      userPlan: userPlan || 'free',
+      responseMimeType: 'application/json'
     });
 
     console.log('Raw Gemini response (first 500 chars):', response.generatedText.substring(0, 500));
 
     let parsedResult;
     try {
-      // Strip markdown code blocks if present
-      let cleaned = response.generatedText
-        .replace(/^```json\s*/i, '')
-        .replace(/^```\s*/i, '')
-        .replace(/```\s*$/i, '')
-        .trim();
+      let cleaned = response.generatedText.trim();
       
-      // Find JSON object in response if there's surrounding text
-      const jsonMatch = cleaned.match(/\{[\s\S]*\}/);
-      if (jsonMatch) {
-        cleaned = jsonMatch[0];
+      // 1. Handle common markdown wrapping
+      if (cleaned.includes('```')) {
+        const codeBlockMatch = cleaned.match(/```(?:json)?\s*([\s\S]*?)\s*```/);
+        if (codeBlockMatch) cleaned = codeBlockMatch[1].trim();
       }
       
+      // 2. Locate the first { and last } to isolate the JSON object
+      const firstBrace = cleaned.indexOf('{');
+      const lastBrace = cleaned.lastIndexOf('}');
+      
+      if (firstBrace !== -1 && lastBrace !== -1) {
+        cleaned = cleaned.substring(firstBrace, lastBrace + 1);
+      }
+      
+      // 3. Attempt to parse
       parsedResult = JSON.parse(cleaned);
     } catch (parseError) {
-      console.error('SEO JSON parse error:', parseError.message);
-      console.error('Raw response:', response.generatedText);
-      throw new Error('Failed to parse SEO blog response from AI');
+      console.error('[SEO Service] JSON Parse Failed.');
+      console.error('Error:', parseError.message);
+      
+      // Log truncation hint
+      if (response.generatedText.length > 5000) {
+        console.warn(`[SEO Service] Large response detected (${response.generatedText.length} chars). Truncation is likely.`);
+      }
+      
+      // Create a more informative error for the UI
+      const errorMessage = response.generatedText.length < 100 
+        ? 'AI returned an empty or too short response. Please try again.'
+        : 'AI response was too long or formatted incorrectly. Try reducing the word count.';
+        
+      throw new Error(errorMessage);
     }
 
     return {
       data: parsedResult,
       modelUsed: response.modelUsed,
       taskType: response.taskType,
-      wordCount: response.wordCount,
+      generatedWordCount: response.generatedWordCount,
       apiCost: response.apiCost
     };
 

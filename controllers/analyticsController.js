@@ -7,75 +7,132 @@ const BrandProfile = require('../models/BrandProfile');
 
 const getSummary = async (req, res, next) => {
   try {
-    const totalOutputs = await Output.countDocuments({ userId: req.user._id });
-    const stats = await Output.aggregate([
-      { $match: { userId: req.user._id } },
-      { $group: {
-        _id: null,
-        totalWordCount: { $sum: '$wordCount' },
-        totalApiCost: { $sum: '$apiCost' },
-        mostUsedType: { $top: { sortBy: { count: -1 }, output: '$_id' } },
-        typeCounts: { $push: '$contentType' }
-      }}
-    ]);
+    const { clientId } = req.query;
+    const baseQuery = { userId: req.user._id };
+    if (clientId) baseQuery.clientId = clientId;
 
-    const result = stats[0] || { totalWordCount: 0, totalApiCost: 0, typeCounts: [] };
-    
-    // Process type counts manually for accuracy
-    const typeCounts = result.typeCounts.reduce((acc, type) => {
-      acc[type] = (acc[type] || 0) + 1;
-      return acc;
-    }, {});
-
-    const mostUsedType = Object.entries(typeCounts).sort((a,b) => b[1] - a[1])[0]?.[0] || 'N/A';
-    
-    const totalWordCount = result.totalWordCount;
-    const totalApiCost = result.totalApiCost;
-    const estimatedHoursSaved = Math.round(totalWordCount / 250); // 250 words per hour estimate
+    const totalGenerations = await Output.countDocuments(baseQuery);
     const activeClients = await Client.countDocuments({ userId: req.user._id });
-    const mostUsedModel = 'Gemini 1.5 Pro';
+    const brandVoices = await BrandProfile.countDocuments({ userId: req.user._id });
+    const outputsSaved = await Output.countDocuments({ 
+      ...baseQuery,
+      status: { $in: ['approved', 'completed'] } 
+    });
 
-    res.json({ success: true, summary: {
-      totalOutputs, totalWordCount, 
-      totalApiCost: totalApiCost.toFixed(2),
-      estimatedHoursSaved, activeClients,
-      mostUsedType, mostUsedModel,
-      typeCounts
-    }});
-  } catch (error) { next(error); }
+    // Calculate Growth/Changes based on Range
+    const range = req.query.range || '30d';
+    const days = range === '7d' ? 7 : range === '90d' ? 90 : 30;
+    
+    const now = new Date();
+    const periodStart = new Date(now.getTime() - (days * 24 * 60 * 60 * 1000));
+    const prevPeriodStart = new Date(now.getTime() - (2 * days * 24 * 60 * 60 * 1000));
+
+    // Get current period counts
+    const currentGens = await Output.countDocuments({ 
+      ...baseQuery,
+      createdAt: { $gte: periodStart } 
+    });
+    const currentClients = await Client.countDocuments({ 
+      userId: req.user._id, 
+      createdAt: { $gte: periodStart } 
+    });
+
+    // Get previous period counts
+    const prevGens = await Output.countDocuments({ 
+      ...baseQuery,
+      createdAt: { $gte: prevPeriodStart, $lt: periodStart } 
+    });
+    const prevClients = await Client.countDocuments({ 
+      userId: req.user._id, 
+      createdAt: { $gte: prevPeriodStart, $lt: periodStart } 
+    });
+
+    // Calculate growth percentages
+    const calculateGrowth = (current, previous) => {
+      if (previous === 0) return current > 0 ? 100 : 0;
+      return Math.round(((current - previous) / previous) * 100);
+    };
+
+    const changes = {
+      generations: calculateGrowth(currentGens, prevGens),
+      clients: currentClients, // Just show new clients count for now as per original mock intent
+      savingRate: totalGenerations > 0 ? Math.round((outputsSaved / totalGenerations) * 100) : 0
+    };
+
+    const avgPerDay = totalGenerations > 0 ? (totalGenerations / days).toFixed(1) : 0;
+
+    res.json({ 
+      success: true, 
+      summary: {
+        totalGenerations,
+        activeClients,
+        brandVoices,
+        outputsSaved,
+        avgPerDay,
+        changes
+      },
+      totalGenerations,
+      activeClients,
+      brandVoices,
+      outputsSaved,
+      avgPerDay
+    });
+  } catch (error) { 
+    console.error('[Analytics] Summary Error:', error);
+    next(error); 
+  }
 };
 
 const getVolume = async (req, res, next) => {
   try {
-    const thirtyDaysAgo = new Date();
-    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+    const { range, clientId } = req.query;
+    const days = parseInt(range) || 30;
+    const startDate = new Date();
+    startDate.setDate(startDate.getDate() - days);
 
-    const usageVolume = await Output.aggregate([
-      { $match: { 
-        userId: req.user._id,
-        createdAt: { $gte: thirtyDaysAgo }
-      }},
+    const matchQuery = { 
+      userId: req.user._id,
+      createdAt: { $gte: startDate }
+    };
+    if (clientId) matchQuery.clientId = new (require('mongoose')).Types.ObjectId(clientId);
+
+    const volume = await Output.aggregate([
+      { $match: matchQuery },
       { $group: {
         _id: { $dateToString: { format: '%Y-%m-%d', date: '$createdAt' }},
         count: { $sum: 1 }
       }},
-      { $sort: { _id: 1 }}
+      { $project: {
+        date: '$_id',
+        count: 1,
+        _id: 0
+      }},
+      { $sort: { date: 1 }}
     ]);
 
-    res.json({ success: true, usageVolume });
+    res.json({ success: true, usageVolume: volume, activity: volume });
   } catch (error) { next(error); }
 };
 
 const getBreakdown = async (req, res, next) => {
   try {
+    const { clientId } = req.query;
+    const matchQuery = { userId: req.user._id };
+    if (clientId) matchQuery.clientId = new (require('mongoose')).Types.ObjectId(clientId);
+
     const breakdown = await Output.aggregate([
-      { $match: { userId: req.user._id }},
+      { $match: matchQuery },
       { $group: {
         _id: '$contentType',
-        count: { $sum: 1 }
+        value: { $sum: 1 }
+      }},
+      { $project: {
+        name: { $ifNull: ['$_id', 'Other'] },
+        value: 1,
+        _id: 0
       }}
     ]);
-    res.json({ success: true, breakdown });
+    res.json({ success: true, breakdown, formats: breakdown });
   } catch (error) { next(error); }
 };
 
@@ -172,6 +229,32 @@ const generateReport = async (req, res, next) => {
   } catch (error) { next(error); }
 };
 
+const getTopClients = async (req, res, next) => {
+  try {
+    const topClients = await Output.aggregate([
+      { $match: { userId: req.user._id } },
+      { $group: {
+        _id: '$clientId',
+        count: { $sum: 1 }
+      }},
+      { $lookup: {
+        from: 'clients',
+        localField: '_id',
+        foreignField: '_id',
+        as: 'client'
+      }},
+      { $unwind: { path: '$client', preserveNullAndEmptyArrays: true } },
+      { $project: {
+        name: { $ifNull: ['$client.name', 'Private'] },
+        count: 1
+      }},
+      { $sort: { count: -1 } },
+      { $limit: 5 }
+    ]);
+    res.json({ success: true, topClients });
+  } catch (error) { next(error); }
+};
+
 module.exports = { 
   getSummary, 
   getVolume, 
@@ -180,5 +263,6 @@ module.exports = {
   getKeywords,
   getGA4Data,
   getPatterns,
-  generateReport
+  generateReport,
+  getTopClients
 };
