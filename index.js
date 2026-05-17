@@ -40,6 +40,15 @@ connectDB();
 
 const app = express();
 
+app.get('/api/debug-env', (req, res) => {
+  const key = process.env.GEMINI_API_KEY || '';
+  res.json({
+    keyExists: !!key,
+    keyPrefix: key ? key.substring(0, 8) : 'EMPTY',
+    keyLength: key.length
+  });
+});
+
 // ── CORS Configuration ──────────────────────────────────────────────────────
 const corsOptions = {
   origin: function(origin, callback) {
@@ -137,16 +146,6 @@ app.get('/api/health', (req, res) => {
   res.status(200).json({ 
     status: 'ok', 
     timestamp: new Date().toISOString()
-  });
-});
-
-// ── Temporary Debug Route for Environment Variables ──────────────────────────
-app.get('/api/debug-env', (req, res) => {
-  const key = process.env.GEMINI_API_KEY;
-  res.status(200).json({
-    keyExists: !!key,
-    keyPrefix: key ? key.substring(0, 8) : null,
-    keyLength: key ? key.length : 0
   });
 });
 
