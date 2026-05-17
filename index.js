@@ -144,9 +144,9 @@ app.get('/api/health', (req, res) => {
 app.get('/api/debug-env', (req, res) => {
   const key = process.env.GEMINI_API_KEY;
   res.status(200).json({
-    exists: !!key,
-    prefix: key ? key.substring(0, 8) : null,
-    length: key ? key.length : 0
+    keyExists: !!key,
+    keyPrefix: key ? key.substring(0, 8) : null,
+    keyLength: key ? key.length : 0
   });
 });
 
