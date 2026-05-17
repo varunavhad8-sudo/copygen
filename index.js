@@ -45,7 +45,8 @@ app.get('/api/debug-env', (req, res) => {
   res.json({
     keyExists: !!key,
     keyPrefix: key ? key.substring(0, 8) : 'EMPTY',
-    keyLength: key.length
+    keyLength: key.length,
+    allEnvKeys: Object.keys(process.env).filter(k => k.includes('GEMINI') || k.includes('GOOGLE') || k.includes('API'))
   });
 });
 
