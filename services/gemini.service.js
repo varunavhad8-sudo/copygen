@@ -59,9 +59,9 @@ const generateWithGemini = async (arg1, arg2 = '', arg3 = 'gemini-3.1-pro-previe
       'Google Ads': 10000,
       'Social Media': 10000,
       'Email': 10000,
-      'Blog Post': 10000,
-      'SEO Brief': 10000,
-      'Landing Page': 10000,
+      'Blog Post': 11000,
+      'SEO Brief': 11000,
+      'Landing Page': 11000,
       'default': 10000
     };
 
