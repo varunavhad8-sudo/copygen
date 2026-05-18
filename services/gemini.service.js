@@ -56,13 +56,13 @@ const generateWithGemini = async (arg1, arg2 = '', arg3 = 'gemini-3.1-pro-previe
   let resolvedMaxTokens = maxTokens;
   if (contentType) {
     const tokenLimitMap = {
-      'Google Ads': 500,
-      'Social Media': 800,
-      'Email': 1500,
-      'Blog Post': 6000,
-      'SEO Brief': 2500,
-      'Landing Page': 3000,
-      'default': 2000
+      'Google Ads': 10000,
+      'Social Media': 10000,
+      'Email': 10000,
+      'Blog Post': 10000,
+      'SEO Brief': 10000,
+      'Landing Page': 10000,
+      'default': 10000
     };
 
     const original = String(contentType).trim();

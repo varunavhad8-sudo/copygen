@@ -12,14 +12,14 @@ const TASK_TYPES = {
 
 const TOKEN_LIMITS = {
   standard: {
-    longForm: 8192,
-    shortForm: 2048,  // Increased from 512 to prevent any truncation
+    longForm: 10000,
+    shortForm: 10000,
     routing: 512,
     background: 512
   },
   premium: {
-    longForm: 6000,
-    shortForm: 4096,  // Increased from 800
+    longForm: 10000,
+    shortForm: 10000,
     routing: 512,
     background: 512
   }
