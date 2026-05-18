@@ -77,7 +77,7 @@ const calculateCost = (model, wordCount) => {
   return (estimatedTokens / 1000) * (MODEL_COSTS[model] || 0.002);
 };
 
-const generateText = async ({ model, system, user, maxTokens, responseMimeType }) => {
+const generateText = async ({ model, system, user, maxTokens, responseMimeType, contentType }) => {
   const hasOpenAIKey = !!process.env.OPENAI_API_KEY;
   const hasAnthropicKey = !!process.env.ANTHROPIC_API_KEY;
 
@@ -121,7 +121,8 @@ const generateText = async ({ model, system, user, maxTokens, responseMimeType }
       system,
       model: fallbackModel,
       maxTokens,
-      responseMimeType
+      responseMimeType,
+      contentType
     });
     // gemini service already returns { text, modelUsed }
     console.log(`[LLM] Provider: Google | Model: ${result.modelUsed} | Duration: ${Date.now() - fallbackStartTime}ms | Success: true`);
@@ -244,7 +245,8 @@ SEO FORMAT REQUIREMENTS (MANDATORY):
       system: systemPrompt,
       user: finalUserPrompt,
       maxTokens,
-      responseMimeType
+      responseMimeType,
+      contentType: brief.contentType
     }),
     timeoutPromise
   ]);

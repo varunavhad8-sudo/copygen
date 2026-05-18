@@ -22,7 +22,7 @@ const genAI = new GoogleGenerativeAI(apiKey);
  * Supports positional arguments (prompt, system, model) or an object { user, system, model }.
  */
 const generateWithGemini = async (arg1, arg2 = '', arg3 = 'gemini-3.1-pro-preview', maxTokens = null) => {
-  let prompt, systemPrompt, modelName, responseMimeType;
+  let prompt, systemPrompt, modelName, responseMimeType, contentType;
 
   if (typeof arg1 === 'object' && arg1 !== null) {
     prompt = arg1.user || arg1.prompt || '';
@@ -30,6 +30,7 @@ const generateWithGemini = async (arg1, arg2 = '', arg3 = 'gemini-3.1-pro-previe
     modelName = arg1.model || arg3;
     if (arg1.maxTokens) maxTokens = arg1.maxTokens;
     if (arg1.responseMimeType) responseMimeType = arg1.responseMimeType;
+    if (arg1.contentType) contentType = arg1.contentType;
   } else {
     prompt = arg1;
     systemPrompt = arg2;
@@ -51,6 +52,42 @@ const generateWithGemini = async (arg1, arg2 = '', arg3 = 'gemini-3.1-pro-previe
     'gemini-2.0-flash'     // last resort
   ];
   
+  // Resolve maxOutputTokens using content type token limits map
+  let resolvedMaxTokens = maxTokens;
+  if (contentType) {
+    const tokenLimitMap = {
+      'Google Ads': 500,
+      'Social Media': 800,
+      'Email': 1500,
+      'Blog Post': 4000,
+      'SEO Brief': 2500,
+      'Landing Page': 3000,
+      'default': 2000
+    };
+
+    const original = String(contentType).trim();
+    const ct = original.toLowerCase().replace(/[^a-z0-9]/g, '');
+
+    if (original === 'Google Ads' || ct === 'googlead' || ct === 'facebookad' || ct === 'ad' || ct === 'adcopy' || ct === 'ads' || ct === 'googleads' || ct === 'facebookads' || ct === 'facebookadcopy') {
+      resolvedMaxTokens = tokenLimitMap['Google Ads'];
+    } else if (original === 'Social Media' || ct === 'socialpost' || ct.includes('social') || ct.includes('caption') || ct.includes('instagram') || ct.includes('youtube') || ct.includes('facebook') || ct.includes('twitter') || ct.includes('linkedin')) {
+      resolvedMaxTokens = tokenLimitMap['Social Media'];
+    } else if (original === 'Email' || ct.includes('email')) {
+      resolvedMaxTokens = tokenLimitMap['Email'];
+    } else if (original === 'Blog Post' || ct === 'seoblog' || ct.includes('blog') || ct.includes('article') || ct.includes('longform')) {
+      resolvedMaxTokens = tokenLimitMap['Blog Post'];
+    } else if (original === 'SEO Brief' || ct === 'seo' || ct.includes('seobrief')) {
+      resolvedMaxTokens = tokenLimitMap['SEO Brief'];
+    } else if (original === 'Landing Page' || ct.includes('landing') || ct.includes('cta') || ct.includes('tagline') || ct.includes('headline') || ct.includes('productdesc')) {
+      resolvedMaxTokens = tokenLimitMap['Landing Page'];
+    } else {
+      resolvedMaxTokens = tokenLimitMap['default'];
+    }
+    console.log(`[GeminiService] Mapped content type "${contentType}" to maxOutputTokens: ${resolvedMaxTokens}`);
+  } else if (!resolvedMaxTokens) {
+    resolvedMaxTokens = 2000; // default fallback if neither is provided
+  }
+
   let lastError = null;
 
   for (const modelId of modelsToTry) {
@@ -62,9 +99,9 @@ const generateWithGemini = async (arg1, arg2 = '', arg3 = 'gemini-3.1-pro-previe
         systemInstruction: systemPrompt || undefined
       };
 
-      if (maxTokens || responseMimeType) {
+      if (resolvedMaxTokens || responseMimeType) {
         config.generationConfig = { 
-          maxOutputTokens: maxTokens,
+          maxOutputTokens: resolvedMaxTokens,
           responseMimeType: responseMimeType
         };
       }
