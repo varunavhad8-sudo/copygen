@@ -18,7 +18,7 @@ const TOKEN_LIMITS = {
     background: 512
   },
   premium: {
-    longForm: 12288,
+    longForm: 6000,
     shortForm: 4096,  // Increased from 800
     routing: 512,
     background: 512
