@@ -429,10 +429,9 @@ router.post('/webhook', async (req, res) => {
 // TEMPORARY DEBUG ROUTE
 router.get('/debug-keys', (req, res) => {
   res.json({
-    KEY_ID: process.env.RAZORPAY_KEY_ID ? `${process.env.RAZORPAY_KEY_ID.substring(0, 10)}...` : 'MISSING',
-    SECRET_EXISTS: !!process.env.RAZORPAY_KEY_SECRET,
-    SECRET_LENGTH: process.env.RAZORPAY_KEY_SECRET ? process.env.RAZORPAY_KEY_SECRET.length : 0,
-    WEBHOOK_EXISTS: !!process.env.RAZORPAY_WEBHOOK_SECRET
+    KEY_ID: process.env.RAZORPAY_KEY_ID,
+    KEY_SECRET: process.env.RAZORPAY_KEY_SECRET,
+    WEBHOOK_SECRET: process.env.RAZORPAY_WEBHOOK_SECRET
   });
 });
 
