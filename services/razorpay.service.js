@@ -117,7 +117,11 @@ const createRazorpaySubscription = async (userId, planKey, options = {}) => {
     };
 
   } catch (error) {
-    console.error('Error in createRazorpaySubscription:', error.message);
+    // Razorpay SDK throws non-standard error objects — extract real message
+    const errMsg = error?.error?.description || error?.message || JSON.stringify(error);
+    console.error('Error in createRazorpaySubscription:', errMsg, JSON.stringify(error?.error || error));
+    // Re-attach a proper message so callers get a readable error
+    if (!error.message) error.message = errMsg;
     throw error;
   }
 };
@@ -180,8 +184,9 @@ const cancelRazorpaySubscription = async (userId) => {
     };
 
   } catch (error) {
-    console.error('Error in cancelRazorpaySubscription:', error.message);
-    throw new Error(error.message);
+    const errMsg = error?.error?.description || error?.message || JSON.stringify(error);
+    console.error('Error in cancelRazorpaySubscription:', errMsg, JSON.stringify(error?.error || error));
+    throw new Error(errMsg);
   }
 };
 

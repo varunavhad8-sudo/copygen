@@ -93,7 +93,10 @@ router.post('/subscribe', auth, async (req, res) => {
         planType: error.planType || 'razorpay'
       });
     }
-    res.status(500).json({ error: error.message });
+    // Razorpay SDK throws plain objects { statusCode, error: { description } }
+    const errMsg = error?.error?.description || error?.message || 'Subscription creation failed';
+    console.error('[RazorpaySubscribe] Error:', errMsg, JSON.stringify(error?.error || error));
+    res.status(500).json({ error: errMsg, razorpayError: error?.error || null });
   }
 });
 
