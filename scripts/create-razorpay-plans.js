@@ -3,7 +3,7 @@ const dotenv = require('dotenv');
 const path = require('path');
 
 // Load env vars
-dotenv.config({ path: path.join(__dirname, '../../.env') });
+dotenv.config({ path: path.join(__dirname, '../.env') });
 
 const razorpay = new Razorpay({
   key_id: process.env.RAZORPAY_KEY_ID,
@@ -11,27 +11,15 @@ const razorpay = new Razorpay({
 });
 
 const plans = [
-  // ── TEST ───────────────────────────────────────────────────────
-  {
-    period: 'monthly',
-    interval: 1,
-    item: {
-      name: 'Starter Test Plan',
-      amount: 100, // 100 paise = 1 rupee
-      currency: 'INR',
-      description: 'Starter plan - 1 rupee test'
-    }
-  },
-
   // ── MONTHLY ────────────────────────────────────────────────────
   {
     period: 'monthly',
     interval: 1,
     item: {
       name: 'Copygen Starter Monthly',
-      amount: 299900, // ₹2,999 in paise
+      amount: 819900, // ₹8,199 in paise
       currency: 'INR',
-      description: '100 Generations/mo | 10 Brand Voices',
+      description: '300 Generations/mo | 10 Brand Voices',
     },
   },
   {
@@ -39,9 +27,9 @@ const plans = [
     interval: 1,
     item: {
       name: 'Copygen Growth Monthly',
-      amount: 599900, // ₹5,999 in paise
+      amount: 1639900, // ₹16,399 in paise
       currency: 'INR',
-      description: '400 Generations/mo | 150 Brand Voices',
+      description: '1000 Generations/mo | 30 Brand Voices',
     },
   },
   {
@@ -49,9 +37,9 @@ const plans = [
     interval: 1,
     item: {
       name: 'Copygen Agency Monthly',
-      amount: 1199900, // ₹11,999 in paise
+      amount: 3279900, // ₹32,799 in paise
       currency: 'INR',
-      description: '1000 Generations/mo | Unlimited Brand Voices',
+      description: '3000 Generations/mo | 100 Brand Voices',
     },
   },
 
@@ -61,9 +49,9 @@ const plans = [
     interval: 1,
     item: {
       name: 'Copygen Starter Annual',
-      amount: 2999900, // ₹29,999 in paise
+      amount: 8854900, // ₹88,549 in paise
       currency: 'INR',
-      description: '100 Generations/mo | 10 Brand Voices | 2 Months Free',
+      description: '300 Generations/mo | 10 Brand Voices | Annual',
     },
   },
   {
@@ -71,9 +59,9 @@ const plans = [
     interval: 1,
     item: {
       name: 'Copygen Growth Annual',
-      amount: 5999900, // ₹59,999 in paise
+      amount: 17710900, // ₹1,77,109 in paise
       currency: 'INR',
-      description: '400 Generations/mo | 150 Brand Voices | 2 Months Free',
+      description: '1000 Generations/mo | 30 Brand Voices | Annual',
     },
   },
   {
@@ -81,9 +69,9 @@ const plans = [
     interval: 1,
     item: {
       name: 'Copygen Agency Annual',
-      amount: 11999900, // ₹1,19,999 in paise
+      amount: 35422900, // ₹3,54,229 in paise
       currency: 'INR',
-      description: '1000 Generations/mo | Unlimited Brand Voices | 2 Months Free',
+      description: '3000 Generations/mo | 100 Brand Voices | Annual',
     },
   },
 ];
