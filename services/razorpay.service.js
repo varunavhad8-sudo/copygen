@@ -19,29 +19,31 @@ const createRazorpaySubscription = async (userId, planKey, options = {}) => {
       
       try {
         const existingSub = await razorpay.subscriptions.fetch(user.razorpaySubscriptionId);
-        if (existingSub && ['created', 'authenticated', 'active'].includes(existingSub.status)) {
+        // Only block if the subscription is actually ACTIVE or AUTHENTICATED
+        // If it's just 'created', they abandoned the checkout, so let them create a new one!
+        if (existingSub && ['authenticated', 'active'].includes(existingSub.status)) {
           isActiveSubscription = true;
         }
       } catch (fetchErr) {
-        // Razorpay returned 404 or error — subscription doesn't exist anymore
-        console.log(`[Razorpay] Subscription ${user.razorpaySubscriptionId} not found on Razorpay. Clearing stale data.`);
+        console.log(`[Razorpay] Subscription ${user.razorpaySubscriptionId} not found on Razorpay.`);
         isActiveSubscription = false;
       }
 
       if (isActiveSubscription) {
-        // Subscription is genuinely active — block the user
         const error = new Error('ACTIVE_SUBSCRIPTION');
         error.code = 'ACTIVE_SUBSCRIPTION';
         error.planType = 'razorpay';
         throw error;
       }
 
-      // Subscription is stale/dead — clear it and allow resubscription
-      console.log(`[Razorpay] Clearing stale subscription for user ${userId}`);
+      // Clear the abandoned/stale subscription so we can generate a fresh one
+      console.log(`[Razorpay] Clearing abandoned/stale subscription for user ${userId}`);
       user.razorpaySubscriptionId = null;
       user.razorpayPaymentId = null;
-      user.plan = 'free';
-      user.planType = 'free';
+      if (user.planType === 'razorpay') {
+        user.plan = 'free';
+        user.planType = 'free';
+      }
       await user.save();
     }
 
