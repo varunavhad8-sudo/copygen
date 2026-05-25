@@ -10,7 +10,7 @@ const TRIAL_DAYS = 7;
 
 const register = async (req, res, next) => {
   try {
-    const { token } = req.body;
+    const { token, referredBy } = req.body;
     if (!getDbStatus()) return res.status(503).json({ success: false, error: 'Database not ready' });
     const decoded = await admin.auth().verifyIdToken(token);
     
@@ -56,7 +56,8 @@ const register = async (req, res, next) => {
             newFeatures: true,
             tips: false,
             security: true
-          }
+          },
+          referredBy: referredBy || null
         });
         
         // Send Welcome Email (Non-blocking)

@@ -189,6 +189,11 @@ const userSchema = new mongoose.Schema({
     type: String,
     default: ''
   },
+  // ── Referral Tracking ────────────────────────────────────────────────────────
+  referredBy: {
+    type: String,
+    default: null
+  },
   createdAt: { 
     type: Date, 
     default: Date.now 
