@@ -24,9 +24,13 @@ npm install
 npm run dev
 ```
 
+### Zero-infrastructure local mode
+
+Set `LOCAL_MODE=true` in the backend `.env` and `VITE_LOCAL_MODE=true` in `frontend/.env`. In this mode the app does not connect to MongoDB, Firebase, Redis, payments, or email. It creates a local workspace automatically. Add one OpenAI, Anthropic, or Gemini key from Settings → AI Providers and use the generator. The key stays in the browser and is sent only to the local backend for the current request; it is not persisted in a database.
+
 The frontend uses `VITE_API_URL` to locate the backend API. Copy `frontend/.env.example` to `frontend/.env` and configure the required Firebase and API settings before running it.
 
-For a self-hosted installation, copy `.env.example` to `.env` in this repository. Configure at least one AI provider key. Users can also add their own OpenAI, Anthropic, or Gemini key from Settings → AI Providers; those keys are encrypted by the backend and are not returned to the browser in full. Set `PROVIDER_KEYS_ENCRYPTION_KEY` to a strong random value and keep it stable across restarts.
+For a hosted multi-user installation, copy `.env.example` to `.env` in this repository, set `LOCAL_MODE=false`, and configure the database/authentication services. Users can add their own OpenAI, Anthropic, or Gemini key from Settings → AI Providers; those keys are encrypted by the backend and are not returned to the browser in full. Set `PROVIDER_KEYS_ENCRYPTION_KEY` to a strong random value and keep it stable across restarts.
 
 ## What it does
 

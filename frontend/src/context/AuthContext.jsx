@@ -3,6 +3,8 @@ import { onAuthStateChanged, signOut } from 'firebase/auth';
 import { auth } from '../config/firebase';
 import { authAPI } from '../utils/api';
 
+const LOCAL_MODE = import.meta.env.VITE_LOCAL_MODE === 'true';
+
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
@@ -23,6 +25,12 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   useEffect(() => {
+    if (LOCAL_MODE) {
+      updateUser({ name: 'Local User', email: 'local@copygen.local', uid: 'local-user', plan: 'free', generationsLimit: 999999, generationsUsed: 0 });
+      setLoading(false);
+      return () => {};
+    }
+
     let unsubscribe = () => {};
 
     // Safety timeout: if Firebase never fires (e.g. empty env vars), stop spinner

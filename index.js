@@ -35,10 +35,13 @@ const { generalLimiter, strictLimiter, apiLimiter } = require('./middleware/rate
 
 const mongoSanitize = require('express-mongo-sanitize');
 
-require('./config/redis');
-require('./config/firebase');
+const LOCAL_MODE = process.env.LOCAL_MODE === 'true';
 
-connectDB();
+if (!LOCAL_MODE) {
+  require('./config/redis');
+  require('./config/firebase');
+  connectDB();
+}
 
 
 const app = express();
@@ -156,29 +159,33 @@ app.get('/api/health', (req, res) => {
 // ── Routes ────────────────────────────────────────────────────────────
 app.use(generalLimiter);
 
-app.use('/api/auth', strictLimiter, require('./routes/auth.routes'));
-app.use('/api/settings/providers', require('./routes/provider.routes'));
-app.use('/api/briefs', apiLimiter, require('./routes/brief.routes'));
-app.use('/api/clients', require('./routes/client.routes'));
-app.use('/api/brand', require('./routes/brand.routes'));
-app.use('/api/outputs', require('./routes/output.routes'));
-app.use('/api/templates', require('./routes/template.routes'));
-app.use('/api/analytics', require('./routes/analytics.routes'));
-app.use('/api/seo', apiLimiter, require('./routes/seo.routes'));
-app.use('/api/dodo', require('./routes/dodo.routes'));
-app.use('/api/razorpay', require('./routes/razorpay.routes'));
-app.use('/api/upload', require('./routes/upload.routes'));
-app.use('/api/admin', require('./routes/admin.routes'));
-app.use('/api/factcheck', require('./routes/factChecker.routes'));
-app.use('/api/google', require('./routes/googleAuth.routes'));
-app.use('/api/webhooks', require('./routes/webhook.routes'));
-app.use('/api/transactions', require('./routes/transaction.routes'));
+if (LOCAL_MODE) {
+  app.use('/api/local', apiLimiter, require('./routes/local.routes'));
+} else {
+  app.use('/api/auth', strictLimiter, require('./routes/auth.routes'));
+  app.use('/api/settings/providers', require('./routes/provider.routes'));
+  app.use('/api/briefs', apiLimiter, require('./routes/brief.routes'));
+  app.use('/api/clients', require('./routes/client.routes'));
+  app.use('/api/brand', require('./routes/brand.routes'));
+  app.use('/api/outputs', require('./routes/output.routes'));
+  app.use('/api/templates', require('./routes/template.routes'));
+  app.use('/api/analytics', require('./routes/analytics.routes'));
+  app.use('/api/seo', apiLimiter, require('./routes/seo.routes'));
+  app.use('/api/dodo', require('./routes/dodo.routes'));
+  app.use('/api/razorpay', require('./routes/razorpay.routes'));
+  app.use('/api/upload', require('./routes/upload.routes'));
+  app.use('/api/admin', require('./routes/admin.routes'));
+  app.use('/api/factcheck', require('./routes/factChecker.routes'));
+  app.use('/api/google', require('./routes/googleAuth.routes'));
+  app.use('/api/webhooks', require('./routes/webhook.routes'));
+  app.use('/api/transactions', require('./routes/transaction.routes'));
 
-// Initialize Scheduled Jobs
-const { initMonthlyResetJob } = require('./jobs/monthlyReset');
-const { initEmailJobs } = require('./jobs/emailJobs');
-initMonthlyResetJob();
-initEmailJobs();
+  // Initialize Scheduled Jobs only for the hosted SaaS deployment.
+  const { initMonthlyResetJob } = require('./jobs/monthlyReset');
+  const { initEmailJobs } = require('./jobs/emailJobs');
+  initMonthlyResetJob();
+  initEmailJobs();
+}
 
 // ── 404 Catch-all (for API routes) ──────────────────────────────────────────
 app.use((req, res) => {

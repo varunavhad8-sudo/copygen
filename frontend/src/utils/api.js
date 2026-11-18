@@ -1,9 +1,55 @@
 import { auth } from '../config/firebase'; // Adjusted path to firebase init file
 
-const BASE_URL = import.meta.env.VITE_API_URL;
+const LOCAL_MODE = import.meta.env.VITE_LOCAL_MODE === 'true';
+const BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:4000';
+const LOCAL_PROVIDER_KEY = 'copygen_local_provider_key';
+const LOCAL_PROVIDER = 'copygen_local_provider';
+
+const localProviderSettings = () => {
+  const provider = localStorage.getItem(LOCAL_PROVIDER) || 'gemini';
+  const key = localStorage.getItem(LOCAL_PROVIDER_KEY) || '';
+  return {
+    activeProvider: provider,
+    providers: {
+      openai: { configured: provider === 'openai' && !!key, masked: provider === 'openai' && key ? `${key.slice(0, 6)}...${key.slice(-4)}` : null },
+      anthropic: { configured: provider === 'anthropic' && !!key, masked: provider === 'anthropic' && key ? `${key.slice(0, 6)}...${key.slice(-4)}` : null },
+      gemini: { configured: provider === 'gemini' && !!key, masked: provider === 'gemini' && key ? `${key.slice(0, 6)}...${key.slice(-4)}` : null }
+    }
+  };
+};
+
+const localRequest = async (method, path, body = null) => {
+  if (method === 'GET' && path === '/api/clients') {
+    return [{ _id: 'local-client', name: 'My Workspace', industry: '', website: '' }];
+  }
+  if (method === 'GET' && path.startsWith('/api/brand/')) {
+    return { profile: { clientId: 'local-client', clientName: 'My Workspace', isNew: true } };
+  }
+  if (path === '/api/briefs' || path === '/api/seo/generate') {
+    const apiKey = localStorage.getItem(LOCAL_PROVIDER_KEY) || '';
+    const provider = localStorage.getItem(LOCAL_PROVIDER) || 'gemini';
+    if (!apiKey) throw new Error('Add an LLM provider key in Settings before generating content.');
+    const localBody = path === '/api/seo/generate'
+      ? { ...body, briefText: body?.topic, contentType: 'seo', provider, apiKey }
+      : { ...body, provider, apiKey };
+    const response = await fetch(`${BASE_URL}/api/local/generate`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(localBody)
+    });
+    const json = await response.json();
+    if (!response.ok) throw new Error(json.message || json.error || 'Local generation failed');
+    return json.data !== undefined ? json.data : json.output || json;
+  }
+  if (method === 'GET' && path === '/api/auth/notifications') return {};
+  if (method === 'GET' && path === '/api/transactions') return [];
+  if (method === 'GET' && path === '/api/auth/me') return { user: { name: 'Local User', email: 'local@copygen.local', plan: 'free', generationsLimit: 999999, generationsUsed: 0 } };
+  return {};
+};
 
 // Core request function — handles auth token, errors, response parsing
 async function request(method, path, body = null) {
+  if (LOCAL_MODE) return localRequest(method, path, body);
   // Get fresh Firebase token on every request
   const token = await auth.currentUser?.getIdToken();
   
@@ -287,10 +333,29 @@ export const userAPI = {
 // ── PROVIDER SETTINGS ────────────────────────────────────────
 // Provider secrets are sent only to the backend and are never returned in full.
 export const providerAPI = {
-  get: () => request('GET', '/api/settings/providers'),
-  saveKey: (provider, apiKey) => request('PUT', `/api/settings/providers/${provider}`, { apiKey }),
-  removeKey: (provider) => request('DELETE', `/api/settings/providers/${provider}`),
-  setActive: (provider) => request('PUT', '/api/settings/providers/active', { provider }),
+  get: () => LOCAL_MODE ? Promise.resolve(localProviderSettings()) : request('GET', '/api/settings/providers'),
+  saveKey: (provider, apiKey) => {
+    if (LOCAL_MODE) {
+      localStorage.setItem(LOCAL_PROVIDER, provider);
+      localStorage.setItem(LOCAL_PROVIDER_KEY, apiKey);
+      return Promise.resolve({ provider, configured: true });
+    }
+    return request('PUT', `/api/settings/providers/${provider}`, { apiKey });
+  },
+  removeKey: (provider) => {
+    if (LOCAL_MODE) {
+      if ((localStorage.getItem(LOCAL_PROVIDER) || 'gemini') === provider) localStorage.removeItem(LOCAL_PROVIDER_KEY);
+      return Promise.resolve({ provider, configured: false });
+    }
+    return request('DELETE', `/api/settings/providers/${provider}`);
+  },
+  setActive: (provider) => {
+    if (LOCAL_MODE) {
+      localStorage.setItem(LOCAL_PROVIDER, provider);
+      return Promise.resolve({ activeProvider: provider });
+    }
+    return request('PUT', '/api/settings/providers/active', { provider });
+  },
 };
 
 // ── ADMIN ─────────────────────────────────────────────────────

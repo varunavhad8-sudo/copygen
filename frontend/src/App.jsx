@@ -26,6 +26,8 @@ import CookieConsent from './components/CookieConsent';
 import OnboardingChecklist from './components/OnboardingChecklist';
 import Admin from './pages/Admin.jsx';
 
+const LOCAL_MODE = import.meta.env.VITE_LOCAL_MODE === 'true';
+
 function App() {
   return (
     <AuthProvider>
@@ -38,7 +40,7 @@ function App() {
           <Routes>
 
             {/* Public Routes */}
-            <Route path="/" element={<LandingPage />} />
+            <Route path="/" element={LOCAL_MODE ? <Navigate to="/app/generate" replace /> : <LandingPage />} />
             <Route path="/about" element={<About />} />
             <Route path="/services" element={<Services />} />
             <Route path="/work" element={<Work />} />
