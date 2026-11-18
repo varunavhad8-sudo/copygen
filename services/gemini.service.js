@@ -42,10 +42,12 @@ const generateWithGemini = async (arg1, arg2 = '', arg3 = 'gemini-3.1-pro-previe
   if (targetModel === 'gemini-flash') targetModel = 'gemini-1.5-flash';
   
   const modelsToTry = [
-    targetModel,           // gemini-3.1-pro-preview (primary)
-    'gemini-2.5-pro',      // fallback 1
-    'gemini-2.5-flash',    // fallback 2
-    'gemini-2.0-flash'     // last resort
+    ...new Set([
+      targetModel,
+      'gemini-3.8-flash',
+      'gemini-3.6-flash',
+      'gemini-2.5-flash'
+    ])
   ];
   
   // Resolve maxOutputTokens using content type token limits map
@@ -130,8 +132,7 @@ const generateWithGemini = async (arg1, arg2 = '', arg3 = 'gemini-3.1-pro-previe
  * Legacy/Helper for routing.
  */
 const classifyWithGemini = async (prompt, apiKey) => {
-  // Issue 3: Use gemini-2.0-flash specifically for classification calls only
-  const { text: rawText } = await generateWithGemini(prompt, 'Classify the following request into one of these categories: LONG_FORM, BACKGROUND, SHORT_FORM. Return ONLY the category name.', 'gemini-2.0-flash', null, apiKey);
+  const { text: rawText } = await generateWithGemini(prompt, 'Classify the following request into one of these categories: LONG_FORM, BACKGROUND, SHORT_FORM. Return ONLY the category name.', 'gemini-3.6-flash', null, apiKey);
   const text = rawText.trim().toUpperCase();
   if (text.includes('LONG_FORM')) return 'LONG_FORM';
   if (text.includes('BACKGROUND')) return 'BACKGROUND';

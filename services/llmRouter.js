@@ -26,10 +26,12 @@ const TOKEN_LIMITS = {
   }
 };
 
-// Real API model identifiers (as of 2025)
+// Current API model identifiers. Keep these aligned with provider model lifecycle changes.
 const MODEL_COSTS = {
-  'gemini-2.5-pro': 0.010,
-  'gemini-2.0-flash': 0.002,
+  'gemini-3.1-pro-preview': 0.010,
+  'gemini-3.8-flash': 0.002,
+  'gemini-3.6-flash': 0.002,
+  'gemini-2.5-flash': 0.002,
 };
 
 const estimateTokens = (text) => {
@@ -67,8 +69,8 @@ const classifyTask = async (briefText, contentType, providerKeys) => {
 const getModelForTask = (taskType, provider) => {
   if (provider === 'openai') return taskType === TASK_TYPES.LONG_FORM ? 'gpt-4o' : 'gpt-4o-mini';
   if (provider === 'anthropic') return taskType === TASK_TYPES.LONG_FORM ? 'claude-sonnet-4-6-20251022' : 'claude-3-5-haiku-latest';
-  if (taskType === TASK_TYPES.LONG_FORM) return 'gemini-2.5-pro';
-  return 'gemini-2.0-flash';
+  if (taskType === TASK_TYPES.LONG_FORM) return 'gemini-3.1-pro-preview';
+  return 'gemini-3.8-flash';
 };
 
 const calculateCost = (model, wordCount) => {
