@@ -4,6 +4,25 @@ const LOCAL_MODE = import.meta.env.VITE_LOCAL_MODE === 'true';
 const BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:4000';
 const LOCAL_PROVIDER_KEY = 'copygen_local_provider_key';
 const LOCAL_PROVIDER = 'copygen_local_provider';
+const LOCAL_DATA = 'copygen_local_data_v1';
+
+const loadLocalData = () => {
+  try {
+    const saved = JSON.parse(localStorage.getItem(LOCAL_DATA) || 'null');
+    if (saved) return saved;
+  } catch (_) {}
+  return {
+    profile: { name: 'Local User', email: 'local@copygen.local', agencyName: '', timezone: Intl.DateTimeFormat().resolvedOptions().timeZone },
+    notifications: { genComplete: true, weeklySum: true, monthlyRep: false, lowCredits: true, billing: true, newFeatures: true, tips: false, security: true },
+    clients: [{ _id: 'local-client', id: 'local-client', name: 'My Workspace', industry: '', website: '', outputCount: 0 }],
+    brands: [],
+    outputs: [],
+    templates: []
+  };
+};
+
+const saveLocalData = (data) => localStorage.setItem(LOCAL_DATA, JSON.stringify(data));
+const localId = (prefix) => `${prefix}-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
 
 const localProviderSettings = () => {
   const provider = localStorage.getItem(LOCAL_PROVIDER) || 'gemini';
@@ -19,11 +38,42 @@ const localProviderSettings = () => {
 };
 
 const localRequest = async (method, path, body = null) => {
-  if (method === 'GET' && path === '/api/clients') {
-    return [{ _id: 'local-client', name: 'My Workspace', industry: '', website: '' }];
+  const data = loadLocalData();
+  const [pathname, queryString = ''] = path.split('?');
+  const query = new URLSearchParams(queryString);
+
+  if (pathname === '/api/clients') {
+    if (method === 'GET') return data.clients;
+    if (method === 'POST') {
+      const client = { ...body, _id: localId('client'), id: localId('client'), outputCount: 0 };
+      data.clients.push(client); saveLocalData(data); return client;
+    }
+    const id = pathname ? path.split('/').pop() : null;
+    if (method === 'PUT') {
+      const index = data.clients.findIndex(client => client._id === id || client.id === id);
+      if (index >= 0) data.clients[index] = { ...data.clients[index], ...body };
+      saveLocalData(data); return data.clients[index] || body;
+    }
   }
-  if (method === 'GET' && path.startsWith('/api/brand/')) {
-    return { profile: { clientId: 'local-client', clientName: 'My Workspace', isNew: true } };
+  if (pathname.startsWith('/api/clients/')) {
+    const id = pathname.split('/').pop();
+    const index = data.clients.findIndex(client => client._id === id || client.id === id);
+    if (method === 'PUT') { data.clients[index] = { ...data.clients[index], ...body }; saveLocalData(data); return data.clients[index]; }
+    if (method === 'DELETE') { data.clients.splice(index, 1); saveLocalData(data); return { success: true }; }
+  }
+  if (pathname === '/api/brand' || pathname.startsWith('/api/brand/')) {
+    const clientId = query.get('clientId') || pathname.split('/').pop();
+    if (method === 'GET') {
+      if (pathname === '/api/brand' && !clientId) return data.brands;
+      return { profile: data.brands.find(brand => brand.clientId === clientId) || { clientId, clientName: data.clients.find(client => client._id === clientId)?.name || 'My Workspace', isNew: true } };
+    }
+    if (method === 'POST' || method === 'PUT') {
+      const saved = { ...body, _id: body?._id || localId('brand'), clientId: body?.clientId || clientId };
+      const index = data.brands.findIndex(brand => brand.clientId === saved.clientId);
+      if (index >= 0) data.brands[index] = saved; else data.brands.push(saved);
+      saveLocalData(data); return saved;
+    }
+    if (method === 'DELETE') { data.brands = data.brands.filter(brand => brand._id !== clientId && brand.clientId !== clientId); saveLocalData(data); return { success: true }; }
   }
   if (path === '/api/briefs' || path === '/api/seo/generate') {
     const apiKey = localStorage.getItem(LOCAL_PROVIDER_KEY) || '';
@@ -39,11 +89,45 @@ const localRequest = async (method, path, body = null) => {
     });
     const json = await response.json();
     if (!response.ok) throw new Error(json.message || json.error || 'Local generation failed');
-    return json.data !== undefined ? json.data : json.output || json;
+    const result = json.data !== undefined ? json.data : json.output || json;
+    const output = { ...(result.output || result), _id: localId('output'), id: localId('output'), createdAt: new Date().toISOString(), clientId: body?.clientId || 'local-client' };
+    data.outputs.unshift(output);
+    const client = data.clients.find(item => item._id === output.clientId || item.id === output.clientId);
+    if (client) client.outputCount = (client.outputCount || 0) + 1;
+    saveLocalData(data);
+    return output;
   }
-  if (method === 'GET' && path === '/api/auth/notifications') return {};
-  if (method === 'GET' && path === '/api/transactions') return [];
-  if (method === 'GET' && path === '/api/auth/me') return { user: { name: 'Local User', email: 'local@copygen.local', plan: 'free', generationsLimit: 999999, generationsUsed: 0 } };
+  if (pathname === '/api/outputs' || pathname.startsWith('/api/outputs/')) {
+    if (method === 'GET') {
+      if (pathname !== '/api/outputs') return data.outputs.find(output => output._id === pathname.split('/').pop());
+      let outputs = [...data.outputs];
+      if (query.get('clientId')) outputs = outputs.filter(output => output.clientId === query.get('clientId'));
+      if (query.get('contentType')) outputs = outputs.filter(output => output.contentType === query.get('contentType'));
+      if (query.get('search')) outputs = outputs.filter(output => JSON.stringify(output).toLowerCase().includes(query.get('search').toLowerCase()));
+      return { outputs, total: outputs.length, pages: Math.max(1, Math.ceil(outputs.length / 10)) };
+    }
+    const id = pathname.split('/').pop();
+    if (method === 'PUT') { const index = data.outputs.findIndex(output => output._id === id); data.outputs[index] = { ...data.outputs[index], ...body }; saveLocalData(data); return data.outputs[index]; }
+    if (method === 'DELETE') { data.outputs = data.outputs.filter(output => output._id !== id); saveLocalData(data); return { success: true }; }
+  }
+  if (pathname === '/api/templates' || pathname.startsWith('/api/templates/')) {
+    if (method === 'GET') return data.templates;
+    if (method === 'POST') { const template = { ...body, _id: localId('template'), createdAt: new Date().toISOString() }; data.templates.push(template); saveLocalData(data); return template; }
+    const id = pathname.split('/').pop();
+    if (method === 'PUT') { const index = data.templates.findIndex(template => template._id === id); data.templates[index] = { ...data.templates[index], ...body }; saveLocalData(data); return data.templates[index]; }
+    if (method === 'DELETE') { data.templates = data.templates.filter(template => template._id !== id); saveLocalData(data); return { success: true }; }
+  }
+  if (pathname.startsWith('/api/analytics/')) {
+    if (pathname.endsWith('/summary')) return { summary: { totalGenerations: data.outputs.length, activeClients: data.clients.length, brandVoices: data.brands.length, favoriteOutputs: data.outputs.filter(output => output.favorited).length } };
+    if (pathname.endsWith('/volume')) return [];
+    if (pathname.endsWith('/breakdown')) return [];
+    if (pathname.endsWith('/top-clients')) return data.clients.map(client => ({ name: client.name, generations: data.outputs.filter(output => output.clientId === client._id).length }));
+  }
+  if (method === 'GET' && pathname === '/api/auth/notifications') return data.notifications;
+  if (method === 'PUT' && pathname === '/api/auth/notifications') { data.notifications = { ...data.notifications, ...body }; saveLocalData(data); return data.notifications; }
+  if (method === 'PUT' && pathname === '/api/auth/profile') { data.profile = { ...data.profile, ...body }; saveLocalData(data); return data.profile; }
+  if (method === 'GET' && pathname === '/api/transactions') return [];
+  if (method === 'GET' && pathname === '/api/auth/me') return { user: { ...data.profile, plan: 'free', generationsLimit: 999999, generationsUsed: data.outputs.length } };
   return {};
 };
 
@@ -198,6 +282,8 @@ export const outputsAPI = {
   // DELETE /api/outputs/:id — delete output
   delete: (id) => request('DELETE', `/api/outputs/${id}`),
 
+  toggleFavorite: (id, favorited) => request('PUT', `/api/outputs/${id}`, { favorited }),
+
   // GET /api/outputs/export — download all as CSV
   // This one uses direct fetch since it returns a file, not JSON
   exportAll: async () => {
@@ -309,6 +395,16 @@ export const userAPI = {
 
   // GET /api/auth/export — trigger data export
   exportData: async () => {
+    if (LOCAL_MODE) {
+      const blob = new Blob([JSON.stringify(loadLocalData(), null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `copygen-local-data-${Date.now()}.json`;
+      a.click();
+      URL.revokeObjectURL(url);
+      return;
+    }
     const token = await auth.currentUser?.getIdToken();
     const response = await fetch(`${BASE_URL}/api/auth/export`, {
       headers: { Authorization: `Bearer ${token}` },
@@ -324,7 +420,15 @@ export const userAPI = {
 
   // DELETE /api/auth/account — delete account
   // body: { confirmText: "DELETE" }
-  deleteAccount: (body) => request('DELETE', '/api/auth/account', body),
+  deleteAccount: (body) => {
+    if (LOCAL_MODE) {
+      localStorage.removeItem(LOCAL_DATA);
+      localStorage.removeItem(LOCAL_PROVIDER_KEY);
+      localStorage.removeItem(LOCAL_PROVIDER);
+      return Promise.resolve({ success: true });
+    }
+    return request('DELETE', '/api/auth/account', body);
+  },
 
   // GET /api/transactions — get billing history
   getTransactions: () => request('GET', '/api/transactions'),
