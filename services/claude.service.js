@@ -1,18 +1,17 @@
 const Anthropic = require('@anthropic-ai/sdk');
 
-let client;
+const clients = new Map();
 
-const getClient = () => {
-  if (!client) {
-    client = new Anthropic({ 
-      apiKey: process.env.ANTHROPIC_API_KEY 
-    });
+const getClient = (apiKey = process.env.ANTHROPIC_API_KEY) => {
+  if (!apiKey) throw new Error('Anthropic API key is not configured');
+  if (!clients.has(apiKey)) {
+    clients.set(apiKey, new Anthropic({ apiKey }));
   }
-  return client;
+  return clients.get(apiKey);
 };
 
-const generateWithClaude = async ({ system, user, model, maxTokens }) => {
-  const response = await getClient().messages.create({
+const generateWithClaude = async ({ system, user, model, maxTokens, apiKey }) => {
+  const response = await getClient(apiKey).messages.create({
     model: model || 'claude-sonnet-4-6-20251022',
     max_tokens: maxTokens || 1000,
     system: system || '',

@@ -58,6 +58,17 @@ const userSchema = new mongoose.Schema({
     type: String,
     default: null
   },
+  // Encrypted third-party provider keys. Never expose these through /auth/me.
+  providerKeys: {
+    openai: { type: String, default: null, select: false },
+    anthropic: { type: String, default: null, select: false },
+    gemini: { type: String, default: null, select: false }
+  },
+  activeProvider: {
+    type: String,
+    enum: ['openai', 'anthropic', 'gemini'],
+    default: 'gemini'
+  },
 
   // ── Flat usage counters (kept for backward compat) ─────────────────────────
   generationsUsed: { 

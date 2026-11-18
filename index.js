@@ -1,4 +1,7 @@
 const path = require('path');
+// Prefer a .env beside the backend code, while keeping compatibility with the
+// old parent-directory layout used by earlier CopyGen checkouts.
+require('dotenv').config({ path: path.join(__dirname, '.env') });
 require('dotenv').config({ path: path.join(__dirname, '../.env') });
 
 // ── Sentry Error Monitoring (init FIRST) ────────────────────────────────────
@@ -154,6 +157,7 @@ app.get('/api/health', (req, res) => {
 app.use(generalLimiter);
 
 app.use('/api/auth', strictLimiter, require('./routes/auth.routes'));
+app.use('/api/settings/providers', require('./routes/provider.routes'));
 app.use('/api/briefs', apiLimiter, require('./routes/brief.routes'));
 app.use('/api/clients', require('./routes/client.routes'));
 app.use('/api/brand', require('./routes/brand.routes'));

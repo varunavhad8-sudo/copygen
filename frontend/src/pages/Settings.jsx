@@ -21,7 +21,7 @@ import {
   Info
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { userAPI, authAPI } from '../utils/api';
+import { userAPI, authAPI, providerAPI } from '../utils/api';
 import { useUser } from '../context/UserContext';
 import { auth } from '../config/firebase';
 import RazorpayCheckout from '../components/RazorpayCheckout';
@@ -82,6 +82,10 @@ const Settings = () => {
   const [selectedBillingCycle, setSelectedBillingCycle] = useState('monthly');
   // Admin-only: override which payment gateway to use. 'auto' = detect by currency.
   const [adminPaymentGateway, setAdminPaymentGateway] = useState('auto');
+  const [providerSettings, setProviderSettings] = useState(null);
+  const [providerInputs, setProviderInputs] = useState({ openai: '', anthropic: '', gemini: '' });
+  const [providerSaving, setProviderSaving] = useState(null);
+  const [providerMessage, setProviderMessage] = useState(null);
 
   const [billingCycle, setBillingCycle] = useState('monthly');
   const { user, refreshUser } = useUser();
@@ -132,6 +136,9 @@ const Settings = () => {
         if (transData) {
           setTransactions(transData);
         }
+
+        const providerData = await providerAPI.get();
+        if (providerData) setProviderSettings(providerData);
 
       } catch (err) {
         console.error("Failed to fetch additional settings", err);
@@ -226,6 +233,48 @@ const Settings = () => {
       setIsSaving(false);
     }
   };
+
+  const handleSaveProvider = async (provider) => {
+    const apiKey = providerInputs[provider].trim();
+    if (!apiKey) return;
+    setProviderSaving(provider);
+    setProviderMessage(null);
+    try {
+      await providerAPI.saveKey(provider, apiKey);
+      const refreshed = await providerAPI.get();
+      setProviderSettings(refreshed);
+      setProviderInputs(prev => ({ ...prev, [provider]: '' }));
+      setProviderMessage({ type: 'success', text: `${provider} key saved securely.` });
+    } catch (err) {
+      setProviderMessage({ type: 'error', text: err.message });
+    } finally {
+      setProviderSaving(null);
+    }
+  };
+
+  const handleRemoveProvider = async (provider) => {
+    setProviderSaving(provider);
+    setProviderMessage(null);
+    try {
+      await providerAPI.removeKey(provider);
+      setProviderSettings(await providerAPI.get());
+      setProviderMessage({ type: 'success', text: `${provider} key removed.` });
+    } catch (err) {
+      setProviderMessage({ type: 'error', text: err.message });
+    } finally {
+      setProviderSaving(null);
+    }
+  };
+
+  const handleSetProvider = async (provider) => {
+    try {
+      await providerAPI.setActive(provider);
+      setProviderSettings(await providerAPI.get());
+      setProviderMessage({ type: 'success', text: `${provider} is now the active provider.` });
+    } catch (err) {
+      setProviderMessage({ type: 'error', text: err.message });
+    }
+  };
   
   const handleExportData = async () => {
     try {
@@ -298,6 +347,7 @@ const Settings = () => {
         <aside className="lg:sticky lg:top-6 space-y-2">
           <div className="bg-[#1a1f2e] border border-[#2a2f42] rounded-xl overflow-hidden p-2">
             <NavItem id="account" icon={User} label="Account" />
+            <NavItem id="providers" icon={Code} label="AI Providers" />
             <NavItem id="billing" icon={CreditCard} label="Billing & Plan" />
             <NavItem id="notifications" icon={Bell} label="Notifications" />
             <NavItem id="danger" icon={AlertTriangle} label="Danger Zone" danger />
@@ -316,6 +366,69 @@ const Settings = () => {
 
         {/* Right Content Column */}
         <main className="min-w-0">
+
+          {/* TAB: AI PROVIDERS */}
+          {activeTab === 'providers' && (
+            <div className="bg-[#1a1f2e] border border-[#2a2f42] rounded-xl p-6 animate-in fade-in slide-in-from-bottom-2 duration-300">
+              <h2 className="text-white font-semibold text-base">AI Provider Keys</h2>
+              <p className="text-slate-400 text-xs mt-1 max-w-2xl">
+                Add your own provider key for self-hosted generation. Keys are encrypted by the backend and are never shown in full after saving.
+              </p>
+
+              {providerMessage && (
+                <div className={`mt-5 rounded-lg border px-4 py-3 text-sm ${providerMessage.type === 'error' ? 'border-red-500/30 bg-red-500/10 text-red-300' : 'border-emerald-500/30 bg-emerald-500/10 text-emerald-300'}`}>
+                  {providerMessage.text}
+                </div>
+              )}
+
+              <div className="mt-6 space-y-5 max-w-2xl">
+                {[
+                  { id: 'openai', label: 'OpenAI', hint: 'GPT models' },
+                  { id: 'anthropic', label: 'Anthropic', hint: 'Claude models' },
+                  { id: 'gemini', label: 'Google Gemini', hint: 'Gemini models' },
+                ].map(provider => {
+                  const status = providerSettings?.providers?.[provider.id];
+                  const isActive = providerSettings?.activeProvider === provider.id;
+                  return (
+                    <div key={provider.id} className="rounded-xl border border-[#2a2f42] bg-[#151a26] p-4">
+                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                        <div>
+                          <div className="flex items-center gap-2">
+                            <h3 className="text-white text-sm font-semibold">{provider.label}</h3>
+                            {isActive && <span className="text-[10px] uppercase tracking-wide text-purple-300 bg-purple-500/10 border border-purple-500/20 px-2 py-1 rounded">Active</span>}
+                          </div>
+                          <p className="text-slate-500 text-xs mt-1">{provider.hint} {status?.masked ? `• ${status.masked}` : '• Not configured'}</p>
+                        </div>
+                        {status?.configured && !isActive && (
+                          <button onClick={() => handleSetProvider(provider.id)} className="text-xs text-purple-300 hover:text-white">Use this provider</button>
+                        )}
+                      </div>
+                      <div className="mt-4 flex flex-col sm:flex-row gap-2">
+                        <input
+                          type="password"
+                          value={providerInputs[provider.id]}
+                          onChange={e => setProviderInputs(prev => ({ ...prev, [provider.id]: e.target.value }))}
+                          placeholder={status?.configured ? 'Enter a replacement key' : 'Paste provider API key'}
+                          className="flex-1 bg-[#252b3b] border border-[#2a2f42] rounded-lg px-3 py-2.5 text-white text-sm focus:border-purple-500 focus:outline-none"
+                          autoComplete="off"
+                        />
+                        <button onClick={() => handleSaveProvider(provider.id)} disabled={!providerInputs[provider.id].trim() || providerSaving === provider.id} className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg text-xs font-semibold disabled:opacity-50">
+                          {providerSaving === provider.id ? 'Saving...' : 'Save key'}
+                        </button>
+                        {status?.configured && (
+                          <button onClick={() => handleRemoveProvider(provider.id)} disabled={providerSaving === provider.id} className="border border-red-500/30 text-red-300 hover:bg-red-500/10 px-4 py-2 rounded-lg text-xs font-semibold disabled:opacity-50">Remove</button>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+
+              <div className="mt-6 rounded-lg border border-amber-500/20 bg-amber-500/5 p-4 text-xs text-amber-200/80 leading-relaxed">
+                Never paste provider keys into frontend code, screenshots, issues, or public documentation. For a server-wide self-hosted setup, configure provider keys in the backend environment instead.
+              </div>
+            </div>
+          )}
           
           {/* TAB 1: ACCOUNT */}
           {activeTab === 'account' && (

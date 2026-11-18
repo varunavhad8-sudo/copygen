@@ -284,6 +284,15 @@ export const userAPI = {
   getTransactions: () => request('GET', '/api/transactions'),
 };
 
+// ── PROVIDER SETTINGS ────────────────────────────────────────
+// Provider secrets are sent only to the backend and are never returned in full.
+export const providerAPI = {
+  get: () => request('GET', '/api/settings/providers'),
+  saveKey: (provider, apiKey) => request('PUT', `/api/settings/providers/${provider}`, { apiKey }),
+  removeKey: (provider) => request('DELETE', `/api/settings/providers/${provider}`),
+  setActive: (provider) => request('PUT', '/api/settings/providers/active', { provider }),
+};
+
 // ── ADMIN ─────────────────────────────────────────────────────
 export const adminAPI = {
   // GET /api/admin/stats — global overview

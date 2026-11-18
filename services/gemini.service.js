@@ -1,28 +1,23 @@
 const { GoogleGenerativeAI } = require("@google/generative-ai");
 
 
-// Safe load & clean key
-let apiKey = (process.env.GEMINI_API_KEY || '').trim();
-// Remove outer quotes if present
-if ((apiKey.startsWith('"') && apiKey.endsWith('"')) || (apiKey.startsWith("'") && apiKey.endsWith("'"))) {
-  apiKey = apiKey.slice(1, -1).trim();
-}
+const clients = new Map();
 
-console.log('[GeminiService] Initializing with key status:', {
-  hasKey: !!apiKey,
-  keyLength: apiKey.length,
-  keyPreview: apiKey ? `${apiKey.substring(0, 6)}...${apiKey.substring(apiKey.length - 4)}` : 'none'
-});
-
-const genAI = new GoogleGenerativeAI(apiKey);
+const getClient = (providedKey = process.env.GEMINI_API_KEY) => {
+  const apiKey = (providedKey || '').trim().replace(/^['"]|['"]$/g, '');
+  if (!apiKey) throw new Error('Gemini API key is not configured');
+  if (!clients.has(apiKey)) clients.set(apiKey, new GoogleGenerativeAI(apiKey));
+  return clients.get(apiKey);
+};
 
 
 /**
  * Flexible generation function for Gemini using the official SDK.
  * Supports positional arguments (prompt, system, model) or an object { user, system, model }.
  */
-const generateWithGemini = async (arg1, arg2 = '', arg3 = 'gemini-3.1-pro-preview', maxTokens = null) => {
+const generateWithGemini = async (arg1, arg2 = '', arg3 = 'gemini-3.1-pro-preview', maxTokens = null, providedApiKey = null) => {
   let prompt, systemPrompt, modelName, responseMimeType, contentType;
+  let apiKey = providedApiKey;
 
   if (typeof arg1 === 'object' && arg1 !== null) {
     prompt = arg1.user || arg1.prompt || '';
@@ -31,6 +26,7 @@ const generateWithGemini = async (arg1, arg2 = '', arg3 = 'gemini-3.1-pro-previe
     if (arg1.maxTokens) maxTokens = arg1.maxTokens;
     if (arg1.responseMimeType) responseMimeType = arg1.responseMimeType;
     if (arg1.contentType) contentType = arg1.contentType;
+    apiKey = arg1.apiKey || providedApiKey;
   } else {
     prompt = arg1;
     systemPrompt = arg2;
@@ -106,7 +102,7 @@ const generateWithGemini = async (arg1, arg2 = '', arg3 = 'gemini-3.1-pro-previe
         };
       }
 
-      const model = genAI.getGenerativeModel(config);
+      const model = getClient(apiKey).getGenerativeModel(config);
 
       const result = await model.generateContent(prompt);
       const response = await result.response;
@@ -133,9 +129,9 @@ const generateWithGemini = async (arg1, arg2 = '', arg3 = 'gemini-3.1-pro-previe
 /**
  * Legacy/Helper for routing.
  */
-const classifyWithGemini = async (prompt) => {
+const classifyWithGemini = async (prompt, apiKey) => {
   // Issue 3: Use gemini-2.0-flash specifically for classification calls only
-  const { text: rawText } = await generateWithGemini(prompt, 'Classify the following request into one of these categories: LONG_FORM, BACKGROUND, SHORT_FORM. Return ONLY the category name.', 'gemini-2.0-flash');
+  const { text: rawText } = await generateWithGemini(prompt, 'Classify the following request into one of these categories: LONG_FORM, BACKGROUND, SHORT_FORM. Return ONLY the category name.', 'gemini-2.0-flash', null, apiKey);
   const text = rawText.trim().toUpperCase();
   if (text.includes('LONG_FORM')) return 'LONG_FORM';
   if (text.includes('BACKGROUND')) return 'BACKGROUND';

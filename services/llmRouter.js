@@ -3,6 +3,7 @@ const { generateWithOpenAI } = require('./openai.service');
 const { generateWithClaude } = require('./claude.service');
 const { classifyWithGemini, generateWithGemini, generateLongForm } = require('./gemini.service');
 const { getBrandContext } = require('./brandMemory.service');
+const { getEffectiveProviderKeys } = require('./providerKeys.service');
 
 const TASK_TYPES = {
   LONG_FORM: 'LONG_FORM',
@@ -37,14 +38,7 @@ const estimateTokens = (text) => {
   return Math.ceil(text.length / 4);
 };
 
-// Check which AI keys are real (not dummy/missing)
-const hasAnthropicKey = process.env.ANTHROPIC_API_KEY &&
-  !process.env.ANTHROPIC_API_KEY.includes('dummy');
-const hasOpenAIKey = process.env.OPENAI_API_KEY &&
-  !process.env.OPENAI_API_KEY.includes('dummy');
-const hasGeminiKey = !!process.env.GEMINI_API_KEY;
-
-const classifyTask = async (briefText, contentType) => {
+const classifyTask = async (briefText, contentType, providerKeys) => {
   const ct = (contentType || '').toLowerCase().replace(/[^a-z]/g, '');
   console.log('[classifyTask] normalized contentType:', { contentType: ct });
 
@@ -57,18 +51,23 @@ const classifyTask = async (briefText, contentType) => {
   } else if (shortFormTypes.includes(ct)) {
     classification = TASK_TYPES.SHORT_FORM;
   } else {
-    // Internal routing decision uses Gemini
+    // Internal routing uses Gemini when available. If a self-hosted user only
+    // configured another provider, default to short-form instead of failing
+    // before the actual generation request.
     const prompt = `Classify this content request into exactly one word. Reply with only LONG_FORM or SHORT_FORM.\nRequest: "${briefText}"`;
-    classification = await classifyWithGemini(prompt);
+    classification = providerKeys?.gemini
+      ? await classifyWithGemini(prompt, providerKeys.gemini)
+      : TASK_TYPES.SHORT_FORM;
   }
 
   console.log(`[classifyTask] classification result: ${classification}`, { contentType: ct });
   return classification;
 };
 
-const getModelForTask = (taskType) => {
+const getModelForTask = (taskType, provider) => {
+  if (provider === 'openai') return taskType === TASK_TYPES.LONG_FORM ? 'gpt-4o' : 'gpt-4o-mini';
+  if (provider === 'anthropic') return taskType === TASK_TYPES.LONG_FORM ? 'claude-sonnet-4-6-20251022' : 'claude-3-5-haiku-latest';
   if (taskType === TASK_TYPES.LONG_FORM) return 'gemini-2.5-pro';
-  if (taskType === TASK_TYPES.SHORT_FORM) return 'gemini-2.0-flash';
   return 'gemini-2.0-flash';
 };
 
@@ -77,63 +76,40 @@ const calculateCost = (model, wordCount) => {
   return (estimatedTokens / 1000) * (MODEL_COSTS[model] || 0.002);
 };
 
-const generateText = async ({ model, system, user, maxTokens, responseMimeType, contentType, finalTaskType }) => {
-  const hasOpenAIKey = !!process.env.OPENAI_API_KEY;
-  const hasAnthropicKey = !!process.env.ANTHROPIC_API_KEY;
-
-  const getProviderName = (m) => {
-    if (m.includes('claude')) return 'Anthropic';
-    if (m.includes('gpt')) return 'OpenAI';
-    if (m.includes('gemini')) return 'Google';
-    return 'Unknown';
-  };
-
-  const primaryProvider = getProviderName(model);
-  const primaryStartTime = Date.now();
-
-  // Try the primary model
+const generateText = async ({ model, provider, apiKey, system, user, maxTokens, responseMimeType, contentType }) => {
+  const startedAt = Date.now();
+  console.log(`[LLMRouter] Using ${provider}: ${model}`);
   try {
-    if (model.includes('claude') && hasAnthropicKey) {
-      console.log(`[LLMRouter] Using Anthropic: ${model}`);
-      const text = await generateWithClaude({ system, user, model, maxTokens });
-      console.log(`[LLM] Provider: Anthropic | Model: ${model} | Duration: ${Date.now() - primaryStartTime}ms | Success: true`);
+    if (provider === 'openai') {
+      const text = await generateWithOpenAI({ system, user, model, maxTokens, apiKey });
       return { generatedText: text, modelUsed: model };
     }
-    if ((model.includes('gpt')) && hasOpenAIKey) {
-      console.log(`[LLMRouter] Using OpenAI: ${model}`);
-      const text = await generateWithOpenAI({ system, user, model, maxTokens });
-      console.log(`[LLM] Provider: OpenAI | Model: ${model} | Duration: ${Date.now() - primaryStartTime}ms | Success: true`);
+    if (provider === 'anthropic') {
+      const text = await generateWithClaude({ system, user, model, maxTokens, apiKey });
       return { generatedText: text, modelUsed: model };
     }
-  } catch (error) {
-    console.log(`[LLM] Provider: ${primaryProvider} | Model: ${model} | Duration: ${Date.now() - primaryStartTime}ms | Success: false`);
-    console.error(`❌ [LLMRouter] Primary model ${model} failed! Falling back to Gemini. Error: ${error.message}`);
-  }
-
-  // Default: Gemini Fallback
-  const fallbackModel = model?.startsWith('gemini') ? model : 'gemini-3.1-pro-preview';
-  const fallbackStartTime = Date.now();
-  try {
-    console.log(`[LLMRouter] Using Gemini: ${fallbackModel} (primary or fallback)`);
-    console.log(`[LLMRouter TEST LOG] finalTaskType: ${finalTaskType}, maxTokens: ${maxTokens}, contentType: ${contentType}`);
-    result = await generateWithGemini({
-      user,
-      system,
-      model: fallbackModel,
-      maxTokens,
-      responseMimeType,
-      contentType
+    const result = await generateWithGemini({
+      user, system, model, maxTokens, responseMimeType, contentType, apiKey
     });
-    // gemini service already returns { text, modelUsed }
-    console.log(`[LLM] Provider: Google | Model: ${result.modelUsed} | Duration: ${Date.now() - fallbackStartTime}ms | Success: true`);
     return { generatedText: result.text, modelUsed: result.modelUsed };
-  } catch (err) {
-    console.log(`[LLM] Provider: Google | Model: ${fallbackModel} | Duration: ${Date.now() - fallbackStartTime}ms | Success: false`);
-    throw err;
+  } finally {
+    console.log(`[LLM] Provider: ${provider} | Model: ${model} | Duration: ${Date.now() - startedAt}ms`);
   }
 };
 
 const processRequest = async ({ brief, additionalContext, toneOverride, userPlan, clientId, userId, responseMimeType, variations = 1 }) => {
+  const providerConfig = await getEffectiveProviderKeys(userId);
+  const availableProviders = ['openai', 'anthropic', 'gemini'].filter(provider => providerConfig.keys[provider]);
+  if (!availableProviders.length) {
+    const error = new Error('No AI provider is configured. Add a provider API key in Settings or configure one in the server environment.');
+    error.status = 503;
+    throw error;
+  }
+
+  const provider = providerConfig.keys[providerConfig.activeProvider]
+    ? providerConfig.activeProvider
+    : availableProviders[0];
+
   // 1. Safety Check: Estimate input volume
   const inputTokens = estimateTokens(brief.briefText) +
     estimateTokens(additionalContext) +
@@ -146,12 +122,12 @@ const processRequest = async ({ brief, additionalContext, toneOverride, userPlan
     throw error;
   }
 
-  const taskType = await classifyTask(brief.briefText, brief.contentType);
+  const taskType = await classifyTask(brief.briefText, brief.contentType, providerConfig.keys);
   const finalTaskType = brief.contentType === 'seo' ? TASK_TYPES.LONG_FORM : taskType;
 
   let systemPrompt = await getBrandContext(clientId, userId, userPlan);
-  const model = getModelForTask(finalTaskType);
-  const finalModel = brief.contentType === 'seo' ? 'gemini-2.5-flash' : model;
+  const model = getModelForTask(finalTaskType, provider);
+  const finalModel = model;
 
   // 2. Inject per-request task context into system prompt
   let taskBlock = `
@@ -242,6 +218,8 @@ SEO FORMAT REQUIREMENTS (MANDATORY):
   const { generatedText, modelUsed: actualModelUsed } = await Promise.race([
     generateText({
       model: finalModel,
+      provider,
+      apiKey: providerConfig.keys[provider],
       system: systemPrompt,
       user: finalUserPrompt,
       maxTokens,
