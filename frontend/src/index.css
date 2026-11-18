@@ -1,0 +1,514 @@
+/* ─────────────────────────────────────────────────────────────────────────────
+   COPYGEN — MASTER STYLESHEET
+   Single source of truth. No layout-fix.css. No !important overrides.
+   ───────────────────────────────────────────────────────────────────────────── */
+
+/* ── Fonts ────────────────────────────────────────────────────────────────── */
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap');
+@import '@fontsource/dm-sans/400.css';
+@import '@fontsource/dm-sans/500.css';
+@import '@fontsource/dm-sans/600.css';
+@import '@fontsource/dm-sans/700.css';
+@import '@fontsource/dm-serif-display/400.css';
+
+@import "tailwindcss";
+
+/* Correct scanning path for Tailwind v4 */
+@source "./**/*.{js,jsx,ts,tsx}";
+
+
+/* ── Design Tokens (Tailwind v4 @theme) ──────────────────────────────────── */
+@theme {
+  --color-ivory:      #FAFAF7;
+  --color-ink:        #0E0E0C;
+  --color-ink-muted:  #7A7A72;
+  --color-gold:       #B8975A;
+  --color-gold-light: #F5EDD8;
+  --color-border:     #E8E8E2;
+
+  --font-serif:   'Cormorant Garamond', serif;
+  --font-sans:    'DM Sans', sans-serif;
+  --font-display: 'DM Serif Display', serif;
+}
+
+
+/* ── CSS Custom Properties ───────────────────────────────────────────────── */
+:root {
+  --ivory:      #FAFAF7;
+  --ink:        #0E0E0C;
+  --ink-muted:  #7A7A72;
+  --gold:       #B8975A;
+  --gold-light: #F5EDD8;
+  --border:     #E8E8E2;
+
+  /* App shell dimensions */
+  --sidebar-width:           240px;
+  --sidebar-collapsed-width:  68px;
+  --topbar-height:            60px;
+
+  color-scheme: light dark;
+}
+
+
+/* ── Reset & Base ─────────────────────────────────────────────────────────── */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html, body, #root {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+  background-color: #050508;
+}
+
+body {
+  font-family: 'DM Sans', ui-sans-serif, system-ui, sans-serif;
+  background: radial-gradient(circle at center, #0d1020 0%, #050508 100%) no-repeat fixed;
+  color: #ffffff;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  line-height: 1.6;
+  letter-spacing: -0.01em;
+  overflow-x: hidden;
+}
+
+/* Subtle noise texture overlay */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  opacity: 0.025;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+  background-size: 256px 256px;
+  background-repeat: repeat;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'DM Serif Display', ui-serif, Georgia, serif;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+}
+
+p, li, span, label, input, textarea, button, select {
+  font-family: 'DM Sans', ui-sans-serif, system-ui, sans-serif;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+img, svg, video {
+  display: block;
+  max-width: 100%;
+}
+
+::selection {
+  background-color: var(--gold);
+  color: var(--ivory);
+}
+
+
+/* ── Scrollbar ────────────────────────────────────────────────────────────── */
+::-webkit-scrollbar        { width: 4px; height: 4px; }
+::-webkit-scrollbar-track  { background: transparent; }
+::-webkit-scrollbar-thumb  { background: var(--border); border-radius: 9999px; }
+::-webkit-scrollbar-thumb:hover { background: var(--gold); }
+.scrollbar-hide::-webkit-scrollbar { display: none; }
+.scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+
+
+/* ═════════════════════════════════════════════════════════════════════════════
+   APP SHELL LAYOUT  —  .layout-root / .layout-sidebar-wrapper / etc.
+   The dashboard shell is a fixed full-screen flex row.
+   Public pages (Landing, Login) are NOT affected — they sit outside .layout-root.
+   ═════════════════════════════════════════════════════════════════════════════ */
+
+/* Root shell: fixed full-viewport flex container */
+.layout-root {
+  display: flex;
+  flex-direction: row;
+  width: 100vw;
+  height: 100vh;
+  background: #050508;
+  overflow: hidden;
+  position: fixed;
+  top: 0;
+  left: 0;
+}
+
+/* ── Sidebar wrapper ── */
+.layout-sidebar-wrapper {
+  width: var(--sidebar-width);
+  min-width: var(--sidebar-width);
+  max-width: var(--sidebar-width);
+  height: 100%;
+  flex-shrink: 0;
+  background: #050508;
+  border-right: 1px solid rgba(255, 255, 255, 0.05);
+  transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+              min-width 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+              max-width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  z-index: 10;
+}
+
+/* Collapsed state */
+.is-collapsed .layout-sidebar-wrapper {
+  width: var(--sidebar-collapsed-width);
+  min-width: var(--sidebar-collapsed-width);
+  max-width: var(--sidebar-collapsed-width);
+}
+
+/* ── Main area (topbar + scrollable content) ── */
+.layout-main-area {
+  flex: 1 1 0%;
+  min-width: 0;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  position: relative;
+}
+
+/* ── Topbar wrapper ── */
+.layout-topbar-wrapper {
+  width: 100%;
+  height: var(--topbar-height);
+  flex-shrink: 0;
+  background: rgba(5, 5, 8, 0.8);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* ── Content wrapper (clips the scroll container) ── */
+.layout-content-wrapper {
+  flex: 1 1 0%;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+  background: #050508;
+}
+
+/* ── Main scrollable area ── */
+.layout-main-scroll {
+  width: 100%;
+  height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 32px 40px;
+  background: radial-gradient(circle at top right, rgba(201, 168, 76, 0.04), transparent 600px);
+}
+
+
+/* ═════════════════════════════════════════════════════════════════════════════
+   ANIMATIONS
+   ═════════════════════════════════════════════════════════════════════════════ */
+
+@keyframes pageEnter {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(16px) scale(0.98); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+@keyframes slideInRight {
+  from { opacity: 0; transform: translateX(40px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.4; }
+}
+@keyframes blob {
+  0%, 100% { transform: scale(1); }
+  50%       { transform: scale(1.1); }
+}
+@keyframes shake {
+  10%, 90% { transform: translate3d(-1px, 0, 0); }
+  20%, 80% { transform: translate3d(2px,  0, 0); }
+  30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
+  40%, 60% { transform: translate3d(4px,  0, 0); }
+}
+
+.animate-slide-up       { animation: slideUp 250ms cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+.animate-slide-in-right { animation: slideInRight 240ms cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+.animate-pulse-slow     { animation: pulse 2.5s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+.animate-blob           { animation: blob 8s infinite ease-in-out; }
+.animate-shake          { animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both; }
+.page-enter             { animation: pageEnter 250ms cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+
+
+/* ═════════════════════════════════════════════════════════════════════════════
+   COMPONENT UTILITIES
+   ═════════════════════════════════════════════════════════════════════════════ */
+
+/* Toast */
+.toast {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem 1.5rem;
+  background: #0d0d14;
+  border: 1px solid rgba(201, 168, 76, 0.25);
+  border-left: 3px solid #c9a84c;
+  border-radius: 1rem;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: #ffffff;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.toast.hidden {
+  opacity: 0;
+  transform: translateY(1rem);
+  pointer-events: none;
+}
+
+/* Premium card */
+.premium-card {
+  background: var(--ivory);
+  border: 1px solid var(--border);
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.premium-card:hover {
+  border-color: var(--gold);
+  box-shadow: 0 12px 40px rgba(184, 151, 90, 0.08);
+}
+
+/* Hover card */
+.hover-card-premium {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.hover-card-premium:hover {
+  transform: translateY(-2px);
+  border-color: rgba(201, 168, 76, 0.4);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  background-color: #0d0d14;
+}
+
+/* Sidebar profile */
+.sidebar-profile-link:hover { background-color: rgba(201, 168, 76, 0.05); }
+.logout-btn-hover:hover     { background-color: rgba(255, 77, 77, 0.1); color: #ff4d4d; }
+
+/* Glassmorphism */
+.glass-frosted {
+  background: rgba(250, 250, 247, 0.7);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border);
+}
+
+/* Tailwind @layer utilities */
+@layer utilities {
+  .font-serif  { font-family: 'Cormorant Garamond', serif; }
+  .font-sans   { font-family: 'DM Sans', sans-serif; }
+  .text-ink    { color: var(--ink); }
+  .bg-ivory    { background-color: var(--ivory); }
+  .bg-ink      { background-color: var(--ink); }
+}
+
+
+/* ═════════════════════════════════════════════════════════════════════════════
+   MOBILE  —  ≤ 767px
+   Strategy: sidebar becomes a JS-controlled fixed overlay.
+   Main area expands to full width. Layouts stack vertically.
+   ═════════════════════════════════════════════════════════════════════════════ */
+@media (max-width: 767px) {
+
+  /* ── Layout shell ── */
+  .layout-sidebar-wrapper {
+    /* Hidden from flow on mobile; JS applies position:fixed + translateX */
+    display: none;
+  }
+  /* When JS applies inline styles (mobile overlay mode), show it */
+  .layout-sidebar-wrapper[style] {
+    display: flex;
+  }
+
+  .layout-main-area {
+    width: 100vw;
+    flex: 1;
+  }
+
+  .layout-main-scroll {
+    padding: 20px 16px;
+  }
+
+  /* ── iOS input zoom prevention — font must be ≥ 16px ── */
+  input, textarea, select {
+    font-size: 16px;
+  }
+
+  /* ── Touch: make hover-only action buttons always visible ── */
+  .group .opacity-0.group-hover\:opacity-100 {
+    opacity: 1;
+  }
+
+  /* ── Toast — span full width on small screens ── */
+  .toast {
+    left: 1rem;
+    right: 1rem;
+    bottom: 1rem;
+    font-size: 0.8rem;
+  }
+  /* Tailwind-rendered toasts (fixed bottom-8 right-8 pattern) */
+  .fixed.bottom-8.right-8 {
+    bottom: 16px;
+    right: 16px;
+    left: 16px;
+    max-width: calc(100vw - 32px);
+  }
+
+  /* ── Modals — add horizontal margin so they don't touch edges ── */
+  .fixed.inset-0 > div:last-child {
+    margin: 16px;
+    max-width: calc(100vw - 32px);
+    width: 100%;
+  }
+
+  /* ── Generate page — stack form + stats panel vertically ── */
+  .generate-grid {
+    flex-direction: column;
+    gap: 20px;
+  }
+  .generate-left-panel {
+    padding: 20px;
+    border-radius: 16px;
+  }
+  .generate-right-panel {
+    width: 100%;
+    min-width: 0;
+    flex-shrink: 1;
+  }
+
+  /* Content type buttons: 2-column grid */
+  .content-type-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+  }
+
+  /* Stat cards: 2-column grid */
+  .stat-cards-row {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+
+  /* ── BrandVoice — remove double padding, stack columns ── */
+  .max-w-6xl.mx-auto.py-12.px-6 {
+    max-width: 100%;
+    padding: 0;
+    margin: 0;
+  }
+  .grid.grid-cols-3.gap-6 {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+  .grid.grid-cols-1.lg\:grid-cols-10 {
+    grid-template-columns: 1fr;
+  }
+  .lg\:col-span-4.sticky {
+    position: relative;
+    top: auto;
+  }
+
+  /* ── Settings ── */
+  .md\:w-\[200px\].shrink-0 {
+    width: 100%;
+  }
+  .-mx-8 {
+    margin-left: 0;
+    margin-right: 0;
+  }
+  .flex.flex-col.md\:flex-row.justify-between.gap-10 {
+    flex-direction: column;
+    gap: 24px;
+  }
+  .md\:w-64.flex.flex-col {
+    width: 100%;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  /* ── Clients stats strip ── */
+  .grid.grid-cols-3.gap-4 > div {
+    padding: 12px;
+  }
+
+  /* ── Outputs search bar ── */
+  .w-56 {
+    width: 100%;
+  }
+
+  /* ── Heading scale ── */
+  h1 { font-size: clamp(1.75rem, 7vw, 3rem); }
+  h2 { font-size: clamp(1.25rem, 5vw, 2rem); }
+
+  /* ── Touch-friendly tap targets ── */
+  button, a, [role="button"] {
+    min-height: 44px;
+  }
+
+  /* ── Section padding ── */
+  section {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  /* ── Table scrolling ── */
+  .overflow-x-auto {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+
+/* ═════════════════════════════════════════════════════════════════════════════
+   VERY SMALL SCREENS  —  ≤ 390px  (iPhone SE, Galaxy A series)
+   ═════════════════════════════════════════════════════════════════════════════ */
+@media (max-width: 390px) {
+  .content-type-grid {
+    grid-template-columns: 1fr 1fr;
+    font-size: 11px;
+  }
+  .stat-cards-row {
+    grid-template-columns: 1fr 1fr;
+  }
+  .analytics-stats-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+  /* Shrink stat numbers in the clients 3-col strip */
+  .grid.grid-cols-3.gap-4 > div span:first-child {
+    font-size: 18px;
+  }
+}
+
+
+/* ═════════════════════════════════════════════════════════════════════════════
+   PRINT
+   ═════════════════════════════════════════════════════════════════════════════ */
+@media print {
+  .layout-sidebar-wrapper, nav, .layout-topbar-wrapper, button {
+    display: none;
+  }
+  body {
+    background: white;
+    color: black;
+  }
+}

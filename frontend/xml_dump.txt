@@ -1,0 +1,3467 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<w:document xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" xmlns:cdr="http://schemas.openxmlformats.org/drawingml/2006/chartDrawing" xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:pic="http://schemas.openxmlformats.org/drawingml/2006/picture" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:ve="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:vt="http://schemas.openxmlformats.org/officeDocument/2006/docPropsVTypes" xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main" xmlns:w10="urn:schemas-microsoft-com:office:word" xmlns:wp="http://schemas.openxmlformats.org/drawingml/2006/wordprocessingDrawing" xmlns:wne="http://schemas.microsoft.com/office/word/2006/wordml">
+  <w:body>
+    <w:sectPr>
+      <w:pgSz w:w="12240" w:h="15840" w:orient="portrait"/>
+      <w:pgMar w:top="1440" w:right="1800" w:bottom="1440" w:left="1800" w:header="720" w:footer="720" w:gutter="0"/>
+      <w:footerReference r:id="rId6" w:type="default"/>
+    </w:sectPr>
+    
+<w:p>
+      <w:pPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve"/>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:pStyle w:val="Heading1"/>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve">CopyGen Legal Policies</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr>
+          <w:b/>
+        </w:rPr>
+        <w:t xml:space="preserve">Last Updated: April 23, 2026</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:pStyle w:val="Heading2"/>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve">Terms of Service</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:pStyle w:val="Heading3"/>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve">1. Acceptance of Terms</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve">By creating an account on Copygen ("Service"), operated by Copygen ("Company", "we", "us", or "our"), you confirm that you have read, understood, and agree to be bound by these Terms of Service ("Terms") and all applicable laws and regulations. If you do not agree with any part of these terms, you are prohibited from using the Service.</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve">These Terms apply to all visitors, users, and others who access or use the Service. By accessing or using our Service you agree to be bound by these Terms. If you disagree with any part of these Terms then you may not access the Service.</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:pStyle w:val="Heading3"/>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve">2. Description of Service</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve">Copygen provides an AI-powered content generation platform designed for marketing agencies. The Service includes, but is not limited to: Brand Memory AI training, marketing copy generation (blog posts, ad copy, social captions, email sequences), client profile management, analytics, and template libraries.</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve">We reserve the right to modify, suspend, or discontinue the Service (or any part of it) at any time with or without notice. We shall not be liable to you or any third party for any modification, suspension, or discontinuation of the Service.</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:pStyle w:val="Heading3"/>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve">3. User Accounts &amp; Registration</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve">When you create an account with us, you must provide information that is accurate, complete, and current at all times. Failure to do so constitutes a breach of the Terms, which may result in immediate termination of your account.</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve">You are responsible for safeguarding the password that you use to access the Service and for any activities or actions under your password. You agree not to disclose your password to any third party. You must notify us immediately upon becoming aware of any breach of security or unauthorized use of your account.</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve">You may not use as a username the name of another person or entity or a name that is not lawfully available for use, or a name or trademark that is subject to any rights of another person without appropriate authorization.</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:pStyle w:val="Heading3"/>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve">4. Subscriptions &amp; Billing</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr>
+          <w:b/>
+        </w:rPr>
+        <w:t xml:space="preserve">Free Trial:</w:t>
+      </w:r>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve"> New accounts receive a 14-day free trial with access to core features and up to 10 AI generations per day. No credit card is required to start a trial. Trials automatically expire at the end of the 14-day period unless converted to a paid plan.</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr>
+          <w:b/>
+        </w:rPr>
+        <w:t xml:space="preserve">Paid Plans:</w:t>
+      </w:r>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve"> Subscription fees are billed in advance on a monthly or annual basis. All fees are exclusive of applicable taxes (including GST for Indian customers), which will be added at checkout where applicable.</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr>
+          <w:b/>
+        </w:rPr>
+        <w:t xml:space="preserve">Payment Processing:</w:t>
+      </w:r>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve"> Payments are processed by Razorpay (for Indian customers) and Dodo Payments (for international customers). Your payment information is encrypted and we do not store your raw card data.</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr>
+          <w:b/>
+        </w:rPr>
+        <w:t xml:space="preserve">Auto-Renewal:</w:t>
+      </w:r>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve"> Subscriptions automatically renew at the end of each billing cycle. You authorize us to charge your payment method for the renewal unless you cancel before the renewal date.</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr>
+          <w:b/>
+        </w:rPr>
+        <w:t xml:space="preserve">Plan Changes:</w:t>
+      </w:r>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve"> You may upgrade or downgrade your plan at any time. Upgrades take effect immediately with a prorated charge. Downgrades take effect at the start of the next billing cycle.</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr>
+          <w:b/>
+        </w:rPr>
+        <w:t xml:space="preserve">Failure to Pay:</w:t>
+      </w:r>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve"> If payment fails, we will attempt to charge your payment method up to 3 times over 7 days. Continued failure to pay may result in suspension of your account and loss of access to Brand Memory data.</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:pStyle w:val="Heading3"/>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve">5. Refunds &amp; Cancellations</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve">Please refer to our Refund Policy page for complete details. In summary:</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:numPr>
+          <w:ilvl w:val="0"/>
+          <w:numId w:val="1"/>
+        </w:numPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve">Annual subscriptions: Eligible for a prorated refund within 7 days of purchase if fewer than 20 generations have been made.</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:numPr>
+          <w:ilvl w:val="0"/>
+          <w:numId w:val="1"/>
+        </w:numPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve">Monthly subscriptions: Non-refundable once the billing period begins, except where required by applicable law.</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:numPr>
+          <w:ilvl w:val="0"/>
+          <w:numId w:val="1"/>
+        </w:numPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve">Trial periods: Free trials are non-refundable by nature.</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:numPr>
+          <w:ilvl w:val="0"/>
+          <w:numId w:val="1"/>
+        </w:numPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve">Cancellations: You may cancel your subscription at any time from your Settings page. Your access will continue until the end of the current billing period.</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:pStyle w:val="Heading3"/>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve">6. AI-Generated Content &amp; Intellectual Property</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr>
+          <w:b/>
+        </w:rPr>
+        <w:t xml:space="preserve">Your Content:</w:t>
+      </w:r>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve"> You retain full ownership of all content you upload to the Service, including brand guidelines, sample copy, and client information used to train your Brand Memory profiles. You grant Copygen a limited, non-exclusive license to process this content solely for the purpose of providing the Service to you.</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr>
+          <w:b/>
+        </w:rPr>
+        <w:t xml:space="preserve">Generated Output:</w:t>
+      </w:r>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve"> You own the content generated by Copygen on your behalf, subject to these Terms. You are free to use, modify, publish, and commercialize AI-generated outputs without restriction.</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr>
+          <w:b/>
+        </w:rPr>
+        <w:t xml:space="preserve">AI Training:</w:t>
+      </w:r>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve"> Copygen does not use your proprietary content to train general-purpose models or share it with other users. We use enterprise-tier APIs from third-party LLM providers (Google Gemini, OpenAI, Anthropic) that are contracted to not train on customer data.</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr>
+          <w:b/>
+        </w:rPr>
+        <w:t xml:space="preserve">Copygen's IP:</w:t>
+      </w:r>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve"> The Service itself, including our software, algorithms, Brand Memory architecture, user interface, and proprietary prompting systems, remains the exclusive property of Copygen. You may not reverse engineer, decompile, or attempt to extract source code from our platform.</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr>
+          <w:b/>
+        </w:rPr>
+        <w:t xml:space="preserve">Third-Party Content:</w:t>
+      </w:r>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve"> If you use any copyrighted material as input, you represent and warrant that you have the legal right to do so. Copygen is not responsible for IP infringement arising from inputs you provide.</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:pStyle w:val="Heading3"/>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve">7. Acceptable Use Policy</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve">You agree NOT to use Copygen for:</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:numPr>
+          <w:ilvl w:val="0"/>
+          <w:numId w:val="2"/>
+        </w:numPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve">Generating spam, phishing content, or deceptive advertising</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:numPr>
+          <w:ilvl w:val="0"/>
+          <w:numId w:val="2"/>
+        </w:numPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve">Creating content that promotes hate speech, discrimination, or violence</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:numPr>
+          <w:ilvl w:val="0"/>
+          <w:numId w:val="2"/>
+        </w:numPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve">Generating disinformation, fake news, or misleading health/financial claims</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:numPr>
+          <w:ilvl w:val="0"/>
+          <w:numId w:val="2"/>
+        </w:numPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve">Producing content that violates any individual's privacy or publicity rights</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:numPr>
+          <w:ilvl w:val="0"/>
+          <w:numId w:val="2"/>
+        </w:numPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve">Creating content that infringes on third-party intellectual property</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:numPr>
+          <w:ilvl w:val="0"/>
+          <w:numId w:val="2"/>
+        </w:numPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve">Circumventing, disabling, or interfering with security features of the Service</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:numPr>
+          <w:ilvl w:val="0"/>
+          <w:numId w:val="2"/>
+        </w:numPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve">Using automated means (bots, scrapers) to access the Service beyond our official API</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:numPr>
+          <w:ilvl w:val="0"/>
+          <w:numId w:val="2"/>
+        </w:numPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve">Reselling or white-labeling access to the Service without our written permission</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve">Violation of this policy may result in immediate account termination without refund.</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:pStyle w:val="Heading3"/>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve">8. Data, Privacy &amp; Security</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve">Your use of the Service is also governed by our Privacy Policy, which is incorporated into these Terms by reference. Please review our Privacy Policy to understand our practices.</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve">We implement industry-standard security measures including encrypted data transmission (TLS 1.3), encrypted data at rest, and row-level security to ensure your client data is isolated from other users.</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve">While we strive to maintain the highest security standards, no method of electronic transmission or storage is 100% secure. We cannot guarantee absolute security of your data.</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:pStyle w:val="Heading3"/>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve">9. Termination</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve">We may terminate or suspend your account immediately, without prior notice or liability, for any reason whatsoever, including without limitation if you breach the Terms.</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:numPr>
+          <w:ilvl w:val="0"/>
+          <w:numId w:val="3"/>
+        </w:numPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve">Upon termination: </w:t>
+      </w:r>
+      <w:r>
+        <w:rPr/>
+      </w:r>
+      <w:r>
+        <w:rPr/>
+      </w:r>
+      <w:r>
+        <w:rPr/>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve">You may delete your account at any time from the Settings page. Account deletion is permanent and irreversible after the 30-day data retention window.</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:pStyle w:val="Heading3"/>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve">10. AI-Generated Content Disclosure</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve">Copygen uses artificial intelligence APIs including OpenAI, Anthropic, and Google to generate content. All output is AI-generated. Copygen does not guarantee accuracy, originality, or fitness for any specific purpose. The user is solely responsible for reviewing, editing, fact-checking, and approving all generated content before publishing or distributing it. Users must comply with applicable AI disclosure laws in their jurisdiction when publishing AI-generated content.</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:pStyle w:val="Heading3"/>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve">11. Force Majeure</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve">Copygen shall not be liable for any failure or delay in performance resulting from causes beyond our reasonable control, including but not limited to: third-party API outages (OpenAI, Anthropic, Google), internet infrastructure failures, natural disasters, government actions, cyberattacks, or any other event outside our direct control. In such events, we will make reasonable efforts to restore service and communicate updates to affected users.</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:pStyle w:val="Heading3"/>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve">12. Third-Party API Dependency Disclosure</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve">Copygen's content generation capabilities depend on third-party AI APIs including OpenAI, Anthropic, and Google. We do not control the availability, pricing, or model changes of these services. Copygen reserves the right to switch AI providers, modify generation models, or adjust output quality as a result of changes made by these third-party providers, without prior notice. This does not constitute a material change to the service warranting a refund.</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:pStyle w:val="Heading3"/>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve">13. Data Portability</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve">Upon written request to privacy@copygen.in, users may request an export of their Brand Memory data including stored tone profiles, power words, avoid-words, audience definitions, and CTA styles. Exports will be provided in JSON or CSV format within 14 business days of the request. Account deletion requests will also trigger deletion of all Brand Memory data. Generated content outputs are not stored by Copygen and therefore cannot be exported retroactively.</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:pStyle w:val="Heading3"/>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve">14. Limitation of Liability</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve">TO THE MAXIMUM EXTENT PERMITTED BY APPLICABLE LAW, COPYGEN AND ITS AFFILIATES, OFFICERS, EMPLOYEES, AGENTS, PARTNERS AND LICENSORS SHALL NOT BE LIABLE FOR ANY INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL, PUNITIVE, OR EXEMPLARY DAMAGES, INCLUDING BUT NOT LIMITED TO LOSS OF PROFITS, DATA, GOODWILL, OR BUSINESS OPPORTUNITIES.</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve">OUR TOTAL LIABILITY TO YOU FOR ALL CLAIMS ARISING OUT OF OR RELATED TO THESE TERMS OR THE SERVICE SHALL NOT EXCEED THE TOTAL AMOUNT PAID BY YOU TO COPYGEN IN THE THREE (3) MONTHS IMMEDIATELY PRECEDING THE CLAIM.</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve">COPYGEN IS NOT RESPONSIBLE FOR THE ACCURACY, LEGALITY, OR EFFECTIVENESS OF ANY AI-GENERATED CONTENT. YOU ARE SOLELY RESPONSIBLE FOR REVIEWING AND APPROVING ALL CONTENT BEFORE PUBLICATION OR DISTRIBUTION.</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:pStyle w:val="Heading3"/>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve">15. Disclaimers</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve">THE SERVICE IS PROVIDED ON AN "AS IS" AND "AS AVAILABLE" BASIS WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, OR NON-INFRINGEMENT.</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve">We do not warrant that: (a) the Service will function uninterrupted or error-free; (b) any errors will be corrected; (c) the Service is free of viruses or other harmful components; (d) the results obtained from using the Service will be accurate or reliable.</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:pStyle w:val="Heading3"/>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve">16. Governing Law &amp; Disputes</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve">These Terms shall be governed and construed in accordance with the laws of India, specifically the Information Technology Act, 2000 and subsequent amendments, without regard to conflict of law provisions.</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr>
+          <w:b/>
+        </w:rPr>
+        <w:t xml:space="preserve">Dispute Resolution:</w:t>
+      </w:r>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve"> Any disputes arising out of or relating to these Terms or the Service shall first be attempted to be resolved through good-faith negotiation. If unresolved within 30 days, disputes shall be submitted to binding arbitration in Pune, Maharashtra, India, under the Arbitration and Conciliation Act, 1996.</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve">For users outside India, nothing in this clause limits your statutory consumer rights under the applicable laws of your country of residence.</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:pStyle w:val="Heading3"/>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve">17. Changes to Terms</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve">We reserve the right to modify these Terms at any time. When we do, we will update the "Last Updated" date at the top of this page and send an email notification to all registered users at least 14 days before material changes take effect.</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve">Your continued use of the Service after the effective date of revised Terms constitutes your acceptance of the changes. If you do not agree with the revised Terms, you must stop using the Service before the effective date.</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:pStyle w:val="Heading3"/>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve">18. Contact Us</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve">If you have any questions about these Terms, please contact us:</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr>
+          <w:b/>
+        </w:rPr>
+        <w:t xml:space="preserve">Copygen</w:t>
+      </w:r>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve"> Email: legal@copygen.in Support: support@copygen.in Website: https://copygen.in</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve">We aim to respond to all legal inquiries within 5 business days.</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr/>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr/>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:pStyle w:val="Heading2"/>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve">Privacy Policy</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:pStyle w:val="Heading3"/>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve">1. Overview</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve">Copygen ("Company", "we", "us", or "our") operates the Copygen AI marketing platform available at copygen.in. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you visit our website or use our Service.</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve">We are committed to protecting your privacy in compliance with the Information Technology (Reasonable Security Practices and Procedures and Sensitive Personal Data or Information) Rules, 2011 under India's IT Act, 2000, and where applicable, the EU General Data Protection Regulation (GDPR) and similar privacy laws in other jurisdictions.</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve">Please read this policy carefully. By using Copygen, you consent to the practices described herein.</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:pStyle w:val="Heading3"/>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve">2. Information We Collect</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr>
+          <w:b/>
+        </w:rPr>
+        <w:t xml:space="preserve">2a. Information You Provide Directly:</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:numPr>
+          <w:ilvl w:val="0"/>
+          <w:numId w:val="4"/>
+        </w:numPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr>
+          <w:b/>
+        </w:rPr>
+        <w:t xml:space="preserve">Account Information:</w:t>
+      </w:r>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve"> Email address, name, agency name, and password when you register</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:numPr>
+          <w:ilvl w:val="0"/>
+          <w:numId w:val="4"/>
+        </w:numPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr>
+          <w:b/>
+        </w:rPr>
+        <w:t xml:space="preserve">Payment Information:</w:t>
+      </w:r>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve"> Billing address and payment method details (processed and stored securely by Razorpay/Dodo Payments; we never see raw card numbers)</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:numPr>
+          <w:ilvl w:val="0"/>
+          <w:numId w:val="4"/>
+        </w:numPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr>
+          <w:b/>
+        </w:rPr>
+        <w:t xml:space="preserve">Client &amp; Brand Data:</w:t>
+      </w:r>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve"> Website URLs, sample copy, brand guidelines, prohibited words, tone descriptions, and other content you voluntarily upload to create Brand Memory profiles</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:numPr>
+          <w:ilvl w:val="0"/>
+          <w:numId w:val="4"/>
+        </w:numPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr>
+          <w:b/>
+        </w:rPr>
+        <w:t xml:space="preserve">Communications:</w:t>
+      </w:r>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve"> Messages you send via our support channels or contact forms</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr>
+          <w:b/>
+        </w:rPr>
+        <w:t xml:space="preserve">2b. Information Collected Automatically:</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:numPr>
+          <w:ilvl w:val="0"/>
+          <w:numId w:val="5"/>
+        </w:numPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr>
+          <w:b/>
+        </w:rPr>
+        <w:t xml:space="preserve">Usage Data:</w:t>
+      </w:r>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve"> Pages visited, features used, generation history, click patterns, and session duration</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:numPr>
+          <w:ilvl w:val="0"/>
+          <w:numId w:val="5"/>
+        </w:numPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr>
+          <w:b/>
+        </w:rPr>
+        <w:t xml:space="preserve">Device &amp; Browser Data:</w:t>
+      </w:r>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve"> IP address, browser type and version, operating system, device identifiers, and screen resolution</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:numPr>
+          <w:ilvl w:val="0"/>
+          <w:numId w:val="5"/>
+        </w:numPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr>
+          <w:b/>
+        </w:rPr>
+        <w:t xml:space="preserve">Cookies &amp; Tracking:</w:t>
+      </w:r>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve"> We use first-party cookies and third-party analytics (see our Cookie Policy for full details)</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:numPr>
+          <w:ilvl w:val="0"/>
+          <w:numId w:val="5"/>
+        </w:numPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr>
+          <w:b/>
+        </w:rPr>
+        <w:t xml:space="preserve">Log Files:</w:t>
+      </w:r>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve"> Server logs capturing requests, errors, and system events for debugging and security</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr>
+          <w:b/>
+        </w:rPr>
+        <w:t xml:space="preserve">2c. Information from Third Parties:</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:numPr>
+          <w:ilvl w:val="0"/>
+          <w:numId w:val="6"/>
+        </w:numPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr>
+          <w:b/>
+        </w:rPr>
+        <w:t xml:space="preserve">Google OAuth:</w:t>
+      </w:r>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve"> If you sign in with Google, we receive your Google account email and profile name</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:numPr>
+          <w:ilvl w:val="0"/>
+          <w:numId w:val="6"/>
+        </w:numPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr>
+          <w:b/>
+        </w:rPr>
+        <w:t xml:space="preserve">Payment Providers:</w:t>
+      </w:r>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve"> Transaction status and metadata (but not full card details) from Razorpay/Dodo Payments</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:pStyle w:val="Heading3"/>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve">3. How We Use Your Information</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve">We use the information we collect to:</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr>
+          <w:b/>
+        </w:rPr>
+        <w:t xml:space="preserve">Provide &amp; Improve the Service:</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:numPr>
+          <w:ilvl w:val="0"/>
+          <w:numId w:val="7"/>
+        </w:numPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve">Authenticate your account and maintain your session</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:numPr>
+          <w:ilvl w:val="0"/>
+          <w:numId w:val="7"/>
+        </w:numPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve">Process your AI generation requests using your Brand Memory data</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:numPr>
+          <w:ilvl w:val="0"/>
+          <w:numId w:val="7"/>
+        </w:numPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve">Send transactional emails (welcome, invoices, subscription alerts, password resets)</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:numPr>
+          <w:ilvl w:val="0"/>
+          <w:numId w:val="7"/>
+        </w:numPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve">Improve our AI models and platform features (using anonymized, aggregated data only)</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:numPr>
+          <w:ilvl w:val="0"/>
+          <w:numId w:val="7"/>
+        </w:numPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve">CopyGen does not use any user-submitted data, Brand Memory data, content inputs, or generated outputs to train, fine-tune, or improve any AI model — whether our own or any third party's. All data is used solely to deliver the service to the account that submitted it.</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr>
+          <w:b/>
+        </w:rPr>
+        <w:t xml:space="preserve">Communication:</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:numPr>
+          <w:ilvl w:val="0"/>
+          <w:numId w:val="8"/>
+        </w:numPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve">Respond to your support requests and questions</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:numPr>
+          <w:ilvl w:val="0"/>
+          <w:numId w:val="8"/>
+        </w:numPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve">Send product updates, security notices, and policy changes (you may opt out of marketing emails)</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:numPr>
+          <w:ilvl w:val="0"/>
+          <w:numId w:val="8"/>
+        </w:numPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve">Notify you of subscription renewals, payment failures, and usage limits</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr>
+          <w:b/>
+        </w:rPr>
+        <w:t xml:space="preserve">Legal &amp; Security:</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:numPr>
+          <w:ilvl w:val="0"/>
+          <w:numId w:val="9"/>
+        </w:numPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve">Detect, investigate, and prevent fraudulent or abusive activity</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:numPr>
+          <w:ilvl w:val="0"/>
+          <w:numId w:val="9"/>
+        </w:numPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve">Comply with legal obligations and respond to lawful requests from authorities</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:numPr>
+          <w:ilvl w:val="0"/>
+          <w:numId w:val="9"/>
+        </w:numPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve">Enforce our Terms of Service and Acceptable Use Policy</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr>
+          <w:b/>
+        </w:rPr>
+        <w:t xml:space="preserve">Basis for Processing (GDPR):</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:numPr>
+          <w:ilvl w:val="0"/>
+          <w:numId w:val="10"/>
+        </w:numPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr>
+          <w:b/>
+        </w:rPr>
+        <w:t xml:space="preserve">Contract:</w:t>
+      </w:r>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve"> Processing necessary to fulfill our agreement with you (e.g., providing the Service)</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:numPr>
+          <w:ilvl w:val="0"/>
+          <w:numId w:val="10"/>
+        </w:numPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr>
+          <w:b/>
+        </w:rPr>
+        <w:t xml:space="preserve">Legitimate Interest:</w:t>
+      </w:r>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve"> Analytics, fraud prevention, and service improvement</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:numPr>
+          <w:ilvl w:val="0"/>
+          <w:numId w:val="10"/>
+        </w:numPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr>
+          <w:b/>
+        </w:rPr>
+        <w:t xml:space="preserve">Consent:</w:t>
+      </w:r>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve"> Marketing communications and non-essential cookies (you may withdraw consent at any time)</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:numPr>
+          <w:ilvl w:val="0"/>
+          <w:numId w:val="10"/>
+        </w:numPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr>
+          <w:b/>
+        </w:rPr>
+        <w:t xml:space="preserve">Legal Obligation:</w:t>
+      </w:r>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve"> Compliance with Indian IT law and applicable regulations</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:pStyle w:val="Heading3"/>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve">4. Client Data Isolation &amp; Brand Memory</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve">This section is especially important for agency users who upload client information.</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr>
+          <w:b/>
+        </w:rPr>
+        <w:t xml:space="preserve">Strict Isolation:</w:t>
+      </w:r>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve"> All Brand Memory profiles are isolated per agency account using row-level security (RLS) at the database level. No data from your account — including client names, URLs, brand voice settings, or generated content — is ever accessible to or shared with other Copygen users.</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr>
+          <w:b/>
+        </w:rPr>
+        <w:t xml:space="preserve">No Cross-Training:</w:t>
+      </w:r>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve"> Your client's brand data is NOT used to train or influence the AI models of any other agency or user. Each generation request uses only the Brand Memory profile you have explicitly created.</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr>
+          <w:b/>
+        </w:rPr>
+        <w:t xml:space="preserve">Your Client's Rights:</w:t>
+      </w:r>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve"> If your end clients have privacy concerns about data you have uploaded on their behalf, it is your responsibility as the data controller to maintain proper consent and data processing agreements with them. Copygen acts as a data processor on your behalf.</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr>
+          <w:b/>
+        </w:rPr>
+        <w:t xml:space="preserve">Retention:</w:t>
+      </w:r>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve"> Brand Memory profiles are retained while your account is active. Upon account deletion, all profiles are purged within 30 days.</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:pStyle w:val="Heading3"/>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve">5. AI Providers &amp; Third-Party Services</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve">To provide AI generation capabilities, your content (prompts and brand context) is transmitted to third-party LLM providers:</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:numPr>
+          <w:ilvl w:val="0"/>
+          <w:numId w:val="11"/>
+        </w:numPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr>
+          <w:b/>
+        </w:rPr>
+        <w:t xml:space="preserve">Google Gemini</w:t>
+      </w:r>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve"> (Google LLC, USA) — subject to Google's enterprise API data processing agreement</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:numPr>
+          <w:ilvl w:val="0"/>
+          <w:numId w:val="11"/>
+        </w:numPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr>
+          <w:b/>
+        </w:rPr>
+        <w:t xml:space="preserve">Anthropic Claude</w:t>
+      </w:r>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve"> (Anthropic PBC, USA) — subject to Anthropic's API data handling policies</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:numPr>
+          <w:ilvl w:val="0"/>
+          <w:numId w:val="11"/>
+        </w:numPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr>
+          <w:b/>
+        </w:rPr>
+        <w:t xml:space="preserve">OpenAI</w:t>
+      </w:r>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve"> (OpenAI LLC, USA) — subject to OpenAI's enterprise data protection addendum</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr>
+          <w:b/>
+        </w:rPr>
+        <w:t xml:space="preserve">Important:</w:t>
+      </w:r>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve"> We use enterprise-tier agreements with all LLM providers that include contractual commitments that your data will NOT be used to train their general-purpose AI models. Your content is processed transiently and not retained by these providers beyond the time needed to generate a response.</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr>
+          <w:b/>
+        </w:rPr>
+        <w:t xml:space="preserve">Other Third Parties We Use:</w:t>
+      </w:r>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve"> | Service | Purpose | Privacy Link | |---|---|---| | Razorpay | Indian payment processing | razorpay.com/privacy | | Dodo Payments | International payments | dodopayments.com/privacy | | Google Analytics | Usage analytics | policies.google.com/privacy | | Firebase | Database &amp; authentication | firebase.google.com/support/privacy | | Firebase | Web hosting &amp; CDN | firebase.google.com/support/privacy |</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:pStyle w:val="Heading3"/>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve">6. Cookies</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve">We use cookies and similar tracking technologies to enhance your experience on Copygen. Please see our dedicated Cookie Policy for full details on what cookies we use and how to manage them.</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:numPr>
+          <w:ilvl w:val="0"/>
+          <w:numId w:val="12"/>
+        </w:numPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve">In summary, we use: </w:t>
+      </w:r>
+      <w:r>
+        <w:rPr/>
+      </w:r>
+      <w:r>
+        <w:rPr/>
+      </w:r>
+      <w:r>
+        <w:rPr/>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve">You can manage your cookie preferences in your browser settings. Disabling non-essential cookies will not affect your ability to use the core features of Copygen.</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:pStyle w:val="Heading3"/>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve">7. Data Sharing &amp; Disclosure</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve">We do not sell, trade, or rent your personal information to third parties. We may share your information only in the following circumstances:</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr>
+          <w:b/>
+        </w:rPr>
+        <w:t xml:space="preserve">Service Providers:</w:t>
+      </w:r>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve"> We engage trusted vendors (listed above in Section 5) who process data on our behalf under strict confidentiality agreements.</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr>
+          <w:b/>
+        </w:rPr>
+        <w:t xml:space="preserve">Legal Requirements:</w:t>
+      </w:r>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve"> We may disclose your information if required to do so by law, court order, or governmental authority, or if we believe in good faith that such disclosure is necessary to protect our rights or the safety of others.</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr>
+          <w:b/>
+        </w:rPr>
+        <w:t xml:space="preserve">Business Transfers:</w:t>
+      </w:r>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve"> In the event of a merger, acquisition, or sale of all or a portion of our assets, your information may be transferred as part of that transaction. We will notify you via email and/or prominent notice on our website of any change in ownership.</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr>
+          <w:b/>
+        </w:rPr>
+        <w:t xml:space="preserve">With Your Consent:</w:t>
+      </w:r>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve"> We may share information with third parties when you have given us explicit consent to do so.</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr>
+          <w:b/>
+        </w:rPr>
+        <w:t xml:space="preserve">Aggregated &amp; Anonymized Data:</w:t>
+      </w:r>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve"> We may share aggregated, de-identified data that cannot be used to identify you (e.g., "Our users generate an average of 50 pieces of content per month") for business and marketing purposes.</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:pStyle w:val="Heading3"/>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve">8. Data Retention</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve">We retain your personal data only as long as necessary to fulfill the purposes outlined in this Privacy Policy:</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:numPr>
+          <w:ilvl w:val="0"/>
+          <w:numId w:val="13"/>
+        </w:numPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr>
+          <w:b/>
+        </w:rPr>
+        <w:t xml:space="preserve">Account Data:</w:t>
+      </w:r>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve"> Retained while your account is active and for 30 days after deletion</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:numPr>
+          <w:ilvl w:val="0"/>
+          <w:numId w:val="13"/>
+        </w:numPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr>
+          <w:b/>
+        </w:rPr>
+        <w:t xml:space="preserve">Brand Memory Profiles:</w:t>
+      </w:r>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve"> Retained while your account is active; purged within 30 days of account deletion</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:numPr>
+          <w:ilvl w:val="0"/>
+          <w:numId w:val="13"/>
+        </w:numPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr>
+          <w:b/>
+        </w:rPr>
+        <w:t xml:space="preserve">Generated Content History:</w:t>
+      </w:r>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve"> Retained for 90 days in our system for your reference; you can manually delete at any time</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:numPr>
+          <w:ilvl w:val="0"/>
+          <w:numId w:val="13"/>
+        </w:numPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr>
+          <w:b/>
+        </w:rPr>
+        <w:t xml:space="preserve">Payment Records:</w:t>
+      </w:r>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve"> Retained for 7 years to comply with Indian financial regulations (GST Act requirements)</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:numPr>
+          <w:ilvl w:val="0"/>
+          <w:numId w:val="13"/>
+        </w:numPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr>
+          <w:b/>
+        </w:rPr>
+        <w:t xml:space="preserve">Server Logs:</w:t>
+      </w:r>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve"> Retained for 90 days for security and debugging purposes</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:numPr>
+          <w:ilvl w:val="0"/>
+          <w:numId w:val="13"/>
+        </w:numPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr>
+          <w:b/>
+        </w:rPr>
+        <w:t xml:space="preserve">Support Communications:</w:t>
+      </w:r>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve"> Retained for 2 years from the date of the last interaction</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve">You may request early deletion of your data (except where retention is legally required) by contacting us at privacy@copygen.in.</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:pStyle w:val="Heading3"/>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve">9. Your Rights</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve">Depending on your location, you may have the following rights regarding your personal data:</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr>
+          <w:b/>
+        </w:rPr>
+        <w:t xml:space="preserve">All Users:</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:numPr>
+          <w:ilvl w:val="0"/>
+          <w:numId w:val="14"/>
+        </w:numPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr>
+          <w:b/>
+        </w:rPr>
+        <w:t xml:space="preserve">Access:</w:t>
+      </w:r>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve"> Request a copy of the personal data we hold about you</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:numPr>
+          <w:ilvl w:val="0"/>
+          <w:numId w:val="14"/>
+        </w:numPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr>
+          <w:b/>
+        </w:rPr>
+        <w:t xml:space="preserve">Correction:</w:t>
+      </w:r>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve"> Request correction of inaccurate or incomplete data</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:numPr>
+          <w:ilvl w:val="0"/>
+          <w:numId w:val="14"/>
+        </w:numPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr>
+          <w:b/>
+        </w:rPr>
+        <w:t xml:space="preserve">Deletion:</w:t>
+      </w:r>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve"> Request deletion of your account and associated data (subject to legal retention requirements)</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:numPr>
+          <w:ilvl w:val="0"/>
+          <w:numId w:val="14"/>
+        </w:numPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr>
+          <w:b/>
+        </w:rPr>
+        <w:t xml:space="preserve">Portability:</w:t>
+      </w:r>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve"> Request an export of your data in a machine-readable format</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr>
+          <w:b/>
+        </w:rPr>
+        <w:t xml:space="preserve">EU/EEA Users (GDPR):</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:numPr>
+          <w:ilvl w:val="0"/>
+          <w:numId w:val="15"/>
+        </w:numPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr>
+          <w:b/>
+        </w:rPr>
+        <w:t xml:space="preserve">Restriction:</w:t>
+      </w:r>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve"> Request that we restrict the processing of your data in certain circumstances</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:numPr>
+          <w:ilvl w:val="0"/>
+          <w:numId w:val="15"/>
+        </w:numPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr>
+          <w:b/>
+        </w:rPr>
+        <w:t xml:space="preserve">Object:</w:t>
+      </w:r>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve"> Object to processing based on legitimate interests or for direct marketing</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:numPr>
+          <w:ilvl w:val="0"/>
+          <w:numId w:val="15"/>
+        </w:numPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr>
+          <w:b/>
+        </w:rPr>
+        <w:t xml:space="preserve">Withdraw Consent:</w:t>
+      </w:r>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve"> Withdraw consent at any time where processing is based on consent</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:numPr>
+          <w:ilvl w:val="0"/>
+          <w:numId w:val="15"/>
+        </w:numPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr>
+          <w:b/>
+        </w:rPr>
+        <w:t xml:space="preserve">Lodge a Complaint:</w:t>
+      </w:r>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve"> You have the right to lodge a complaint with your supervisory authority</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr>
+          <w:b/>
+        </w:rPr>
+        <w:t xml:space="preserve">Indian Users (IT Act / DPDP Act):</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:numPr>
+          <w:ilvl w:val="0"/>
+          <w:numId w:val="16"/>
+        </w:numPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve">You have the right to access and correct your personal data as provided under Indian law</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:numPr>
+          <w:ilvl w:val="0"/>
+          <w:numId w:val="16"/>
+        </w:numPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve">You may contact our Grievance Officer for any privacy concerns (details in Section 13)</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr>
+          <w:b/>
+        </w:rPr>
+        <w:t xml:space="preserve">To exercise any of these rights,</w:t>
+      </w:r>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve"> contact us at privacy@copygen.in. We will respond within 30 days (or sooner where required by law). We may need to verify your identity before processing your request.</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:pStyle w:val="Heading3"/>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve">10. Data Security</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve">We implement a multi-layered security architecture to protect your data:</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:numPr>
+          <w:ilvl w:val="0"/>
+          <w:numId w:val="17"/>
+        </w:numPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr>
+          <w:b/>
+        </w:rPr>
+        <w:t xml:space="preserve">Encryption in Transit:</w:t>
+      </w:r>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve"> All data transmitted between your browser and our servers is encrypted using TLS 1.3</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:numPr>
+          <w:ilvl w:val="0"/>
+          <w:numId w:val="17"/>
+        </w:numPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr>
+          <w:b/>
+        </w:rPr>
+        <w:t xml:space="preserve">Encryption at Rest:</w:t>
+      </w:r>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve"> Sensitive data including brand profiles and credentials are encrypted at the database level using AES-256</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:numPr>
+          <w:ilvl w:val="0"/>
+          <w:numId w:val="17"/>
+        </w:numPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr>
+          <w:b/>
+        </w:rPr>
+        <w:t xml:space="preserve">Row-Level Security (RLS):</w:t>
+      </w:r>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve"> Database-level policies enforce strict user data isolation</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:numPr>
+          <w:ilvl w:val="0"/>
+          <w:numId w:val="17"/>
+        </w:numPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr>
+          <w:b/>
+        </w:rPr>
+        <w:t xml:space="preserve">Authentication:</w:t>
+      </w:r>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve"> We support Google OAuth and offer password hashing using industry-standard bcrypt</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:numPr>
+          <w:ilvl w:val="0"/>
+          <w:numId w:val="17"/>
+        </w:numPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr>
+          <w:b/>
+        </w:rPr>
+        <w:t xml:space="preserve">Access Controls:</w:t>
+      </w:r>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve"> Internal access to production data is restricted to authorized personnel on a need-to-know basis</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:numPr>
+          <w:ilvl w:val="0"/>
+          <w:numId w:val="17"/>
+        </w:numPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr>
+          <w:b/>
+        </w:rPr>
+        <w:t xml:space="preserve">Regular Audits:</w:t>
+      </w:r>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve"> We conduct periodic security reviews of our infrastructure and code</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve">Despite our best efforts, no security system is impenetrable. In the event of a data breach that affects your rights and freedoms, we will notify you within 72 hours of becoming aware of the breach, as required by applicable law.</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:pStyle w:val="Heading3"/>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve">11. International Data Transfers</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve">Copygen is operated from India. If you are accessing the Service from outside India, your information may be transferred to, stored, and processed in India and other countries where our service providers operate.</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve">For users in the European Economic Area (EEA) or UK: Your data may be transferred to countries that may not provide the same level of data protection as your home country. Where such transfers occur, we rely on:</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:numPr>
+          <w:ilvl w:val="0"/>
+          <w:numId w:val="18"/>
+        </w:numPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve">Standard Contractual Clauses (SCCs) approved by the European Commission</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:numPr>
+          <w:ilvl w:val="0"/>
+          <w:numId w:val="18"/>
+        </w:numPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve">The adequacy decisions where applicable</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:numPr>
+          <w:ilvl w:val="0"/>
+          <w:numId w:val="18"/>
+        </w:numPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve">Your explicit consent</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve">By using the Service, you acknowledge and consent to these international transfers.</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:pStyle w:val="Heading3"/>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve">13. Grievance Officer (India)</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve">In accordance with the Information Technology Act, 2000 and Rules made thereunder, the name and contact details of the Grievance Officer are:</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr>
+          <w:b/>
+        </w:rPr>
+        <w:t xml:space="preserve">Grievance Officer:</w:t>
+      </w:r>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve"> Varun Gorakhnath Avhad </w:t>
+      </w:r>
+      <w:r>
+        <w:rPr>
+          <w:b/>
+        </w:rPr>
+        <w:t xml:space="preserve">Designation:</w:t>
+      </w:r>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve"> Founder &amp; CEO, CopyGen </w:t>
+      </w:r>
+      <w:r>
+        <w:rPr>
+          <w:b/>
+        </w:rPr>
+        <w:t xml:space="preserve">Email:</w:t>
+      </w:r>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve"> varunavhad8@gmail.com </w:t>
+      </w:r>
+      <w:r>
+        <w:rPr>
+          <w:b/>
+        </w:rPr>
+        <w:t xml:space="preserve">Address:</w:t>
+      </w:r>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve"> Nashik Road, Nashik, Maharashtra, India </w:t>
+      </w:r>
+      <w:r>
+        <w:rPr>
+          <w:b/>
+        </w:rPr>
+        <w:t xml:space="preserve">Response Time:</w:t>
+      </w:r>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve"> We will acknowledge your grievance within 24 hours and resolve it within 15 days of receipt.</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve">If you are not satisfied with our response, you may contact the relevant regulatory authority in your jurisdiction.</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:pStyle w:val="Heading3"/>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve">14. Changes to This Policy</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve">We may update this Privacy Policy from time to time. We will notify you of any changes by posting the new Privacy Policy on this page and updating the "Last Updated" date. For material changes, we will provide at least 14 days' advance notice via email before the changes take effect.</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve">We encourage you to review this Privacy Policy periodically for any changes. Changes are effective when they are posted on this page.</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:pStyle w:val="Heading3"/>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve">15. Contact &amp; Data Controller Information</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve">If you have any questions, concerns, or requests regarding this Privacy Policy or our data practices, please contact us:</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr>
+          <w:b/>
+        </w:rPr>
+        <w:t xml:space="preserve">Copygen</w:t>
+      </w:r>
+      <w:r>
+        <w:rPr>
+          <w:b/>
+        </w:rPr>
+        <w:t xml:space="preserve">Data Controller Email:</w:t>
+      </w:r>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve"> privacy@copygen.in </w:t>
+      </w:r>
+      <w:r>
+        <w:rPr>
+          <w:b/>
+        </w:rPr>
+        <w:t xml:space="preserve">General Support:</w:t>
+      </w:r>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve"> support@copygen.in </w:t>
+      </w:r>
+      <w:r>
+        <w:rPr>
+          <w:b/>
+        </w:rPr>
+        <w:t xml:space="preserve">Grievance Officer:</w:t>
+      </w:r>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve"> grievance@copygen.in </w:t>
+      </w:r>
+      <w:r>
+        <w:rPr>
+          <w:b/>
+        </w:rPr>
+        <w:t xml:space="preserve">Website:</w:t>
+      </w:r>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve"> https://copygen.in</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve">For GDPR-related queries from EU residents, please email privacy@copygen.in with "GDPR Request" in the subject line.</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr/>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr/>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:pStyle w:val="Heading2"/>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve">Refund Policy</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:pStyle w:val="Heading3"/>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve">1. Free Trial</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve">Copygen offers a 14-day free trial with no credit card required. During the trial, you get access to core features with a limit of 10 AI generations per day.</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve">Trials do not require any payment and therefore are not subject to refund requests. When your trial expires, your account will automatically switch to the Free tier (read-only access to previously generated content) unless you subscribe to a paid plan.</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:pStyle w:val="Heading3"/>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve">2. Monthly Subscriptions</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve">Monthly subscriptions are billed at the start of each billing cycle and cover the following 30-day period.</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve">No refunds for partial months</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve">Monthly subscription fees are non-refundable once the billing cycle has started. If you cancel mid-month, your access continues until the end of the period you paid for.</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:pStyle w:val="Heading3"/>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve">3. Cancellation</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve">You may cancel your Copygen subscription at any time, without penalty, by:</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:numPr>
+          <w:ilvl w:val="0"/>
+          <w:numId w:val="19"/>
+        </w:numPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve">Navigating to Settings → Billing → Cancel Subscription in your dashboard</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:numPr>
+          <w:ilvl w:val="0"/>
+          <w:numId w:val="19"/>
+        </w:numPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve">Emailing us at billing@copygen.in with your registered email address</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve">Upon cancellation:</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:numPr>
+          <w:ilvl w:val="0"/>
+          <w:numId w:val="20"/>
+        </w:numPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve">Your subscription will not renew at the next billing date</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:numPr>
+          <w:ilvl w:val="0"/>
+          <w:numId w:val="20"/>
+        </w:numPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve">You retain full access to all features until the end of your current paid period</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:numPr>
+          <w:ilvl w:val="0"/>
+          <w:numId w:val="20"/>
+        </w:numPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve">Your Brand Memory profiles and account data are retained for 30 days after your subscription ends, giving you time to export your data</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:numPr>
+          <w:ilvl w:val="0"/>
+          <w:numId w:val="20"/>
+        </w:numPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve">After 30 days, your data will be permanently deleted</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:pStyle w:val="Heading3"/>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve">4. Exceptional Circumstances</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve">We understand that exceptional circumstances arise. We will review refund requests outside the standard policy on a case-by-case basis for the following situations:</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:numPr>
+          <w:ilvl w:val="0"/>
+          <w:numId w:val="21"/>
+        </w:numPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve">Service Outage: If Copygen was unavailable for more than 72 continuous hours in a billing month, you may request a credit for affected days</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:numPr>
+          <w:ilvl w:val="0"/>
+          <w:numId w:val="21"/>
+        </w:numPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve">Duplicate Charge: If you were charged twice for the same subscription period, we will immediately refund the duplicate charge</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:numPr>
+          <w:ilvl w:val="0"/>
+          <w:numId w:val="21"/>
+        </w:numPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve">Unauthorized Transaction: If you believe your account was charged without your authorization, contact us immediately</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve">To raise an exceptional circumstance claim, email billing@copygen.in with your account email, the transaction ID, and a description of the issue. We will respond within 3 business days.</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:pStyle w:val="Heading3"/>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve">5. Refund Process &amp; Timeline</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve">Approved refunds are processed back to the original payment method:</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:numPr>
+          <w:ilvl w:val="0"/>
+          <w:numId w:val="22"/>
+        </w:numPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve">Credit/Debit Cards (Razorpay/Dodo Payments): 5–10 business days to appear on your statement</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:numPr>
+          <w:ilvl w:val="0"/>
+          <w:numId w:val="22"/>
+        </w:numPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve">UPI / Net Banking: 2–5 business days</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve">Refund amounts will exclude any transaction fees charged by the payment processor (typically 2–3%), which are non-recoverable. GST paid on original invoices is also non-refundable as per Indian tax regulations.</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:pStyle w:val="Heading3"/>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve">6. Contact for Billing Support</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve">For all billing and refund inquiries:</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve">                 Email: billing@copygen.in                 Response Time: Within 2 business days                 Hours: Monday–Friday, 10:00 AM – 6:00 PM IST               </w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve">Please include your registered email address and the payment transaction ID in all billing communications to help us process your request faster.</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr/>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr/>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:pStyle w:val="Heading2"/>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve">Cookie Policy</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:pStyle w:val="Heading3"/>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve">1. What Are Cookies?</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve">Cookies are small text files that are placed on your computer or mobile device when you visit a website. They are widely used to make websites work more efficiently, provide functionality, and collect analytical information.</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve">Cookies can be "persistent" (remain on your device until you delete them or they expire) or "session" cookies (deleted when you close your browser). First-party cookies are set by Copygen; third-party cookies are set by our partners and service providers.</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:pStyle w:val="Heading3"/>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve">2. How Copygen Uses Cookies</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve">We use cookies and similar technologies (such as local storage and session storage) for the following purposes:</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:numPr>
+          <w:ilvl w:val="0"/>
+          <w:numId w:val="23"/>
+        </w:numPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve">Authentication: To keep you logged in and protect your account</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:numPr>
+          <w:ilvl w:val="0"/>
+          <w:numId w:val="23"/>
+        </w:numPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve">Security: To detect and prevent fraudulent activity and secure payment sessions</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:numPr>
+          <w:ilvl w:val="0"/>
+          <w:numId w:val="23"/>
+        </w:numPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve">Analytics: To understand how users navigate our platform so we can improve it</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:numPr>
+          <w:ilvl w:val="0"/>
+          <w:numId w:val="23"/>
+        </w:numPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve">Preferences: To remember your settings across visits</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:pStyle w:val="Heading3"/>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve">3. Cookies We Use</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:numPr>
+          <w:ilvl w:val="0"/>
+          <w:numId w:val="24"/>
+        </w:numPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve">Authentication cookies: sb-auth-token, Firebase session</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:numPr>
+          <w:ilvl w:val="0"/>
+          <w:numId w:val="24"/>
+        </w:numPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve">Analytics cookies: Google Analytics _ga, _gid</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:numPr>
+          <w:ilvl w:val="0"/>
+          <w:numId w:val="24"/>
+        </w:numPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve">Functional cookies: copygen_theme, copygen_tour_seen</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:numPr>
+          <w:ilvl w:val="0"/>
+          <w:numId w:val="24"/>
+        </w:numPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve">Payment security cookies: Dodo Payments</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:pStyle w:val="Heading3"/>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve">4. Managing Your Cookie Preferences</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve">You have several options to control or limit how we and our partners use cookies:</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve">Most browsers allow you to manage cookies through their settings. You can set your browser to refuse cookies or delete specific cookies. Note that disabling certain cookies may affect the functionality of Copygen.</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve">You can opt out of Google Analytics tracking by installing the{' '}                                            Google Analytics Opt-out Browser Add-on                     .                   </w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve">Some browsers offer a "Do Not Track" (DNT) setting. When DNT is enabled, we limit analytics tracking to session-only data. Strictly necessary cookies remain active regardless of DNT settings.</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:pStyle w:val="Heading3"/>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve">5. Changes to This Policy</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve">We may update this Cookie Policy from time to time to reflect changes in technology, law, or our data practices. When we do, we will update the "Last Updated" date above. Material changes will be communicated via email or a notice on our website.</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:pStyle w:val="Heading3"/>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve">6. Contact Us</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve">For questions about this Cookie Policy or to exercise your data rights:</w:t>
+      </w:r>
+    </w:p>
+    
+<w:p>
+      <w:pPr>
+        <w:spacing w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr/>
+        <w:t xml:space="preserve">                 Email: privacy@copygen.in                 Website: https://copygen.in               </w:t>
+      </w:r>
+    </w:p>
+  </w:body>
+</w:document>
