@@ -7,7 +7,7 @@ const { generateWithGemini } = require('../services/gemini.service');
 const PROVIDERS = {
   openai: { short: 'gpt-4o-mini', long: 'gpt-4o' },
   anthropic: { short: 'claude-3-5-haiku-latest', long: 'claude-sonnet-4-6-20251022' },
-  gemini: { short: 'gemini-2.0-flash', long: 'gemini-2.5-pro' }
+  gemini: { short: 'gemini-3.8-flash', long: 'gemini-3.1-pro-preview' }
 };
 
 const isLongForm = (contentType = '') => {
