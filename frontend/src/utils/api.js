@@ -79,9 +79,12 @@ const localRequest = async (method, path, body = null) => {
     const apiKey = localStorage.getItem(LOCAL_PROVIDER_KEY) || '';
     const provider = localStorage.getItem(LOCAL_PROVIDER) || 'gemini';
     if (!apiKey) throw new Error('Add an LLM provider key in Settings before generating content.');
+    const clientId = body?.clientId;
+    const selectedClient = data.clients.find(client => client._id === clientId || client.id === clientId) || null;
+    const selectedBrandVoice = data.brands.find(brand => brand.clientId === clientId) || null;
     const localBody = path === '/api/seo/generate'
-      ? { ...body, briefText: body?.topic, contentType: 'seo', provider, apiKey }
-      : { ...body, provider, apiKey };
+      ? { ...body, briefText: body?.topic, contentType: 'seo', provider, apiKey, clientProfile: selectedClient, brandVoice: selectedBrandVoice }
+      : { ...body, provider, apiKey, clientProfile: selectedClient, brandVoice: selectedBrandVoice };
     const response = await fetch(`${BASE_URL}/api/local/generate`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
