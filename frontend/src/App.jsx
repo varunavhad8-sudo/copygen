@@ -36,7 +36,7 @@ function App() {
         <CookieConsent />
         
         <BrowserRouter>
-          <OnboardingChecklist />
+          {!LOCAL_MODE && <OnboardingChecklist />}
           <Routes>
 
             {/* Public Routes */}

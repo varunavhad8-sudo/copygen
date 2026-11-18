@@ -62,13 +62,13 @@ const localRequest = async (method, path, body = null) => {
     if (method === 'DELETE') { data.clients.splice(index, 1); saveLocalData(data); return { success: true }; }
   }
   if (pathname === '/api/brand' || pathname.startsWith('/api/brand/')) {
-    const clientId = query.get('clientId') || pathname.split('/').pop();
+    const clientId = query.get('clientId') || (pathname.startsWith('/api/brand/') ? pathname.split('/').pop() : null);
     if (method === 'GET') {
       if (pathname === '/api/brand' && !clientId) return data.brands;
       return { profile: data.brands.find(brand => brand.clientId === clientId) || { clientId, clientName: data.clients.find(client => client._id === clientId)?.name || 'My Workspace', isNew: true } };
     }
     if (method === 'POST' || method === 'PUT') {
-      const saved = { ...body, _id: body?._id || localId('brand'), clientId: body?.clientId || clientId };
+      const saved = { ...body, _id: body?._id || localId('brand'), clientId: body?.clientId || clientId, updatedAt: new Date().toISOString() };
       const index = data.brands.findIndex(brand => brand.clientId === saved.clientId);
       if (index >= 0) data.brands[index] = saved; else data.brands.push(saved);
       saveLocalData(data); return saved;

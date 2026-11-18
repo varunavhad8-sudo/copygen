@@ -311,8 +311,12 @@ const BrandVoice = () => {
         setBrandVoices(prev => [...prev, created]);
       }
       setIsPanelOpen(false);
+      setSuccessBanner({ message: editingVoice ? 'Brand voice updated successfully.' : 'Brand voice saved successfully.' });
       setShowSuccess(true);
-      setTimeout(() => setShowSuccess(false), 3000);
+      setTimeout(() => {
+        setShowSuccess(false);
+        setSuccessBanner(null);
+      }, 3000);
     } catch (err) {
       setSaveError(err.message || 'Failed to save brand voice');
     } finally {
