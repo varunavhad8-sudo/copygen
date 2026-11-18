@@ -523,11 +523,11 @@ const BrandVoice = () => {
                   <div className="grid grid-cols-2 gap-2">
                     <div>
                       <span className="text-slate-500 text-[10px] font-bold uppercase tracking-wider block">Power Words</span>
-                      <span className="text-white text-xs font-medium">{voice.powerWords.length} words</span>
+                      <span className="text-white text-xs font-medium">{(voice.powerWords || []).length} words</span>
                     </div>
                     <div>
                       <span className="text-slate-500 text-[10px] font-bold uppercase tracking-wider block">Avoid Words</span>
-                      <span className="text-white text-xs font-medium">{voice.avoidWords.length} words</span>
+                      <span className="text-white text-xs font-medium">{(voice.avoidWords || []).length} words</span>
                     </div>
                   </div>
 
@@ -841,6 +841,35 @@ const BrandVoice = () => {
                       </span>
                     ))}
                     <input type="text" placeholder="Add keyword..." className="bg-transparent border-none p-0 text-white text-sm focus:ring-0 flex-1 min-w-[120px] outline-none placeholder:text-slate-600" onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); handleTagInput('keywords', e.target.value); e.target.value = ''; } }} />
+                  </div>
+                </div>
+
+                {/* Fields: Power Words and Avoid Words */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="space-y-1.5">
+                    <label className="text-sm font-medium text-slate-300">Power Words</label>
+                    <div className="bg-[#252b3b] border border-[#2a2f42] rounded-lg p-2 focus-within:border-purple-500 flex flex-wrap gap-1.5 min-h-[80px] cursor-text transition-all" onClick={(e) => e.currentTarget.querySelector('input').focus()}>
+                      {formData.powerWords.map(word => (
+                        <span key={word} className="bg-purple-500/10 border border-purple-500/20 text-purple-300 text-[11px] font-medium px-2 py-0.5 rounded flex items-center gap-1">
+                          {word}
+                          <button type="button" onClick={() => removeTag('powerWords', word)} className="hover:text-purple-200"><X size={10} /></button>
+                        </span>
+                      ))}
+                      <input type="text" placeholder="Add power word..." className="bg-transparent border-none p-0 text-white text-sm focus:ring-0 flex-1 min-w-[120px] outline-none placeholder:text-slate-600" onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); handleTagInput('powerWords', e.target.value); e.target.value = ''; } }} />
+                    </div>
+                  </div>
+
+                  <div className="space-y-1.5">
+                    <label className="text-sm font-medium text-slate-300">Avoid Words</label>
+                    <div className="bg-[#252b3b] border border-[#2a2f42] rounded-lg p-2 focus-within:border-purple-500 flex flex-wrap gap-1.5 min-h-[80px] cursor-text transition-all" onClick={(e) => e.currentTarget.querySelector('input').focus()}>
+                      {formData.avoidWords.map(word => (
+                        <span key={word} className="bg-red-500/10 border border-red-500/20 text-red-300 text-[11px] font-medium px-2 py-0.5 rounded flex items-center gap-1">
+                          {word}
+                          <button type="button" onClick={() => removeTag('avoidWords', word)} className="hover:text-red-200"><X size={10} /></button>
+                        </span>
+                      ))}
+                      <input type="text" placeholder="Add avoid word..." className="bg-transparent border-none p-0 text-white text-sm focus:ring-0 flex-1 min-w-[120px] outline-none placeholder:text-slate-600" onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); handleTagInput('avoidWords', e.target.value); e.target.value = ''; } }} />
+                    </div>
                   </div>
                 </div>
               </div>
