@@ -5,9 +5,9 @@ const { generateWithClaude } = require('../services/claude.service');
 const { generateWithGemini } = require('../services/gemini.service');
 
 const PROVIDERS = {
-  openai: { short: 'gpt-4o-mini', long: 'gpt-4o' },
-  anthropic: { short: 'claude-3-5-haiku-latest', long: 'claude-sonnet-4-6-20251022' },
-  gemini: { short: 'gemini-3.8-flash', long: 'gemini-3.1-pro-preview' }
+  openai: { default: 'gpt-4o-mini', models: ['gpt-4o', 'gpt-4o-mini', 'gpt-4.1', 'gpt-4.1-mini'] },
+  anthropic: { default: 'claude-sonnet-4-6', models: ['claude-opus-4-8', 'claude-sonnet-4-6', 'claude-haiku-4-5-20251001'] },
+  gemini: { default: 'gemini-3.8-flash', models: ['gemini-3.8-flash', 'gemini-3.6-flash', 'gemini-3.1-pro-preview', 'gemini-3.5-flash-lite'] }
 };
 
 const isLongForm = (contentType = '') => {
@@ -123,6 +123,7 @@ router.post('/generate', async (req, res, next) => {
   try {
     const {
       provider,
+      model: requestedModel,
       apiKey,
       briefText,
       contentType,
@@ -157,7 +158,9 @@ router.post('/generate', async (req, res, next) => {
       brandVoice: brandVoice || null
     });
     const longForm = isLongForm(contentType);
-    const model = longForm ? PROVIDERS[provider].long : PROVIDERS[provider].short;
+    const model = PROVIDERS[provider].models.includes(requestedModel)
+      ? requestedModel
+      : PROVIDERS[provider].default;
     let generatedText;
 
     if (provider === 'openai') {

@@ -275,6 +275,16 @@ const Settings = () => {
       setProviderMessage({ type: 'error', text: err.message });
     }
   };
+
+  const handleSetModel = async (provider, model) => {
+    try {
+      await providerAPI.setModel(provider, model);
+      setProviderSettings(await providerAPI.get());
+      setProviderMessage({ type: 'success', text: `${provider} model saved. New generations will use ${model}.` });
+    } catch (err) {
+      setProviderMessage({ type: 'error', text: err.message });
+    }
+  };
   
   const handleExportData = async () => {
     try {
@@ -417,6 +427,21 @@ const Settings = () => {
                           <button onClick={() => handleRemoveProvider(provider.id)} disabled={providerSaving === provider.id} className="border border-red-500/30 text-red-300 hover:bg-red-500/10 px-4 py-2 rounded-lg text-xs font-semibold disabled:opacity-50">Remove</button>
                         )}
                       </div>
+                      {status?.models?.length > 0 && (
+                        <div className="mt-4 pt-4 border-t border-[#2a2f42]">
+                          <label className="text-slate-400 text-xs font-medium block mb-1.5">Model used for this provider</label>
+                          <select
+                            value={status.model}
+                            onChange={e => handleSetModel(provider.id, e.target.value)}
+                            className="w-full bg-[#252b3b] border border-[#2a2f42] rounded-lg px-3 py-2.5 text-white text-sm focus:border-purple-500 focus:outline-none"
+                          >
+                            {status.models.map(model => (
+                              <option key={model.id} value={model.id}>{model.label}</option>
+                            ))}
+                          </select>
+                          <p className="text-slate-600 text-[10px] mt-1.5">This choice is saved locally in your browser and applies to future generations.</p>
+                        </div>
+                      )}
                     </div>
                   );
                 })}

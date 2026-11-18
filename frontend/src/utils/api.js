@@ -4,7 +4,28 @@ const LOCAL_MODE = import.meta.env.VITE_LOCAL_MODE === 'true';
 const BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:4000';
 const LOCAL_PROVIDER_KEY = 'copygen_local_provider_key';
 const LOCAL_PROVIDER = 'copygen_local_provider';
+const LOCAL_PROVIDER_MODELS = 'copygen_local_provider_models_v1';
 const LOCAL_DATA = 'copygen_local_data_v1';
+
+const LOCAL_MODEL_OPTIONS = {
+  openai: [
+    { id: 'gpt-4o', label: 'GPT-4o — highest quality' },
+    { id: 'gpt-4o-mini', label: 'GPT-4o mini — faster and cheaper' },
+    { id: 'gpt-4.1', label: 'GPT-4.1 — strong instruction following' },
+    { id: 'gpt-4.1-mini', label: 'GPT-4.1 mini — balanced' }
+  ],
+  anthropic: [
+    { id: 'claude-opus-4-8', label: 'Claude Opus 4.8 — highest quality' },
+    { id: 'claude-sonnet-4-6', label: 'Claude Sonnet 4.6 — balanced' },
+    { id: 'claude-haiku-4-5-20251001', label: 'Claude Haiku 4.5 — faster and cheaper' }
+  ],
+  gemini: [
+    { id: 'gemini-3.8-flash', label: 'Gemini 3.8 Flash — fast and capable' },
+    { id: 'gemini-3.6-flash', label: 'Gemini 3.6 Flash — balanced' },
+    { id: 'gemini-3.1-pro-preview', label: 'Gemini 3.1 Pro — highest quality' },
+    { id: 'gemini-3.5-flash-lite', label: 'Gemini 3.5 Flash-Lite — lowest cost' }
+  ]
+};
 
 const loadLocalData = () => {
   try {
@@ -27,12 +48,14 @@ const localId = (prefix) => `${prefix}-${Date.now()}-${Math.random().toString(36
 const localProviderSettings = () => {
   const provider = localStorage.getItem(LOCAL_PROVIDER) || 'gemini';
   const key = localStorage.getItem(LOCAL_PROVIDER_KEY) || '';
+  let selectedModels = {};
+  try { selectedModels = JSON.parse(localStorage.getItem(LOCAL_PROVIDER_MODELS) || '{}'); } catch (_) {}
   return {
     activeProvider: provider,
     providers: {
-      openai: { configured: provider === 'openai' && !!key, masked: provider === 'openai' && key ? `${key.slice(0, 6)}...${key.slice(-4)}` : null },
-      anthropic: { configured: provider === 'anthropic' && !!key, masked: provider === 'anthropic' && key ? `${key.slice(0, 6)}...${key.slice(-4)}` : null },
-      gemini: { configured: provider === 'gemini' && !!key, masked: provider === 'gemini' && key ? `${key.slice(0, 6)}...${key.slice(-4)}` : null }
+      openai: { configured: provider === 'openai' && !!key, masked: provider === 'openai' && key ? `${key.slice(0, 6)}...${key.slice(-4)}` : null, model: selectedModels.openai || LOCAL_MODEL_OPTIONS.openai[0].id, models: LOCAL_MODEL_OPTIONS.openai },
+      anthropic: { configured: provider === 'anthropic' && !!key, masked: provider === 'anthropic' && key ? `${key.slice(0, 6)}...${key.slice(-4)}` : null, model: selectedModels.anthropic || LOCAL_MODEL_OPTIONS.anthropic[1].id, models: LOCAL_MODEL_OPTIONS.anthropic },
+      gemini: { configured: provider === 'gemini' && !!key, masked: provider === 'gemini' && key ? `${key.slice(0, 6)}...${key.slice(-4)}` : null, model: selectedModels.gemini || LOCAL_MODEL_OPTIONS.gemini[0].id, models: LOCAL_MODEL_OPTIONS.gemini }
     }
   };
 };
@@ -78,13 +101,15 @@ const localRequest = async (method, path, body = null) => {
   if (path === '/api/briefs' || path === '/api/seo/generate') {
     const apiKey = localStorage.getItem(LOCAL_PROVIDER_KEY) || '';
     const provider = localStorage.getItem(LOCAL_PROVIDER) || 'gemini';
+    let selectedModels = {};
+    try { selectedModels = JSON.parse(localStorage.getItem(LOCAL_PROVIDER_MODELS) || '{}'); } catch (_) {}
     if (!apiKey) throw new Error('Add an LLM provider key in Settings before generating content.');
     const clientId = body?.clientId;
     const selectedClient = data.clients.find(client => client._id === clientId || client.id === clientId) || null;
     const selectedBrandVoice = data.brands.find(brand => brand.clientId === clientId) || null;
     const localBody = path === '/api/seo/generate'
-      ? { ...body, briefText: body?.topic, contentType: 'seo', provider, apiKey, clientProfile: selectedClient, brandVoice: selectedBrandVoice }
-      : { ...body, provider, apiKey, clientProfile: selectedClient, brandVoice: selectedBrandVoice };
+      ? { ...body, briefText: body?.topic, contentType: 'seo', provider, model: selectedModels[provider], apiKey, clientProfile: selectedClient, brandVoice: selectedBrandVoice }
+      : { ...body, provider, model: selectedModels[provider], apiKey, clientProfile: selectedClient, brandVoice: selectedBrandVoice };
     const response = await fetch(`${BASE_URL}/api/local/generate`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -428,6 +453,7 @@ export const userAPI = {
       localStorage.removeItem(LOCAL_DATA);
       localStorage.removeItem(LOCAL_PROVIDER_KEY);
       localStorage.removeItem(LOCAL_PROVIDER);
+      localStorage.removeItem(LOCAL_PROVIDER_MODELS);
       return Promise.resolve({ success: true });
     }
     return request('DELETE', '/api/auth/account', body);
@@ -462,6 +488,16 @@ export const providerAPI = {
       return Promise.resolve({ activeProvider: provider });
     }
     return request('PUT', '/api/settings/providers/active', { provider });
+  },
+  setModel: (provider, model) => {
+    if (LOCAL_MODE) {
+      let selectedModels = {};
+      try { selectedModels = JSON.parse(localStorage.getItem(LOCAL_PROVIDER_MODELS) || '{}'); } catch (_) {}
+      selectedModels[provider] = model;
+      localStorage.setItem(LOCAL_PROVIDER_MODELS, JSON.stringify(selectedModels));
+      return Promise.resolve({ provider, model });
+    }
+    return request('PUT', `/api/settings/providers/${provider}/model`, { model });
   },
 };
 
