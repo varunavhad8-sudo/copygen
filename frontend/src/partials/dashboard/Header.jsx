@@ -45,12 +45,6 @@ function Header({
               <span className="text-xs font-semibold text-slate-700 dark:text-slate-200 truncate max-w-[180px]">
                 {profileUser?.name || authUser?.email || 'User'}
               </span>
-              <div className="flex items-center gap-1.5 mt-0.5">
-                <div className={`w-1.5 h-1.5 rounded-full ${profileUser?.plan === 'free' ? 'bg-slate-400' : 'bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]'}`}></div>
-                <span className="text-[10px] uppercase tracking-widest font-bold text-violet-600 dark:text-violet-400">
-                  {profileUser?.plan ? `${profileUser.plan} Plan` : 'Loading...'}
-                </span>
-              </div>
             </div>
 
             {/* New Generation Button */}

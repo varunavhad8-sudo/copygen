@@ -158,9 +158,6 @@ const Sidebar = ({ collapsed, setCollapsed, isMobile, onMenuToggle }) => {
                   <p className="text-[13px] font-bold text-white m-0 truncate whitespace-nowrap">
                     {user?.name || 'User'}
                   </p>
-                  <p className="text-[10px] text-[#d1d1e0]/40 font-medium uppercase tracking-wider mt-0.5">
-                    {user?.plan || 'Free'}
-                  </p>
                 </div>
               </div>
               <button

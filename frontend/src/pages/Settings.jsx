@@ -337,7 +337,7 @@ const Settings = () => {
       {/* Header */}
       <div className="mb-8">
         <h1 className="text-2xl font-bold text-white">Settings</h1>
-        <p className="text-slate-400 text-sm mt-1">Manage your account, billing, and preferences.</p>
+        <p className="text-slate-400 text-sm mt-1">Manage your local workspace and AI providers.</p>
       </div>
 
       {/* Main Layout Grid */}
@@ -348,8 +348,6 @@ const Settings = () => {
           <div className="bg-[#1a1f2e] border border-[#2a2f42] rounded-xl overflow-hidden p-2">
             <NavItem id="account" icon={User} label="Account" />
             <NavItem id="providers" icon={Code} label="AI Providers" />
-            <NavItem id="billing" icon={CreditCard} label="Billing & Plan" />
-            <NavItem id="notifications" icon={Bell} label="Notifications" />
             <NavItem id="danger" icon={AlertTriangle} label="Danger Zone" danger />
           </div>
 
@@ -560,7 +558,7 @@ const Settings = () => {
           )}
 
           {/* TAB 2: BILLING & PLAN */}
-          {activeTab === 'billing' && (
+          {false && activeTab === 'billing' && (
             <div className="space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-300">
               <div className="bg-[#1a1f2e] border border-[#2a2f42] rounded-xl p-6">
                 <h2 className="text-white font-semibold text-base">Current Plan</h2>
@@ -852,7 +850,7 @@ const Settings = () => {
           )}
 
           {/* TAB 3: NOTIFICATIONS */}
-          {activeTab === 'notifications' && (
+          {false && activeTab === 'notifications' && (
             <div className="bg-[#1a1f2e] border border-[#2a2f42] rounded-xl p-6 animate-in fade-in slide-in-from-bottom-2 duration-300">
               <h2 className="text-white font-semibold text-base">Notification Preferences</h2>
               <p className="text-slate-400 text-xs mt-1">Choose what updates you receive by email.</p>
